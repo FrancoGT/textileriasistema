@@ -104,7 +104,36 @@
     const title = document.getElementById('workspace-title');
     const status = document.getElementById('workspace-status');
     const welcome = document.getElementById('workspace-welcome');
-    const links = [...document.querySelectorAll('.menu-group a')];
+    const links = [...document.querySelectorAll('.menu-group a'), ...document.querySelectorAll('.user-account-link')];
+    const userToggle = document.getElementById('user-toggle');
+    const userPanel = document.getElementById('user-panel');
+    const userAccount = document.getElementById('user-account');
+    const closeUser = (restoreFocus = false) => {
+        if (!userToggle) return;
+        const wasOpen = !userPanel.hidden;
+        userPanel.hidden = true;
+        userToggle.setAttribute('aria-expanded', 'false');
+        userToggle.setAttribute('aria-label', 'Abrir opciones de usuario');
+        if (restoreFocus && wasOpen) userToggle.focus();
+    };
+    if (userToggle) {
+        userToggle.addEventListener('click', () => {
+            const open = userPanel.hidden;
+            userPanel.hidden = !open;
+            userToggle.setAttribute('aria-expanded', String(open));
+            userToggle.setAttribute('aria-label', open ? 'Cerrar opciones de usuario' : 'Abrir opciones de usuario');
+            if (open) closeMenu();
+        });
+        userToggle.addEventListener('keydown', event => {
+            if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                if (userPanel.hidden) userToggle.click();
+                userPanel.querySelector('a').focus();
+            }
+        });
+        document.addEventListener('click', event => { if (!userAccount.contains(event.target)) closeUser(); });
+        document.addEventListener('focusin', event => { if (!userAccount.contains(event.target)) closeUser(); });
+    }
     let finishNavigation = () => {};
     document.querySelectorAll('.menu-group').forEach(group => {
         const summary = group.querySelector('summary');
@@ -118,15 +147,17 @@
         toggle.setAttribute('aria-label', 'Abrir menú');
     };
     toggle.addEventListener('click', () => {
+        closeUser();
         const open = document.body.classList.toggle('menu-open');
         toggle.setAttribute('aria-expanded', String(open));
         toggle.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
     });
     document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') closeMenu();
+        if (event.key === 'Escape') { closeMenu(); closeUser(true); }
     });
     links.forEach(link => link.addEventListener('click', (event) => {
         if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+        closeUser();
         finishNavigation();
         finishNavigation = window.ErpFeedback?.start(link, 'Cargando módulo. Espere un momento…') || (() => {});
         welcome.hidden = true;
@@ -145,6 +176,8 @@
         const page = frame.contentDocument;
         if (!page || frame.contentWindow.location.href === 'about:blank') return;
         window.ErpFeedback?.attach(page);
+        page.addEventListener('pointerdown', () => closeUser());
+        page.addEventListener('focusin', () => closeUser());
         const path = frame.contentWindow.location.pathname;
         if (/\/(?:index\.php)?$/.test(path)) {
             window.location.assign('/index.php');

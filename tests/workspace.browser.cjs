@@ -19,7 +19,9 @@ function moduleFixture(name) {
     return (html.slice(0, start) + branch + html.slice(html.lastIndexOf('{/if}') + 5))
         .replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, '')
         .replace(/onload=f_Desactivar\(\)/, '')
-        .replace(/\{foreach[^}]*\}([\s\S]*?)\{\/foreach\}/g, '$1')
+        .replace(/\{foreach[^}]*\}([\s\S]*?)\{\/foreach\}/g, (_, row) => name === 'ERP1060' ? row.repeat(25) : row)
+        .replace(/\{\$i\['([0-5])'\]\}/g, (value, column) => name === 'ERP1050'
+            ? ['01001', 'Hilo de algodon', 'Materia prima', 'Kilogramo', '20', '12.50'][column] : value)
         .replace(/\{\$[^}]+\}/g, name === 'ERP1060'
             ? 'PROVEEDOR_CON_RAZON_SOCIAL_EXTENSA_PARA_COMPROBAR_EL_DESPLAZAMIENTO_LOCAL'
             : 'Personal con un nombre muy largo para comprobar el ancho del selector');
@@ -30,7 +32,7 @@ test('shared mobile workspace contains controls and wide supplier tables', { tim
     let releaseSave;
     const server = http.createServer((req, res) => {
         let content, type = 'text/html; charset=utf-8';
-        if (/^\/ERP(1000|1060)\.php/.test(req.url)) content = moduleFixture(req.url.slice(1, 8));
+        if (/^\/ERP(1000|1050|1060)\.php/.test(req.url)) content = moduleFixture(req.url.slice(1, 8));
         else if (req.url === '/Mnu0000.php') content = fs.readFileSync('legacy/Plantillas/Mnu0000.tpl');
         else if (req.url === '/CSS/Sixavi.css') { content = fs.readFileSync('legacy/CSS/Sixavi.css'); type = 'text/css'; }
         else if (req.url === '/css/menu.css') { content = fs.readFileSync('public/css/menu.css'); type = 'text/css'; }
@@ -38,6 +40,10 @@ test('shared mobile workspace contains controls and wide supplier tables', { tim
         else if (req.url === '/js/ui-feedback.js') { content = fs.readFileSync('public/js/ui-feedback.js'); type = 'text/javascript'; }
         else if (req.url === '/css/ui-feedback.css') { content = fs.readFileSync('public/css/ui-feedback.css'); type = 'text/css'; }
         else if (req.url === '/js/login.js') { content = fs.readFileSync('public/js/login.js'); type = 'text/javascript'; }
+        else if (/^\/CSS\/(?:jquery-ui-1\.11\.0\/images\/)?[\w.-]+\.(png|gif|jpg)$/i.test(req.url) && fs.existsSync(`legacy${req.url}`)) {
+            content = fs.readFileSync(`legacy${req.url}`);
+            type = req.url.endsWith('.png') ? 'image/png' : req.url.endsWith('.gif') ? 'image/gif' : 'image/jpeg';
+        }
         else if (req.url === '/feedback-save') {
             let body = '';
             req.on('data', chunk => { body += chunk; });
@@ -160,7 +166,33 @@ test('shared mobile workspace contains controls and wide supplier tables', { tim
             await command('/refresh', {});
             await checkCategories();
             console.log(`${width}: all 9 categories pass load, row click, keyboard and reload checks`);
-            for (const module of ['ERP1000', 'ERP1060']) {
+            const account = await execute(() => {
+                const toggle = document.getElementById('user-toggle');
+                const panel = document.getElementById('user-panel');
+                const closedInitially = panel.hidden && toggle.getAttribute('aria-expanded') === 'false';
+                toggle.click();
+                const rect = panel.getBoundingClientRect();
+                const open = !panel.hidden && toggle.getAttribute('aria-expanded') === 'true';
+                const contained = rect.left >= 0 && rect.right <= innerWidth;
+                document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+                const escaped = panel.hidden && document.activeElement === toggle;
+                toggle.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+                const keyboard = !panel.hidden && document.activeElement === panel.querySelector('a');
+                document.getElementById('workspace-title').click();
+                const outside = panel.hidden && toggle.getAttribute('aria-expanded') === 'false';
+                const actions = [...panel.querySelectorAll('a')].map(link => [link.getAttribute('href'), link.getAttribute('target')]);
+                return { closedInitially, open, contained, escaped, keyboard, outside, actions };
+            });
+            assert.deepEqual(account, {
+                closedInitially: true, open: true, contained: true, escaped: true, keyboard: true, outside: true,
+                actions: [['/Mnu1000.php', 'erp-workspace'], ['/index.php', null]]
+            });
+            if (width === 375 || width === 1280) {
+                await execute(() => document.getElementById('user-toggle').click());
+                fs.writeFileSync(path.join(os.tmpdir(), `erp-x-user-${width}.png`), Buffer.from(await command('/screenshot'), 'base64'));
+                await execute(() => document.getElementById('user-toggle').click());
+            }
+            for (const module of ['ERP1000', 'ERP1050', 'ERP1060']) {
                 await execute(module => { document.querySelector(`a[href="/${module}.php"]`).click(); }, module);
                 let loaded = false;
                 for (let attempt = 0; attempt < 40; attempt++) {
@@ -185,6 +217,25 @@ test('shared mobile workspace contains controls and wide supplier tables', { tim
                     };
                 });
                 console.log(width, module, JSON.stringify(metrics));
+                if (module === 'ERP1050') {
+                    const presentation = await execute(() => {
+                        const page = document.getElementById('erp-workspace').contentDocument;
+                        const numeric = [...page.querySelectorAll('.erp-data-table th.erp-number')];
+                        return {
+                            numbers: numeric.length,
+                            aligned: numeric.every(cell => page.defaultView.getComputedStyle(cell).textAlign === 'right'),
+                            primary: page.querySelector('input[value="Nuevo"]').classList.contains('erp-primary'),
+                            destructive: page.querySelector('input[value="Eliminar"]').classList.contains('erp-danger'),
+                            namedSelection: !!page.querySelector('input[type=radio][aria-label]'),
+                            icons: page.querySelectorAll('.erp-action-icon[aria-hidden=true]').length,
+                            selectionHeader: page.querySelector('.erp-data-table th:last-child img').getAttribute('alt')
+                        };
+                    });
+                    assert.deepEqual(presentation, { numbers: 2, aligned: true, primary: true, destructive: true, namedSelection: true, icons: 3, selectionHeader: 'Seleccionar registro' });
+                    if (width === 375 || width === 1280) {
+                        fs.writeFileSync(path.join(os.tmpdir(), `erp-x-insumos-${width}.png`), Buffer.from(await command('/screenshot'), 'base64'));
+                    }
+                }
                 if (module === 'ERP1060') {
                     const filtering = await execute(async () => {
                         const page = document.getElementById('erp-workspace').contentDocument;
@@ -201,9 +252,14 @@ test('shared mobile workspace contains controls and wide supplier tables', { tim
                         search.value = 'proveedor';
                         search.dispatchEvent(new Event('input'));
                         await new Promise(resolve => setTimeout(resolve, 400));
-                        return { busy, empty, restored: !row.hidden, actions: !!page.querySelector('.workspace-records-toolbar .workspace-actions'), settled: !table.hasAttribute('aria-busy') };
+                        const restored = !row.hidden;
+                        const pagination = page.querySelector('.workspace-records-pagination');
+                        pagination.querySelector('button:last-child').click();
+                        const paginated = row.hidden && pagination.querySelector('span').textContent === '2 / 3';
+                        pagination.querySelector('button:first-child').click();
+                        return { busy, empty, restored, paginated, actions: !!page.querySelector('.workspace-records-toolbar .workspace-actions'), settled: !table.hasAttribute('aria-busy') };
                     });
-                    assert.deepEqual(filtering, { busy: true, empty: true, restored: true, actions: true, settled: true });
+                    assert.deepEqual(filtering, { busy: true, empty: true, restored: true, paginated: true, actions: true, settled: true });
                 }
                 try {
                     if (width <= 760) {
@@ -213,7 +269,7 @@ test('shared mobile workspace contains controls and wide supplier tables', { tim
                         if (module === 'ERP1000') { assert.deepEqual(metrics.buttons.map(b => b.label), ['Aplicar', 'Nuevo', 'Salir']); assert.ok(metrics.selector <= metrics.module[1]); }
                         if (module === 'ERP1060') assert.ok(metrics.scroll.some(s => s.content > s.width && s.overflow === 'auto'), 'local table scrolling');
                         const menu = await execute(() => {
-                            const button = document.getElementById('menu-toggle'), title = document.querySelector('#MH h1'), logout = document.querySelector('#MH a');
+                            const button = document.getElementById('menu-toggle'), title = document.querySelector('#MH h1'), logout = document.getElementById('user-toggle');
                             const rect = element => element.getBoundingClientRect();
                             const layout = rect(button).width === 44 && rect(button).height === 44
                                 && rect(button).right <= rect(title).left && rect(title).right <= rect(logout).left
@@ -248,8 +304,8 @@ test('shared mobile workspace contains controls and wide supplier tables', { tim
                             assert.ok(scrolls, 'supplier table can scroll');
                         }
                     } else {
-                        assert.equal(metrics.buttons[0].height, 39, 'desktop button height');
-                        assert.deepEqual(metrics.buttons.map(b => b.right - b.left), [140, 140, 140], 'desktop button widths');
+                        assert.equal(metrics.buttons[0].height, 36, 'desktop button height');
+                        assert.ok(metrics.buttons.every(b => b.right - b.left >= 88), 'desktop buttons fit their labels');
                         assert.equal(await execute(() => getComputedStyle(document.getElementById('menu-toggle')).display), 'none', 'desktop hamburger hidden');
                     }
                 } catch (error) { failures.push(`${width} ${module}: ${error.message}`); }

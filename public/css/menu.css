@@ -26,7 +26,29 @@
 #workspace-status:empty { display: none; }
 #erp-workspace { flex: 1; width: 100%; min-height: 0; border: 0; }
 #erp-workspace[hidden] { display: none; }
+.user-account { position: relative; flex: 0 0 auto; margin-left: auto; }
+.menu-page #MH #user-toggle { display: flex; align-items: center; gap: 8px; min-width: 0; min-height: 44px; padding: 4px 8px; border: 1px solid transparent; border-radius: 6px; background: transparent; color: #FFFFFF; font: inherit; cursor: pointer; }
+.menu-page #MH #user-toggle:hover, .menu-page #MH #user-toggle[aria-expanded=true] { background: #333333; border-color: #999999; }
+.user-avatar { display: inline-flex; flex: 0 0 32px; align-items: center; justify-content: center; width: 32px; height: 32px; border: 1px solid #999999; border-radius: 50%; background: #F4F4F4; color: #333333; }
+.user-toggle-name { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.user-chevron { flex: none; transition: transform 120ms ease; }
+#user-toggle[aria-expanded=true] .user-chevron { transform: rotate(180deg); }
+#user-toggle:focus-visible { outline: 2px solid #EE6600; outline-offset: 2px; }
+#user-panel { position: absolute; top: calc(100% + 8px); right: 0; z-index: 10; box-sizing: border-box; width: 280px; max-width: calc(100vw - 24px); padding: 0; border: 1px solid #E8E8E8; border-radius: 8px; background: #FFFFFF; color: #333333; box-shadow: 0 6px 20px #0002; }
+#user-panel[hidden] { display: none; }
+.user-panel-identity { display: flex; align-items: center; gap: 12px; padding: 16px; border-bottom: 1px solid #E8E8E8; }
+.user-panel-identity > div { min-width: 0; overflow-wrap: anywhere; }
+.user-panel-identity strong { display: block; font-size: 13px; }
+.user-panel-identity > div > span { display: block; margin-top: 4px; color: #666666; font-size: 12px; }
+#user-panel nav { padding: 6px; }
+.menu-page #MH #user-panel a { display: flex; align-items: center; gap: 10px; min-height: 44px; margin: 0; padding: 0 10px; border-radius: 4px; color: #333333; font-size: 13px; }
+.menu-page #MH #user-panel a:hover { background: #F4F4F4; }
+.menu-page #MH #user-panel .user-signout { color: #CC0000; }
+#user-panel a svg { flex: none; }
+@media (prefers-reduced-motion: reduce) { .user-chevron { transition: none; } }
 @media (max-width: 760px) {
+    .user-toggle-name { display: none; }
+    .menu-page #MH #user-toggle { gap: 4px; padding: 4px; }
     #menu-toggle { display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; flex: 0 0 44px; width: 44px; height: 44px; padding: 0; border: 0; background: transparent; color: #FFFFFF; }
     #menu-toggle svg { flex: none; }
     #menu-toggle .menu-icon-close, #menu-toggle[aria-expanded=true] .menu-icon-bars { display: none; }

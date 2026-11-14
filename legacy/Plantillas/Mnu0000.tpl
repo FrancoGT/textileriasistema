@@ -19,7 +19,27 @@
                 </svg>
             </button>
             <h1><span>SISTEMA ERP-X</span></h1>
-            <a href="/index.php">Cerrar sesión</a>
+            <div class="user-account" id="user-account">
+                <button type="button" id="user-toggle" aria-controls="user-panel" aria-expanded="false" aria-label="Abrir opciones de usuario">
+                    <span class="user-avatar" aria-hidden="true">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg>
+                    </span>
+                    <span class="user-toggle-name">{$scNombre|escape:'html'}</span>
+                    <svg class="user-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <section id="user-panel" aria-label="Opciones de usuario" hidden>
+                    <div class="user-panel-identity">
+                        <span class="user-avatar" aria-hidden="true">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg>
+                        </span>
+                        <div><strong>{$scNombre|escape:'html'}</strong><span>Código: {$scCodigo|escape:'html'}</span></div>
+                    </div>
+                    <nav aria-label="Acciones de la cuenta">
+                        <a class="user-account-link" href="/Mnu1000.php" target="erp-workspace"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V6a4 4 0 0 1 8 0v4"/></svg>Cambiar clave</a>
+                        <a class="user-signout" href="/index.php"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M9 21H4V3h5M13 7l5 5-5 5M8 12h13"/></svg>Cerrar sesión</a>
+                    </nav>
+                </section>
+            </div>
         </header>
         <div class="menu-layout">
         <aside id="menu-sidebar" class="menu-sidebar">

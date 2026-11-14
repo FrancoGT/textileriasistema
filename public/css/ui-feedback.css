@@ -1,4 +1,86 @@
 button, input[type=submit], input[type=button], a[href] { transition: opacity 120ms ease, filter 120ms ease; }
+@media screen {
+    .erp-ui { color: #333333; font-size: 13px; line-height: 1.5; }
+    .erp-ui body:not(.menu-page) { margin: 0; background: #E8E8E8; }
+    .erp-ui .wrapper:not(.menu-wrapper) { box-sizing: border-box; width: 100%; margin: 0; padding: 16px; border: 0; }
+    .erp-ui #navigation { float: none; width: 100%; text-align: left; }
+    .erp-ui #content { margin-left: 0; min-height: 0; padding: 0; }
+    .erp-ui #content:empty, .erp-ui #footer:empty { display: none; }
+    .erp-ui fieldset { box-sizing: border-box; min-width: 0; max-width: 100%; margin: 0 0 16px; padding: 12px 16px; border: 1px solid #E8E8E8; border-radius: 4px; }
+    .erp-ui #header { box-sizing: border-box; width: 100%; height: auto; min-height: 60px; }
+    .erp-ui #navcontainer a { box-sizing: border-box; max-width: 100%; min-height: 36px; padding: 7px 14px; border: 1px solid #999999; border-radius: 4px; box-shadow: none; line-height: 1.5; }
+    .erp-ui legend { padding: 0 8px; font-weight: bold; }
+    .erp-ui h1 { font-size: 18px; line-height: 1.4; }
+    .erp-ui h2 { font-size: 16px; line-height: 1.5; }
+    .erp-ui p.titulo { margin: 0 0 16px; padding-bottom: 8px; font-size: 18px; }
+    .erp-ui body:not(.menu-page) #MH { height: auto; min-height: 48px; margin-bottom: 16px; }
+    .erp-ui body:not(.menu-page) #MH ul { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding: 10px 16px; }
+    .erp-ui body:not(.menu-page) #MH li { float: none !important; margin: 0 !important; }
+    .erp-ui body:not(.menu-page) #MH h1 { color: #FFFFFF; }
+    .erp-ui button:not(#menu-toggle):not(.erp-feedback-dismiss),
+    .erp-ui input:is([type=submit], [type=button], [type=reset]),
+    .erp-ui .ui-dialog .ui-button {
+        box-sizing: border-box; width: auto !important; min-width: 88px; max-width: 100%; height: auto !important; min-height: 36px;
+        margin: 0; padding: 7px 14px; border: 1px solid #999999; border-radius: 4px;
+        background: #F4F4F4; color: #333333; font: 600 13px/1.5 Verdana, Arial, sans-serif;
+        text-align: center; vertical-align: middle; cursor: pointer; float: none;
+    }
+    .erp-ui input.erp-primary, .erp-ui button.erp-primary { border-color: #EE6600; background-color: #EE6600; color: #000000; }
+    .erp-ui .erp-action-with-icon { position: relative; display: inline-flex; max-width: 100%; vertical-align: middle; }
+    .erp-ui .erp-action-with-icon :is(input, button) { padding-left: 34px; }
+    .erp-ui .erp-action-icon { position: absolute; z-index: 1; left: 10px; top: 50%; margin-top: -8px; width: 16px; height: 16px; pointer-events: none; background-image: url('/CSS/jquery-ui-1.11.0/images/ui-icons_222222_256x240.png'); }
+    .erp-ui input.erp-danger, .erp-ui button.erp-danger { border-color: #CC0000; background-color: #FFFFFF; color: #CC0000; }
+    .erp-ui :is(button, input[type=submit], input[type=button], input[type=reset]):hover:not(:disabled) { filter: brightness(.94); }
+    .erp-ui :is(button, input, select, textarea, a, summary):focus-visible { outline: 2px solid #EE6600; outline-offset: 2px; }
+    .erp-ui :is(button, input, select, textarea):disabled { cursor: not-allowed; opacity: .6; }
+    .erp-ui :is(input:not([type]), input[type=text], input[type=password], input[type=number], input[type=date], input[type=email], input[type=search], select, textarea) {
+        box-sizing: border-box; max-width: 100%; min-height: 36px; padding: 7px 10px; border: 1px solid #999999; border-radius: 4px;
+        background: #FFFFFF; color: #333333; font: 13px/1.5 Verdana, Arial, sans-serif;
+    }
+    .erp-ui input[readonly], .erp-ui textarea[readonly], .erp-ui select:disabled { background: #F4F4F4; }
+    .erp-ui :is(input[type=radio], input[type=checkbox]) { position: static; width: 18px; height: 18px; margin: 4px; opacity: 1; accent-color: #EE6600; vertical-align: middle; }
+    .erp-ui :is(input, select, textarea)[aria-invalid=true] { border-color: #CC0000; }
+    .erp-ui label.error, .erp-ui .field-error { display: block; margin-top: 4px; color: #CC0000; font-size: 12px; }
+    .erp-ui #navcontainer > p[role=status]:not(:empty), .erp-ui .login-message[data-error] { margin: 0 0 16px; padding: 10px 12px; border-left: 3px solid #EE6600; background: #F4F4F4; color: #333333; }
+    .erp-ui .erp-form { border-spacing: 0; margin: 0 0 16px; font-size: 13px !important; }
+    .erp-ui .erp-form td { padding: 6px 12px 6px 0; vertical-align: middle; }
+    .erp-ui .erp-form td:first-child { color: #333333; }
+    .erp-ui .erp-actions { margin: 12px 0; border-spacing: 0; }
+    .erp-ui .erp-actions > tbody > tr { display: flex; flex-wrap: wrap; gap: 8px; }
+    .erp-ui .erp-actions > tbody > tr > td { display: block; padding: 0; }
+    .erp-ui .erp-table-scroll { box-sizing: border-box; max-width: 100%; width: 100% !important; overflow: auto; border: 1px solid #E8E8E8; border-radius: 4px; }
+    .erp-ui .erp-data-table { width: 100%; border-collapse: collapse; border: 0; border-spacing: 0; font-size: 13px !important; }
+    .erp-ui .erp-data-table :is(th, td) { padding: 9px 12px; border: 0; border-bottom: 1px solid #E8E8E8; text-align: left; vertical-align: middle; line-height: 1.5; }
+    .erp-ui .erp-data-table th { background: #F4F4F4; color: #333333; font-weight: bold; white-space: nowrap; }
+    .erp-ui .erp-data-table tr:hover > td { background-color: #F4F4F4; }
+    .erp-ui .erp-data-table tr:has(input:checked) > td { background-color: #E8E8E8; }
+    .erp-ui .erp-data-table .erp-number, .erp-ui .erp-data-table [align=right] { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .erp-ui .workspace-records { padding: 0; }
+    .erp-ui .workspace-records-toolbar, .erp-ui .workspace-records-footer { gap: 12px; }
+    .erp-ui .workspace-records-search { font-size: 12px; color: #333333; }
+    .erp-ui .workspace-records-footer { font-size: 12px; }
+    .erp-ui .workspace-records-footer label { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .erp-ui .ui-dialog { box-sizing: border-box; max-width: calc(100vw - 24px); border: 1px solid #999999; border-radius: 4px; background: #FFFFFF; }
+    .erp-ui .ui-dialog .ui-dialog-titlebar { padding: 12px 16px; border: 0; border-bottom: 1px solid #E8E8E8; background: #F4F4F4; color: #333333; }
+    .erp-ui .ui-dialog .ui-dialog-buttonpane { margin-top: 16px; padding: 12px 16px; border-top: 1px solid #E8E8E8; }
+    .erp-ui .ui-dialog .ui-dialog-buttonset { display: flex; flex-wrap: wrap; gap: 8px; }
+    .erp-ui .ui-dialog button.ui-dialog-titlebar-close { min-width: 32px; min-height: 32px; padding: 0; }
+    .erp-ui .login-card #login-submit { width: 100% !important; min-height: 44px; }
+    @media (max-width: 760px) {
+        .erp-ui .wrapper:not(.menu-wrapper) { padding: 12px; }
+        .erp-ui :is(#navigation, #navcontainer, #content) { min-width: 0; max-width: 100%; box-sizing: border-box; }
+        .erp-ui .erp-form, .erp-ui .erp-form > tbody { display: block; width: 100%; }
+        .erp-ui .erp-form tr { display: flex; flex-wrap: wrap; gap: 4px 8px; padding: 6px 0; }
+        .erp-ui .erp-form td { display: block; flex: 1 1 220px; min-width: 0; padding: 0; overflow-wrap: anywhere; }
+        .erp-ui .erp-form td:first-child { flex: 0 1 140px; }
+        .erp-ui .erp-form :is(input, select, textarea) { min-width: 0; max-width: 100%; }
+        .erp-ui .erp-form select { width: 100%; }
+        .erp-ui :is(input[type=text], input[type=password], input[type=number], input[type=date], input[type=email], input[type=search], select, textarea) { min-height: 44px; font-size: 16px; }
+        .erp-ui :is(button:not(.erp-feedback-dismiss), input[type=submit], input[type=button]) { min-height: 44px; }
+        .erp-ui .workspace-records-search { width: 100%; }
+        .erp-ui .workspace-records-footer { align-items: flex-start; }
+    }
+}
 button:active, input[type=submit]:active, input[type=button]:active, a[href]:active { filter: brightness(.9); }
 .erp-feedback-busy { cursor: progress; opacity: .65; }
 .erp-feedback-pending::before { content: ''; position: fixed; inset: 0 0 auto; height: 3px; background: linear-gradient(90deg, transparent, #EE6600, transparent); background-size: 200% 100%; z-index: 2147483646; pointer-events: none; animation: erp-feedback-progress 1.2s ease-in-out infinite; }
