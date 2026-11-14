@@ -28,6 +28,8 @@ docker compose -f compose.prod.yaml --env-file .env.docker.prod up -d --build
 
 ## Documentación
 
+* [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): service responsibilities, migration boundaries and verification commands.
+
 * [docs/DESPLIEGUE-DOCKER-WINDOWS.md](docs/DESPLIEGUE-DOCKER-WINDOWS.md) — todos los comandos
   de Docker para Windows: local, producción, despliegue remoto, respaldos y solución de problemas.
 * [docs/MIGRACION.md](docs/MIGRACION.md) — qué se migró, cambios al código legacy,

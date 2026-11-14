@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Legacy\LegacyPathResolver;
-use App\Legacy\LegacyScriptRunner;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use App\Legacy\LegacyPageExecutor;
+use App\Legacy\LegacyAssetResponseFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Routing\Attribute\Route;
 
 /**
@@ -24,7 +23,8 @@ final class LegacyController
 {
     public function __construct(
         private readonly LegacyPathResolver $resolver,
-        private readonly LegacyScriptRunner $runner,
+        private readonly LegacyPageExecutor $runner,
+        private readonly LegacyAssetResponseFactory $assets,
     ) {
     }
 
@@ -36,19 +36,7 @@ final class LegacyController
         }
 
         if ($asset = $this->resolver->resolveAsset($path)) {
-            $response = new BinaryFileResponse($asset, autoEtag: true, autoLastModified: true);
-            // MIME por extension (fileinfo detecta CSS/JS como text/plain)
-            $extension = strtolower(pathinfo($asset, \PATHINFO_EXTENSION));
-            $response->headers->set('Content-Type', MimeTypes::getDefault()->getMimeTypes($extension)[0] ?? 'application/octet-stream');
-            // Documentos generados (Ficheros/) no deben cachearse; CSS/JS/imagenes si
-            if (preg_match('#^/?(Ficheros|FILES)/#i', $path)) {
-                $response->setPrivate()->headers->addCacheControlDirective('no-store');
-            } else {
-                $response->setPublic()->setMaxAge(86400);
-            }
-            $response->isNotModified($request);
-
-            return $response;
+            return $this->assets->create($request, $path, $asset);
         }
 
         throw new NotFoundHttpException(\sprintf('Recurso legacy no encontrado: "%s".', $path));

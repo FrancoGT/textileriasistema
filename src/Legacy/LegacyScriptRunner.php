@@ -15,26 +15,16 @@ use Symfony\Component\HttpFoundation\Response;
  * Patron "strangler fig": cada pantalla legacy sigue funcionando sin cambios
  * mientras se migra, una por una, a controladores Symfony + Twig + Doctrine.
  */
-final class LegacyScriptRunner
+final class LegacyScriptRunner implements LegacyPageExecutor
 {
     /** Errores no fatales que el codigo legacy genera de forma rutinaria en PHP 8.4 */
     private const TOLERATED_ERRORS = E_WARNING | E_NOTICE | E_USER_WARNING | E_USER_NOTICE | E_DEPRECATED | E_USER_DEPRECATED;
 
-    /** Cabeceras que no deben copiarse al Response */
-    private const SKIPPED_HEADERS = ['x-powered-by'];
-
-    /** Variables que nunca se convierten en globales */
-    private const RESERVED_VARS = [
-        'this', 'GLOBALS', '_GET', '_POST', '_REQUEST', '_SERVER', '_COOKIE', '_FILES', '_ENV', '_SESSION',
-        'http_response_header', 'argc', 'argv',
-    ];
-
-    /** @var array<string, list<string>> */
-    private array $variableCache = [];
-
     public function __construct(
         #[Autowire('%app.legacy_dir%')]
         private readonly string $legacyDir,
+        private readonly LegacyVariableCollector $variables,
+        private readonly LegacyResponseFactory $responses,
         private readonly ?LoggerInterface $logger = null,
     ) {
     }
@@ -67,7 +57,7 @@ final class LegacyScriptRunner
 
         ob_start();
         try {
-            self::requireInGlobalScope($script, $this->collectVariables($script));
+            self::requireInGlobalScope($script, $this->variables->collect($script));
         } catch (\Throwable $e) {
             while (ob_get_level() > $bufferLevel) {
                 ob_end_clean();
@@ -105,51 +95,17 @@ final class LegacyScriptRunner
         require $__legacyScript;
     }
 
-    /**
-     * @return list<string>
-     */
-    private function collectVariables(string $script): array
-    {
-        if (isset($this->variableCache[$script])) {
-            return $this->variableCache[$script];
-        }
-
-        $names = [];
-        foreach (token_get_all((string) file_get_contents($script)) as $token) {
-            if (\is_array($token) && \T_VARIABLE === $token[0]) {
-                $names[substr($token[1], 1)] = true;
-            }
-        }
-        foreach (self::RESERVED_VARS as $reserved) {
-            unset($names[$reserved]);
-        }
-        $names = array_keys(array_filter($names, static fn ($k) => !str_starts_with((string) $k, '__legacy'), \ARRAY_FILTER_USE_KEY));
-
-        return $this->variableCache[$script] = array_map('strval', $names);
-    }
-
     private function buildResponse(string $content): Response
     {
         $status = http_response_code();
-        $response = new Response($content, \is_int($status) && $status > 0 ? $status : Response::HTTP_OK);
+        $headers = [];
 
         if (!headers_sent()) {
-            foreach (headers_list() as $header) {
-                [$name, $value] = array_map('trim', explode(':', $header, 2)) + [1 => ''];
-                if (\in_array(strtolower($name), self::SKIPPED_HEADERS, true)) {
-                    continue;
-                }
-                // Set-Cookie puede repetirse; el resto reemplaza los valores por defecto de Symfony
-                $response->headers->set($name, $value, 'set-cookie' !== strtolower($name));
-            }
+            $headers = headers_list();
             header_remove();
             http_response_code(Response::HTTP_OK);
         }
 
-        if (!$response->headers->has('Content-Type')) {
-            $response->headers->set('Content-Type', 'text/html; charset=UTF-8');
-        }
-
-        return $response;
+        return $this->responses->create($content, \is_int($status) && $status > 0 ? $status : Response::HTTP_OK, $headers);
     }
 }
