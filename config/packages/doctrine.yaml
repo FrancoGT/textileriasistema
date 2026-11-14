@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=../schema.json
+doctrine:
+    dbal:
+        # Conexion por componentes (las mismas variables DATABASE_* que usa el
+        # codigo legacy). Asi las variables reales del contenedor siempre ganan,
+        # incluso despues de "composer dump-env prod".
+        driver: pdo_mysql
+        host: '%env(DATABASE_HOST)%'
+        port: '%env(int:DATABASE_PORT)%'
+        dbname: '%env(DATABASE_NAME)%'
+        user: '%env(DATABASE_USER)%'
+        password: '%env(DATABASE_PASSWORD)%'
+        charset: '%env(DATABASE_CHARSET)%'
+        server_version: '%env(DATABASE_SERVER_VERSION)%'
+
+        profiling_collect_backtrace: '%kernel.debug%'
+    orm:
+        validate_xml_mapping: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore
+        auto_mapping: true
+        mappings:
+            App:
+                dir: '%kernel.project_dir%/src/Entity'
+                prefix: 'App\Entity'
+
+when@test:
+    doctrine:
+        dbal:
+            # "TEST_TOKEN" is typically set by ParaTest
+            dbname_suffix: '_test%env(default::TEST_TOKEN)%'
+
+when@prod:
+    doctrine:
+        orm:
+            query_cache_driver:
+                pool: doctrine.system_cache_pool
+            result_cache_driver:
+                pool: doctrine.result_cache_pool
+
+    cache:
+        pools:
+            doctrine.result_cache_pool: null
+            doctrine.system_cache_pool:
+                adapter: cache.system

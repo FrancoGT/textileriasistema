@@ -1,0 +1,76 @@
+# =============================================================================
+#  Textileria ERP - despliegue PRODUCCION (servidor remoto o local "tipo prod")
+#
+#  Requiere un archivo .env.docker.prod (ver .env.docker.prod.dist):
+#    docker compose -f compose.prod.yaml --env-file .env.docker.prod up -d --build
+# =============================================================================
+name: textileria-prod
+
+x-db-env: &db-env
+  DATABASE_HOST: ${DB_HOST:-db}
+  DATABASE_PORT: ${DB_INTERNAL_PORT:-3306}
+  DATABASE_NAME: ${DB_NAME:-textileria}
+  DATABASE_USER: ${DB_USER:-textileria}
+  DATABASE_PASSWORD: ${DB_PASSWORD:?Defina DB_PASSWORD en .env.docker.prod}
+  DATABASE_CHARSET: utf8mb4
+  DATABASE_SERVER_VERSION: 10.11.2-MariaDB
+
+services:
+  app:
+    build:
+      context: .
+      target: prod
+      args:
+        PHP_VERSION: 8.4.27
+    image: ${APP_IMAGE:-textileria-app}:${APP_TAG:-latest}
+    environment:
+      <<: *db-env
+      APP_ENV: prod
+      APP_DEBUG: 0
+      APP_SECRET: ${APP_SECRET:?Defina APP_SECRET en .env.docker.prod}
+      DEFAULT_URI: ${DEFAULT_URI:-http://localhost}
+      TRUSTED_PROXIES: ${TRUSTED_PROXIES:-127.0.0.1,REMOTE_ADDR}
+    ports:
+      - "${APP_PORT:-80}:80"
+    volumes:
+      # Datos que deben sobrevivir a una actualizacion de la imagen
+      - app_ficheros:/var/www/html/legacy/Ficheros
+      - app_files:/var/www/html/legacy/FILES
+      - app_sessions:/var/www/html/var/sessions
+      - app_log:/var/www/html/var/log
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
+
+  db:
+    image: mariadb:10.11
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Defina DB_ROOT_PASSWORD en .env.docker.prod}
+      MARIADB_DATABASE: ${DB_NAME:-textileria}
+      MARIADB_USER: ${DB_USER:-textileria}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      TZ: America/Lima
+    command:
+      - --lower-case-table-names=1
+      - --sql-mode=NO_ENGINE_SUBSTITUTION
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    # Sin "ports": la BD NO se expone a Internet, solo a la red interna de Docker
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+    restart: always
+
+volumes:
+  db_data:
+  app_ficheros:
+  app_files:
+  app_sessions:
+  app_log:

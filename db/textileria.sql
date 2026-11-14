@@ -1,0 +1,1185 @@
+-- MySQL dump 10.15  Distrib 10.0.13-MariaDB, for Linux (x86_64)
+--
+-- Host: localhost    Database: u153430615_knt
+-- ------------------------------------------------------
+-- Server version	10.0.13-MariaDB
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table 'E01CCOM'
+--
+CREATE DATABASE textileria;
+USE textileria;
+CREATE TABLE 'E01CCOM' (
+  'cCodCom' char(6) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  'cCodPrv' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'cEstado' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'tmodifi' timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  'CCODUSU' char(4) COLLATE utf8_unicode_ci NOT NULL,
+  'dFecLis' date DEFAULT NULL,
+  'cCtaPag' varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '99999999999999',
+  'cCodBan' char(6) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY ('cCodCom')
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01CCOM'
+--
+
+/*!40000 ALTER TABLE 'E01CCOM' DISABLE KEYS */;
+INSERT INTO 'E01CCOM' VALUES ('000001','000001','I','2014-12-13 00:07:45','9999','2014-12-13','46456546546546','000002'),('000002','000003','I','2014-12-20 18:00:52','9999','2014-12-20','54454654654654','000002');
+/*!40000 ALTER TABLE 'E01CCOM' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01CPED'
+--
+
+
+CREATE TABLE 'E01CPED' (
+  'CCODPED' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODCLI' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'NTOTAL' decimal(10,0) DEFAULT NULL,
+  'DFECLIS' date DEFAULT NULL,
+  'CPRIORI' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CESTADOPL' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CESTADOPR' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODUSU' char(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'TMODIFI' timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  'CESTADO' char(1) COLLATE utf8_unicode_ci DEFAULT 'A'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01CPED'
+--
+
+/*!40000 ALTER TABLE 'E01CPED' DISABLE KEYS */;
+INSERT INTO 'E01CPED' VALUES ('000001','000001',460,'2014-12-12','A','C','E','9999','2014-12-12 21:18:50','I'),('000002','000003',86,'2014-12-08','A','C','P','9999','2014-12-12 23:38:22','A'),('000003','000001',180,'2014-12-08','A','C','P','9999','2014-12-13 00:00:37','A'),('000004','000004',768,'2014-12-19','B','C','P','9999','2014-12-13 00:16:13','A'),('000005','000006',408,'2014-12-16','A','I','P','9999','2014-12-13 00:38:56','A'),('000006','000004',120,'2014-12-15','B','C','P','9999','2014-12-13 02:06:30','A'),('000007','000001',200,'2014-12-20','C','C','E','9999','2014-12-20 17:55:08','I'),('000008','000004',860,'2015-02-06','A','C','P','9999','2015-02-06 21:02:32','A');
+/*!40000 ALTER TABLE 'E01CPED' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01DCOM'
+--
+
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E01DCOM' (
+  'nSerial' bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  'cNumero' char(6) NOT NULL,
+  'cCodIns' char(6) NOT NULL,
+  'nCantid' int(11) NOT NULL,
+  'nCanGra' int(11) NOT NULL,
+  'nPrecio' decimal(12,2) NOT NULL,
+  'cEstado' char(1) NOT NULL,
+  'cCodUsu' char(4) NOT NULL,
+  'tModifi' timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY 'nSerial' ('nSerial')
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01DCOM'
+--
+
+/*!40000 ALTER TABLE 'E01DCOM' DISABLE KEYS */;
+/*!40000 ALTER TABLE 'E01DCOM' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01DCRE'
+--
+
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E01DCRE' (
+  'CCODCRE' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'DFECHA' date DEFAULT NULL,
+  'NRESTAN' int(11) DEFAULT NULL,
+  'NLETRA' int(11) DEFAULT NULL,
+  'CCODPED' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'DFECLIM' date DEFAULT NULL,
+  'CCODUSU' char(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'TMODIFI' timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  'NIMPORT' int(11) DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01DCRE'
+--
+
+/*!40000 ALTER TABLE 'E01DCRE' DISABLE KEYS */;
+INSERT INTO 'E01DCRE' VALUES ('000001','2014-12-12',460,230,'000001',NULL,'9999','2014-12-12 21:16:06',0),('000002','2014-12-12',86,43,'000002',NULL,'9999','2014-12-12 23:41:58',0),('000002','2014-12-12',86,43,'000002',NULL,'9999','2014-12-12 23:49:01',0),('000003','2014-12-12',180,180,'000003',NULL,'9999','2014-12-12 23:58:50',0),('000005','2014-12-13',408,408,'000005',NULL,'9999','2014-12-13 00:41:20',0),('000002','2014-12-20',86,86,'000002',NULL,'9999','2014-12-20 17:56:36',0),('000007','2014-12-31',200,200,'000007',NULL,'9999','2014-12-31 01:41:03',0),('000007','2014-12-31',200,200,'000007',NULL,'9999','2014-12-31 01:41:03',0);
+/*!40000 ALTER TABLE 'E01DCRE' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01DPED'
+--
+
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E01DPED' (
+  'CCODPED' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODPROD' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'NCANT' decimal(10,0) DEFAULT NULL,
+  'CESTADOPL' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CESTADOPR' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CPROCESO' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODUSU' char(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'TMODIFI' timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01DPED'
+--
+
+/*!40000 ALTER TABLE 'E01DPED' DISABLE KEYS */;
+INSERT INTO 'E01DPED' VALUES ('000001','000001',10,'C','E','E','9999','2014-12-12 21:18:30'),('000002','000003',2,'C','E','B','9999','2014-12-13 01:38:41'),('000002','000005',1,'C','E','B','9999','2014-12-12 23:51:48'),('000003','000001',2,'C','E','A','9999','2014-12-13 00:20:23'),('000003','000002',2,'C','P','I','9999','2014-12-13 00:00:37'),('000004','000003',12,'C','E','B','9999','2014-12-13 00:29:57'),('000004','000005',12,'C','P','I','9999','2014-12-13 00:16:13'),('000005','000002',6,'C','P','I','9999','2014-12-31 01:39:41'),('000005','000006',6,'I','P','I','9999','2014-12-13 00:38:56'),('000006','000007',6,'C','P','B','9999','2014-12-13 02:12:00'),('000007','000007',10,'C','E','E','9999','2014-12-20 17:54:34'),('000008','000001',10,'C','P','A','9999','2015-02-06 21:03:17'),('000008','000007',20,'C','P','I','9999','2015-02-06 21:02:32');
+/*!40000 ALTER TABLE 'E01DPED' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01DPOG'
+--
+
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E01DPOG' (
+  'nSerial' bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  'cNumero' char(6) NOT NULL,
+  'cCodIns' char(6) NOT NULL,
+  'nCantid' int(11) NOT NULL,
+  'nCanGra' int(11) NOT NULL,
+  'nPrecio' decimal(12,2) NOT NULL,
+  'cEstado' char(1) NOT NULL,
+  'cCodUsu' char(4) NOT NULL,
+  'tModifi' timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY 'nSerial' ('nSerial')
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01DPOG'
+--
+
+/*!40000 ALTER TABLE 'E01DPOG' DISABLE KEYS */;
+/*!40000 ALTER TABLE 'E01DPOG' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01DPRV'
+--
+
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E01DPRV' (
+  'nSerial' bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  'cCodPrv' char(6) NOT NULL,
+  'cTipArs' char(2) NOT NULL,
+  'cCodUsu' char(4) NOT NULL,
+  'tModifi' timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY 'nSerial' ('nSerial')
+) ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01DPRV'
+--
+
+/*!40000 ALTER TABLE 'E01DPRV' DISABLE KEYS */;
+INSERT INTO 'E01DPRV' VALUES (22,'000001','02','9999','2014-12-12 21:08:55'),(23,'000001','01','9999','2014-12-12 21:08:55'),(24,'000001','03','9999','2014-12-12 21:08:55'),(25,'000001','04','9999','2014-12-12 21:08:55'),(26,'000002','01','9999','2014-12-12 23:01:38'),(27,'000002','03','9999','2014-12-12 23:01:38'),(28,'000003','04','9999','2014-12-12 23:02:27'),(29,'000004','01','9999','2014-12-12 23:04:00'),(30,'000004','03','9999','2014-12-12 23:04:00'),(31,'000005','02','9999','2014-12-12 23:04:51');
+/*!40000 ALTER TABLE 'E01DPRV' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01MALM'
+--
+
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E01MALM' (
+  'CCODALM' char(6) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  'CNOMALM' varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CDIREC' varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CESTADO' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CTIPO' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODUSU' char(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'TMODIFI' timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+  PRIMARY KEY ('CCODALM')
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01MALM'
+--
+
+/*!40000 ALTER TABLE 'E01MALM' DISABLE KEYS */;
+INSERT INTO 'E01MALM' VALUES ('000001','ALMACEN DE INSUMOS','AV COSTA RICA','A','I','9999','2014-12-12 21:11:10.000000'),('000002','ALMACEN DE INSUMOS LANAS','INSUMOS MAYORMENTE LANAS','A','I','9999','2014-12-12 21:11:41.000000');
+/*!40000 ALTER TABLE 'E01MALM' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01MAQ'
+--
+
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E01MAQ' (
+  'CCODMAQ' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODPROD' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODPED' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CESTADOOP' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CESTADO' char(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'A',
+  'CCODUSU' char(4) COLLATE utf8_unicode_ci NOT NULL,
+  'TMODIFI' timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01MAQ'
+--
+
+/*!40000 ALTER TABLE 'E01MAQ' DISABLE KEYS */;
+INSERT INTO 'E01MAQ' VALUES ('000001','000001','000001','L','I','9999','2014-12-12 21:18:30'),('000002','000003','000002','L','A','9999','2014-12-13 01:38:41'),('000003','000005','000002','L','A','9999','2014-12-12 23:51:48'),('000001','000001','000003','L','A','9999','2014-12-13 00:20:23'),('000004','000001','000003','L','A','9999','2014-12-12 23:59:23'),('000005','000002','000003','L','A','9999','2014-12-13 00:00:37'),('000006','000003','000004','L','A','9999','2014-12-13 00:29:57'),('000012','000003','000004','L','A','9999','2014-12-13 00:24:09'),('000009','000005','000004','L','A','9999','2014-12-13 00:16:13'),('000008','000007','000006','O','A','9999','2014-12-13 02:12:00'),('000011','000007','000007','L','I','9999','2014-12-20 17:54:34'),('000007','000002','000005','L','A','9999','2014-12-31 01:39:41'),('000013','000001','000008','O','A','9999','2015-02-06 21:03:17'),('000010','000007','000008','L','A','9999','2015-02-06 21:02:32');
+/*!40000 ALTER TABLE 'E01MAQ' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01MBAN'
+--
+
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E01MBAN' (
+  'CCODBAN' char(6) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  'CNOMBAN' varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CESTADO' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCIUDAD' char(2) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODUSU' char(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'TMODIFI' timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY ('CCODBAN')
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01MBAN'
+--
+
+/*!40000 ALTER TABLE 'E01MBAN' DISABLE KEYS */;
+INSERT INTO 'E01MBAN' VALUES ('000001','BANCO SAGAFALABELLA','A','AA','9999','2014-12-12 21:13:41'),('000002','BANCO DE LA NACION','A','AA','9999','2014-12-12 23:14:48'),('000003','BANCO DE CREDITO DEL PERU','A','AA','9999','2015-02-06 02:30:33'),('000004','INTERBANK','A','AA','9999','2014-12-12 23:15:53');
+/*!40000 ALTER TABLE 'E01MBAN' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01MCLI'
+--
+
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E01MCLI' (
+  'CCODCLI' char(6) COLLATE utf8_unicode_ci NOT NULL,
+  'CNOMBRE' varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CNRODNI' char(8) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CNRORUC' char(11) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CDIREC' varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CTELEF' char(15) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CTIPO' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CESTADO' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODCIIU' char(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CSIGLAS' char(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODUSU' char(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'TMODIFI' timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  'cPriori' char(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'E',
+  PRIMARY KEY ('CCODCLI')
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01MCLI'
+--
+
+/*!40000 ALTER TABLE 'E01MCLI' DISABLE KEYS */;
+INSERT INTO 'E01MCLI' VALUES ('000001','JORGE LUIS TICONA LOPEZ','73736211','99999999999','AV.LISBOA HUNTER','99133366','A','A','9999','S/S','9999','2014-12-12 21:03:45','A'),('000002','COMIMPORT SRL','87651232','87458965487','PROGRESO 111','226655','B','A','5010','COM','9999','2014-12-12 23:34:14','A'),('000003','HILERAS 611','65987845','65498732165','AV. GOYENECHE','558899','C','A','1721','HILE','9999','2014-12-12 23:34:29','A'),('000004','JUAN PEREZ','45120036','99999999999','AV. LOS NARANJOS  404','054212121','A','A','9999','S/S','9999','2014-12-12 22:53:20','A'),('000005','BILLABONG ','65987845','26485931004','AV. EJERCITO 341','986741523','B','A','0140','BBN','9999','2014-12-12 23:34:24','A'),('000006','ROBERTO ESPINOZA','21242526','99999999999','CALLE LOS ANDES 202','262626','A','A','9999','S/S','9999','2014-12-12 22:55:47','C'),('000007','ACMA S.A.','99999999','15154287963','LUNA PIZARRO 502','248495','C','A','2412','ACM','9999','2014-12-31 01:38:32','A');
+/*!40000 ALTER TABLE 'E01MCLI' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01MCOM'
+--
+
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E01MCOM' (
+  'cNumero' char(6) NOT NULL,
+  'cDescri' varchar(100) NOT NULL,
+  'dFecEmi' date NOT NULL,
+  'dFecRec' date NOT NULL,
+  'cCodPrv' char(6) NOT NULL,
+  'cEstado' char(1) NOT NULL,
+  'nMonIgv' decimal(12,2) NOT NULL,
+  'nTotal' decimal(12,2) NOT NULL,
+  'cRefPog' char(6) NOT NULL,
+  'cProAfj' char(1) NOT NULL DEFAULT 'N',
+  'cProEco' char(1) NOT NULL DEFAULT 'N',
+  'cCodUsu' char(4) NOT NULL,
+  'tModifi' timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY ('cNumero')
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01MCOM'
+--
+
+/*!40000 ALTER TABLE 'E01MCOM' DISABLE KEYS */;
+/*!40000 ALTER TABLE 'E01MCOM' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01MINS'
+--
+
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E01MINS' (
+  'cCodIns' char(6) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  'cDescri' varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'cUniMed' char(2) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'nPrecio' decimal(12,2) DEFAULT NULL,
+  'nCanGra' int(11) DEFAULT NULL,
+  'cCodUsu' char(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'tModifi' timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY ('cCodIns')
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01MINS'
+--
+
+/*!40000 ALTER TABLE 'E01MINS' DISABLE KEYS */;
+INSERT INTO 'E01MINS' VALUES ('010001','LANA GRUESA','A',10.00,1,'9999','2014-12-12 21:05:59'),('010002','LANA FINA','B',10.00,2,'9999','2014-12-12 21:06:13'),('010003','VERDE','C',30.00,9000,'9999','2014-12-13 00:04:44'),('020001','AGUJAS 0.002MM','A',1.00,100,'9999','2014-12-12 21:07:04'),('020002','AGUJAS DURAS','C',10.00,5000,'9999','2014-12-13 00:04:22'),('030001','TELA ROJA','C',11.00,3,'9999','2014-12-12 21:07:23'),('030002','DELGADA','C',10.00,50,'9999','2014-12-13 00:06:07'),('040001','ROJO','C',10.00,2,'9999','2014-12-12 21:06:42'),('040002','AMARILLA','A',20.00,60,'9999','2014-12-13 00:05:07');
+/*!40000 ALTER TABLE 'E01MINS' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01MMAQ'
+--
+
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E01MMAQ' (
+  'CCODMAQ' char(6) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  'CDESCRI' varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CTIPO' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CESTADO' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CFLAG' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'cEstadoOp' char(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'L',
+  'CCODUSU' char(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'TMODIFI' timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+  PRIMARY KEY ('CCODMAQ')
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01MMAQ'
+--
+
+/*!40000 ALTER TABLE 'E01MMAQ' DISABLE KEYS */;
+INSERT INTO 'E01MMAQ' VALUES ('000001','MAQUINA MULTIFINCIONAL','A','A','L','O','9999','2014-12-12 23:59:23.473027'),('000002','TEñIDORA','A','A','L','O','9999','2014-12-12 23:37:49.526322'),('000003','CORTADORA','A','A','L','O','9999','2014-12-12 23:38:22.500474'),('000004','HILADORA','A','A','L','O','9999','2014-12-12 23:59:23.475673'),('000005','CORTADORA','A','A','L','O','9999','2014-12-13 00:00:37.801718'),('000006','MULTIFUNCIONAL J78','A','A','L','O','9999','2014-12-13 00:15:45.170721'),('000007','MULTIFUNCIONAL J49','B','A','L','O','9999','2014-12-31 01:39:41.164390'),('000008','MAQUINA MULTIFUNCIONAL 4','A','A','L','O','9999','2014-12-13 02:06:30.720995'),('000009','MAQUINA MULTIFUNCIONAL 5','B','A','L','O','9999','2014-12-13 00:16:13.485441'),('000010','MULTIFUNCIONAL J46','D','A','L','O','9999','2015-02-06 21:02:32.055605'),('000011','MAQUINA MULTIFUNCIONAL 6','C','A','L','L','9999','2014-12-20 17:54:34.915843'),('000012','MAQUINA MULTIFUNCIONAL 7','B','T','L','O','9999','2014-12-13 00:15:45.171570'),('000013','MAQUINA MULTIFUNCIONAL 2','C','A','L','O','9999','2015-02-06 21:02:22.003534'),('000014','MAQUINA MULTIFUNCIONAL 3','D','A','L','L','9999','2014-12-13 00:05:51.000000');
+/*!40000 ALTER TABLE 'E01MMAQ' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01MPER'
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E01MPER' (
+  'CCODPER' char(6) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  'CNOMBRE' varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CSEXO' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CESTADO' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CESTCIV' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CDIRECC' varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CNRODNI' char(8) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CEMAIL' varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'cEstadoOp' char(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'L',
+  'CCODUSU' char(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'TMODIFI' timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY ('CCODPER')
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01MPER'
+--
+
+/*!40000 ALTER TABLE 'E01MPER' DISABLE KEYS */;
+INSERT INTO 'E01MPER' VALUES ('999999','ADMINISTRADOR','M','A','S','AV PROGRESO','9999999','KIRASMAS@HOMTIAL.COM','L','9999','2014-12-12 21:00:06'),('000001','ENRIQUE MENDOZA MAYTA','M','A','S','AV PROGRESO','71834194','KIRASMAS@HOMTIAL.COM','O','9999','2014-12-12 23:38:22'),('000002','JORGE LUIS TICONA LOPEZ','M','A','C','LISBOA - HUNTER','73736211','JORGET412@GMAIL.COM','O','9999','2014-12-12 23:37:49'),('000003','LUIS ANDRE CABRERA DIAZ','M','A','T','AV. EL SOL 510','78451203','andrecd393@yahoo.com','O','9999','2014-12-31 01:39:41'),('000004','MAURICIO CHAVEZ ZUñIGA','M','T','V','SR. DE LA CAñA 101','87549632','mauricioch@yahoo.com','O','9999','2014-12-12 23:59:23'),('000005','RENATO COHAILA LA TORRE','M','A','S','CAYMA','73020239','renato@hotmail.com','O','9999','2014-12-13 00:16:13'),('000006','RODRIGO ALARCON','M','A','S','AV. EJERCITO 508','71757674','ralarcon@yahoo.com','O','9999','2014-12-13 02:06:30'),('000007','SOLANGE RAMOS','F','A','C','CALLE LOS NARANJOS 304','71459562','rcooper@hotmail.com','O','9999','2014-12-12 23:59:23'),('000008','MELISA GOMEZ','F','A','S','AV. HUARAL SOCABAYA','71456598','mgomez@gmail.com','O','9999','2014-12-13 00:00:37'),('000009','RODRIGO QUINTANILLA ESCALONA ','M','A','S','COOP. VICTOR ANDRES BELAUNDE C-5','00290575','rigo.qe@gmail.com','O','9999','2015-02-06 21:02:32'),('000010','ANTHONY MEZA ','M','A','V','AV. EJERCITO 2024','71569269','ameza@gmail.com','O','9999','2014-12-13 00:04:39'),('000011','GONZALO CENTENO ZAPATA','M','A','C','VICTOR ANDRES BELAUNDE MZ.R CERRO COLORADO','47600274','Nyx_gzl@hotmail.com','O','9999','2014-12-13 00:15:45'),('000012','NICOLAS HUANCA PASTOR','M','A','T','AV. CALLE NUEVA 345','52123123','portal_macros@hotmail.com','O','9999','2014-12-13 00:21:42'),('000013','JORGE MARTINEZ','M','A','C','AV. XXXXXX','23232323','jmartinez@caja.pe','L','9999','2014-12-13 00:25:59'),('000014','MENDOZA MIRANDA ENRIQUE MANUEL','M','A','S','AV. PROGRESO 360','02390356','manuei_2020@hotmail.com','O','9999','2015-02-06 21:02:22');
+/*!40000 ALTER TABLE 'E01MPER' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01MPOG'
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E01MPOG' (
+  'cNumero' char(6) NOT NULL,
+  'cCodPrv' char(6) NOT NULL,
+  'cDescri' varchar(200) NOT NULL,
+  'dFecEmi' date NOT NULL,
+  'cEstado' char(1) NOT NULL,
+  'nTotal' decimal(12,2) NOT NULL,
+  'cRefPog' char(6) DEFAULT '000000',
+  'cCodUsu' char(4) NOT NULL,
+  'tModifi' timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY ('cNumero')
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01MPOG'
+--
+
+/*!40000 ALTER TABLE 'E01MPOG' DISABLE KEYS */;
+/*!40000 ALTER TABLE 'E01MPOG' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01MPROD'
+--
+
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E01MPROD' (
+  'CCODPROD' char(6) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  'CDESCRI' varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CESTADO' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODUSU' char(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'TMODIFI' timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+  'cTipo' char(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'N',
+  PRIMARY KEY ('CCODPROD')
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01MPROD'
+--
+
+/*!40000 ALTER TABLE 'E01MPROD' DISABLE KEYS */;
+INSERT INTO 'E01MPROD' VALUES ('000001','CHALINA ROJA A1','A','9999','2014-12-12 21:10:08.000000','A'),('000002','CHOMPA AZUL ','A','9999','2014-12-12 23:29:00.590903','A'),('000003','CHOMPA AZUL TALLA S','A','9999','2014-12-12 23:29:29.785343','A'),('000004','CHOMPA AZUL TALLA S','A','9999','2014-12-12 23:28:50.637317','A'),('000005','CHOMPA ROJA TALLA M','A','9999','2014-12-12 23:31:25.119638','A'),('000006','CHALINA BLANCA CON DISEñO','A','9999','2014-12-13 00:36:46.929964','A'),('000007','CHOMPA NEGRA','A','9999','2014-12-13 02:03:28.812231','A'),('000008','8907 XP       V €','T','9999','2015-03-04 08:18:13.246673','A');
+/*!40000 ALTER TABLE 'E01MPROD' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01MPRV'
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E01MPRV' (
+  'cCodPrv' char(6) NOT NULL,
+  'cNombre' varchar(100) NOT NULL,
+  'cNroDni' char(8) NOT NULL,
+  'cTipPer' char(1) NOT NULL,
+  'cNroRuc' char(11) NOT NULL,
+  'cDirecc' varchar(100) NOT NULL,
+  'dFecNac' date NOT NULL,
+  'cEstado' char(1) NOT NULL,
+  'mDatos' text NOT NULL,
+  'cCodUsu' char(4) NOT NULL,
+  'tModifi' timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY ('cCodPrv')
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01MPRV'
+--
+
+/*!40000 ALTER TABLE 'E01MPRV' DISABLE KEYS */;
+INSERT INTO 'E01MPRV' VALUES ('000001','INSUMOS SAC','99999999','B','89745896548','AV UNION 665','0000-00-00','A','ESTA EMPRESA ES SELECCIONADA POR SUS BUENOS PRODUCTOS','9999','2014-12-12 21:08:55'),('000002','HILOS SA','99999999','C','13145697632','PARQUE INDUSTRIAL S/N','2014-11-12','A','proveedor de hilos ','9999','2014-12-12 23:01:38'),('000003','TINTAS S.A.C.','99999999','C','26458713200','AV. EJERCITO 2024','2014-11-23','A','TINTAS Y COLORES','9999','2014-12-12 23:02:27'),('000004','ACABADOS S.A.','99999999','C','23564897201','AV. EL PORTAL 1024','2014-10-31','A','ACABADOS ','9999','2014-12-12 23:04:00'),('000005','INCAGUJA S.A.','99999999','C','32659763221','PARQUE INDUSTRIAL S/N','2014-10-08','A','AGUJAS DE TODO TIPO','9999','2014-12-12 23:04:51');
+/*!40000 ALTER TABLE 'E01MPRV' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01PALM'
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E01PALM' (
+  'CCODALM' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODINS' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'NCANT' decimal(10,0) DEFAULT NULL,
+  'NCANGRAT' decimal(10,0) DEFAULT NULL,
+  'CCODUSU' char(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'TMODIFI' timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+  KEY 'CCODALM' ('CCODALM'),
+  KEY 'CCODINS' ('CCODINS'),
+  CONSTRAINT 'E01PALM_ibfk_1' FOREIGN KEY ('CCODALM') REFERENCES 'E01MALM' ('CCODALM'),
+  CONSTRAINT 'E01PALM_ibfk_2' FOREIGN KEY ('CCODINS') REFERENCES 'E01MINS' ('cCodIns')
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01PALM'
+--
+
+/*!40000 ALTER TABLE 'E01PALM' DISABLE KEYS */;
+INSERT INTO 'E01PALM' VALUES ('000001','010001',25,NULL,'9999','2015-02-06 02:29:04.000000'),('000001','010002',30,NULL,'9999','2014-12-12 21:12:37.183542'),('000001','020001',40,NULL,'9999','2014-12-12 21:12:41.292991'),('000001','030001',20,NULL,'9999','2015-02-06 02:28:19.000000'),('000001','040001',10,NULL,'9999','2014-12-12 21:12:48.509257'),('000002','010001',45,NULL,'9999','2015-02-06 02:29:04.000000'),('000002','010002',50,NULL,'9999','2014-12-12 21:13:16.000000'),('000002','020001',50,NULL,'9999','2014-12-12 21:13:16.000000'),('000002','030001',50,NULL,'9999','2015-02-06 02:28:19.000000'),('000002','040001',50,NULL,'9999','2014-12-12 21:13:16.000000');
+/*!40000 ALTER TABLE 'E01PALM' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01PCTA'
+--
+
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E01PCTA' (
+  'CCODBAN' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODPRV' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'NCUENTA' varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODUSU' char(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'TMODIFI' timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01PCTA'
+--
+
+/*!40000 ALTER TABLE 'E01PCTA' DISABLE KEYS */;
+INSERT INTO 'E01PCTA' VALUES ('999999','000001','14785216465465','','2014-12-12 21:14:05'),('999999','000001','98798797987987','','2014-12-12 21:14:16'),('00000','999999','13123216546546','','2014-12-12 21:14:26'),('00000','999999','64654654654654','','2014-12-12 21:14:35'),('000001','999999','46456546546546','','2014-12-12 21:14:53'),('999999','000005','00200514785236','','2014-12-12 23:17:56'),('999999','000003','14116546546546','','2014-12-20 17:59:36'),('000002','999999','65465465465465','','2014-12-20 18:00:25'),('000002','999999','54454654654654','','2014-12-20 18:00:38');
+/*!40000 ALTER TABLE 'E01PCTA' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01PER'
+--
+
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E01PER' (
+  'CCODPER' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODPROD' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODPED' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CESTADOOP' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CESTADO' char(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'A',
+  'CCODUSU' char(4) COLLATE utf8_unicode_ci NOT NULL,
+  'TMODIFI' timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01PER'
+--
+
+/*!40000 ALTER TABLE 'E01PER' DISABLE KEYS */;
+INSERT INTO 'E01PER' VALUES ('000002','000001','000001','L','I','9999','2014-12-12 21:18:30'),('000002','000003','000002','L','A','9999','2014-12-13 01:38:41'),('000001','000005','000002','L','A','9999','2014-12-12 23:51:48'),('000004','000001','000003','L','A','9999','2014-12-12 23:59:23'),('000010','000001','000003','L','A','9999','2014-12-13 00:20:23'),('000007','000001','000003','L','A','9999','2014-12-12 23:59:23'),('000008','000002','000003','L','A','9999','2014-12-13 00:00:37'),('000012','000003','000004','L','A','9999','2014-12-13 00:29:57'),('000011','000003','000004','L','A','9999','2014-12-13 00:15:45'),('000005','000005','000004','L','A','9999','2014-12-13 00:16:13'),('000006','000007','000006','O','A','9999','2014-12-13 02:12:00'),('000014','000007','000007','L','I','9999','2014-12-20 17:54:34'),('000003','000002','000005','L','A','9999','2014-12-31 01:39:41'),('000014','000001','000008','O','A','9999','2015-02-06 21:03:17'),('000009','000007','000008','L','A','9999','2015-02-06 21:02:32');
+/*!40000 ALTER TABLE 'E01PER' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01PPRF'
+--
+
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E01PPRF' (
+  'NSERIAL' int(10) DEFAULT NULL,
+  'CCODOPC' char(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CPERFIL' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CESTADO' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODUSU' char(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'TMODIFI' timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  KEY 'CCODOPC' ('CCODOPC')
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01PPRF'
+--
+
+/*!40000 ALTER TABLE 'E01PPRF' DISABLE KEYS */;
+INSERT INTO 'E01PPRF' VALUES (41,'ERP9999','A','I','9999','2014-12-08 00:26:33'),(2,'INDEX','A','A','9999','2014-12-05 22:37:27'),(3,'MNU0000','A','A','9999','2014-12-05 22:37:27'),(4,'MNU1000','A','A','9999','2014-12-05 22:37:27'),(5,'ERP1000','A','A','9999','2014-12-05 22:37:27'),(6,'ERP1010','A','A','9999','2014-12-05 22:37:27'),(7,'ERP1020','A','A','9999','2014-12-05 22:37:27'),(8,'ERP1030','A','A','9999','2014-12-05 22:37:27'),(9,'ERP1080','A','A','9999','2014-12-05 22:37:27'),(10,'ERP1090','A','A','9999','2014-12-05 22:37:27'),(11,'ERP1050','A','A','9999','2014-12-05 22:40:57'),(12,'ERP1040','A','A','9999','2014-12-07 05:28:09'),(13,'ERP1060','A','A','9999','2014-12-07 05:34:03'),(14,'ERP1061','A','A','9999','2014-12-07 05:34:14'),(15,'ERP1070','A','A','9999','2014-12-07 05:34:19'),(16,'ERP1091','A','A','9999','2014-12-07 05:34:22'),(17,'ERP1092','A','A','9999','2014-12-07 05:34:25'),(18,'ERP2010','A','A','9999','2014-12-07 05:34:28'),(19,'ERP2020','A','A','9999','2014-12-07 05:34:31'),(20,'ERP2030','A','A','9999','2014-12-07 05:34:34'),(21,'ERP2040','A','A','9999','2014-12-07 05:34:37'),(22,'ERP3000','A','A','9999','2014-12-07 05:34:39'),(23,'ERP3010','A','A','9999','2014-12-07 05:34:42'),(24,'ERP3020','A','A','9999','2014-12-07 05:34:45'),(25,'ERP3030','A','A','9999','2014-12-07 05:34:48'),(26,'ERP4000','A','A','9999','2014-12-07 05:34:50'),(27,'ERP4010','A','A','9999','2014-12-07 05:34:53'),(28,'ERP4020','A','A','9999','2014-12-07 05:34:56'),(29,'ERP4030','A','A','9999','2014-12-07 05:34:59'),(30,'ERP4040','A','A','9999','2014-12-07 05:35:01'),(31,'ERP4050','A','A','9999','2014-12-07 05:35:04'),(32,'ERP5010','A','A','9999','2014-12-07 05:35:07'),(33,'ERP5020','A','A','9999','2014-12-07 05:35:10'),(34,'ERP5030','A','A','9999','2014-12-07 05:35:13'),(35,'ERP6010','A','A','9999','2014-12-07 05:35:16'),(36,'ERP6020','A','A','9999','2014-12-07 05:35:19'),(37,'ERP6030','A','A','9999','2014-12-07 05:35:22'),(38,'ERP7010','A','A','9999','2014-12-07 05:35:25'),(39,'ERP7020','A','A','9999','2014-12-07 05:35:29'),(40,'ERP7030','A','A','9999','2014-12-07 05:35:32'),(54,'INDEX','B','A','9999','2014-12-11 00:28:29'),(44,'ERP8000','A','A','9999','2014-12-09 14:45:44'),(53,'MNU0000','B','A','9999','2014-12-11 00:28:22'),(55,'ERP1070','B','A','9999','2014-12-11 00:29:08'),(52,'MNU1000','B','A','9999','2014-12-11 00:28:16'),(48,'ERP4060','A','A','9999','2014-12-10 17:01:12'),(49,'ERP4070','A','A','9999','2014-12-10 17:02:38'),(50,'ERP1093','A','A','9999','2014-12-10 19:40:29'),(51,'ERP1094','A','A','9999','2014-12-10 19:40:32'),(56,'ERP1030','B','A','9999','2014-12-11 00:29:18'),(57,'ERP2010','B','A','9999','2014-12-11 00:29:27'),(58,'ERP4070','B','A','9999','2014-12-11 00:29:43'),(59,'ERP4060','B','A','9999','2014-12-11 00:29:49'),(60,'ERP3000','B','A','9999','2014-12-11 00:30:03'),(61,'ERP3010','B','A','9999','2014-12-11 00:30:15'),(62,'ERP3020','B','A','9999','2014-12-11 00:30:24'),(63,'MNU1000','E','A','9999','2014-12-11 00:30:48'),(64,'MNU0000','E','A','9999','2014-12-11 00:30:56'),(65,'INDEX','E','A','9999','2014-12-11 00:31:01'),(66,'ERP9999','E','A','9999','2014-12-11 00:31:06'),(67,'ERP3000','E','A','9999','2014-12-11 00:31:26'),(68,'ERP4060','E','A','9999','2014-12-11 00:31:34'),(69,'ERP4070','E','A','9999','2014-12-11 00:31:49'),(70,'ERP3010','E','A','9999','2014-12-11 00:32:01'),(71,'ERP3020','E','A','9999','2014-12-11 00:32:09'),(72,'ERP4000','D','A','9999','2014-12-11 00:32:45'),(73,'MNU1000','D','A','9999','2014-12-11 00:32:53'),(74,'MNU0000','D','A','9999','2014-12-11 00:33:01'),(75,'INDEX','D','A','9999','2014-12-11 00:33:07'),(76,'ERP9999','D','A','9999','2014-12-11 00:33:15'),(77,'ERP4010','D','A','9999','2014-12-11 00:33:26'),(78,'ERP4020','D','A','9999','2014-12-11 00:33:32'),(79,'ERP4030','D','A','9999','2014-12-11 00:33:38'),(80,'ERP4040','D','A','9999','2014-12-11 00:33:48'),(81,'ERP4050','D','A','9999','2014-12-11 00:34:04'),(82,'ERP1000','C','A','9999','2014-12-11 00:35:33'),(83,'MNU0000','C','A','9999','2014-12-11 00:35:40'),(84,'MNU1000','C','A','9999','2014-12-11 00:35:45'),(85,'ERP9999','C','A','9999','2014-12-11 00:35:50'),(86,'INDEX','C','A','9999','2014-12-11 00:35:55'),(87,'ERP6010','C','A','9999','2014-12-11 00:36:13'),(88,'ERP6020','C','A','9999','2014-12-11 00:36:19'),(89,'ERP7010','C','A','9999','2014-12-11 00:42:01'),(90,'ERP1050','D','A','9999','2014-12-13 00:12:12'),(91,'ERP8000','H','A','9999','2014-12-13 00:16:20'),(92,'INDEX','H','A','9999','2014-12-13 00:17:05'),(93,'MNU1000','H','A','9999','2014-12-13 00:17:10'),(94,'MNU0000','H','A','9999','2014-12-13 00:17:16'),(95,'ERP8000','D','A','9999','2014-12-13 00:23:59');
+/*!40000 ALTER TABLE 'E01PPRF' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01PPROD'
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E01PPROD' (
+  'CCODPROD' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODINS' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CESTADO' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODUSU' char(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'TMODIFI' timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+  KEY 'CCODPROD' ('CCODPROD'),
+  KEY 'CCODINS' ('CCODINS'),
+  CONSTRAINT 'E01PPROD_ibfk_1' FOREIGN KEY ('CCODPROD') REFERENCES 'E01MPROD' ('CCODPROD'),
+  CONSTRAINT 'E01PPROD_ibfk_2' FOREIGN KEY ('CCODINS') REFERENCES 'E01MINS' ('cCodIns')
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01PPROD'
+--
+
+/*!40000 ALTER TABLE 'E01PPROD' DISABLE KEYS */;
+INSERT INTO 'E01PPROD' VALUES ('000001','010002','A','9999','2014-12-12 21:10:30.000000'),('000001','020001','A','9999','2014-12-12 21:10:30.000000'),('000001','030001','A','9999','2014-12-12 21:10:30.000000'),('000004','010001','A','9999','2014-12-12 23:28:50.000000'),('000002','010001','A','9999','2014-12-12 23:29:00.000000'),('000002','020001','A','9999','2014-12-12 23:29:00.000000'),('000003','030001','A','9999','2014-12-12 23:29:29.000000'),('000005','010002','A','9999','2014-12-12 23:31:25.000000'),('000005','030001','A','9999','2014-12-12 23:31:25.000000'),('000006','010002','A','9999','2014-12-13 00:36:46.000000'),('000006','020001','A','9999','2014-12-13 00:36:46.000000'),('000007','010002','A','9999','2014-12-13 02:03:28.000000'),('000008','010001','A','9999','2015-03-04 08:18:13.000000');
+/*!40000 ALTER TABLE 'E01PPROD' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01TOPC'
+--
+
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E01TOPC' (
+  'CCODOPC' char(10) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  'CDESCRI' varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CESTADO' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODUSU' char(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'TMODIFI' timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY ('CCODOPC')
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01TOPC'
+--
+
+/*!40000 ALTER TABLE 'E01TOPC' DISABLE KEYS */;
+INSERT INTO 'E01TOPC' VALUES ('ERP9999','PRUEBA OPCION','A','9999','0000-00-00 00:00:00'),('INDEX','INDICE','A','9999','0000-00-00 00:00:00'),('MNU0000','MENU GENERAL','A','9999','0000-00-00 00:00:00'),('MNU1000','SUB MEMU','A','9999','0000-00-00 00:00:00'),('ERP1000','MANTENIMIENTO DE PERSONAL','A','9999','0000-00-00 00:00:00'),('ERP1010','MANTENIMIENTO DE USUARIOS','A','9999','0000-00-00 00:00:00'),('ERP1020','MANTENIMIENTO DE PERFILES DE USUARIO','A','9999','0000-00-00 00:00:00'),('ERP1080','MANTENIMIENTO DE TABLAS','A','9999','2014-12-05 13:18:29'),('ERP1090','MANTENIMIENTO DE ALMACENES','A','9999','2014-12-05 22:08:30'),('ERP1050','MANTENIMIENTO DE INSUMOS','A','9999','2014-12-05 23:00:47'),('ERP1030','MANTENIMIENTO DE CLIENTES','A','9999','2014-12-05 23:00:47'),('ERP1040','MANTENIMIENTO DE MAQUINARIAS','A','9999','2014-12-07 05:19:28'),('ERP1060','MANTENIMIENTO DE PROVEEDORES','A','9999','2014-12-07 05:19:28'),('ERP1070','MANTENIMIENTO DE PRODUCTOS','A','9999','2014-12-07 05:19:28'),('ERP1061','ASIGNAR INSUMOS A PROVEEDORES','A','9999','2014-12-07 05:19:28'),('ERP1091','ASIGNAR INSUMOS A ALMACENES','A','9999','2014-12-07 05:19:28'),('ERP1092','ASIGNAR PRODUCTOS A ALMACENES','A','9999','2014-12-07 05:19:28'),('ERP2010','REGISTRAR PEDIDO','A','9999','2014-12-07 05:19:28'),('ERP2020','REPORTE ORDEN','A','9999','2014-12-07 05:19:28'),('ERP2030','REPORTE ORDEN(DEVOLUCION)','A','9999','2014-12-07 05:19:28'),('ERP2040','RECTIFICACION DE ORDEN','A','9999','2014-12-07 05:19:28'),('ERP3000','REPORTE DE PEDIDOS','A','9999','2014-12-07 05:19:28'),('ERP3010','REPORTE DE PEDIDOS COMPLETOS','A','9999','2014-12-07 05:19:28'),('ERP3020','REPORTE DE PEDIDOS INCOMPLETOS','A','9999','2014-12-07 05:19:28'),('ERP3030','REPORTE DE DEVOLUCION','A','9999','2014-12-07 05:19:28'),('ERP4000','REPORTE DE PRODUCCION','A','9999','2014-12-07 05:19:28'),('ERP4010','REPORTE DE PRODUCCION PROCESO TEÑIDO','A','9999','2014-12-07 05:19:28'),('ERP4020','REPORTE DE PRODUCCION PROCESO PREPARACION','A','9999','2014-12-07 05:19:28'),('ERP4030','REPORTE DE PRODUCCION PROCESO TEJIDO','A','9999','2014-12-07 05:19:28'),('ERP4040','REPORTE DE PRODUCCION PROCESO ENSAMBLAJE','A','9999','2014-12-07 05:19:28'),('ERP4050','REPORTE DE PRODUCCION PROCESO ACABADO','A','9999','2014-12-07 05:19:28'),('ERP5010','REPORTE DE ORDEN','A','9999','2014-12-07 05:19:28'),('ERP5020','REPORTE DE ORDEN CORRECTA','A','9999','2014-12-07 05:19:28'),('ERP5030','REPORTE DE ORDEN INCORRECTA (PLANIFICACION)','A','9999','2014-12-07 05:19:28'),('ERP6010','REPORTE DE FACTURAS','A','9999','2014-12-07 05:19:28'),('ERP6020','REPORTE DE FACTURAS COMPLETAS','A','9999','2014-12-07 05:19:28'),('ERP6030','REPORTE DE FACTURAS INCOMPLETAS','A','9999','2014-12-07 05:19:28'),('ERP7010','REPORTE DE FACTURAS','A','9999','2014-12-07 05:19:28'),('ERP7020','REPORTE DE FACTURAS COMPLETAS','A','9999','2014-12-07 05:19:28'),('ERP7030','REPORTE DE FACTURAS INCOMPLETAS','A','9999','2014-12-07 05:19:28'),('ERP8000','TRABAJOS ASIGNADOS AL PERSONAL','A','9999','2014-12-09 14:45:21'),('ERP4060','REPORTE DE PEDIDOS COMPLETOS','A','9999','2014-12-10 17:02:09'),('ERP4070','REPORTE DE PEDIDOS (TODOS)','A','9999','2014-12-10 17:02:28'),('ERP1093','MANTENIMIENTO DE BANCOS','A','9999','2014-12-10 19:37:24'),('ERP1094','MANTENIMIENTO DE CUENTAS','A','9999','2014-12-10 19:37:24');
+/*!40000 ALTER TABLE 'E01TOPC' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01TRABAJO'
+--
+
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E01TRABAJO' (
+  'CCODPED' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODPROD' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODMAQ' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODPER' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CESTADO' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CPROCESO' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODUSU' char(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'TMODIFI' timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01TRABAJO'
+--
+
+/*!40000 ALTER TABLE 'E01TRABAJO' DISABLE KEYS */;
+INSERT INTO 'E01TRABAJO' VALUES ('000001','000001','000001','000002','I','A','9999','2014-12-12 21:17:30'),('000001','000001','000001','000002','I','B','9999','2014-12-12 21:17:48'),('000001','000001','000001','000002','I','C','9999','2014-12-12 21:18:01'),('000001','000001','000001','000002','I','D','9999','2014-12-12 21:18:15'),('000001','000001','000001','000002','I','E','9999','2014-12-12 21:18:30'),('000002','000003','000002','000002','I','A','9999','2014-12-13 01:37:02'),('000002','000005','000003','000001','I','A','9999','2014-12-12 23:47:10'),('000002','000005','000003','000001','I','B','9999','2014-12-12 23:51:48'),('000003','000001','000001','000010','I','A','9999','2014-12-13 00:20:23'),('000004','000003','000012','000012','I','A','9999','2014-12-13 00:24:09'),('000004','000003','000006','000012','I','B','9999','2014-12-13 00:29:57'),('000002','000003','000002','000002','I','B','9999','2014-12-13 01:38:41'),('000006','000007','000008','000006','I','A','9999','2014-12-13 02:10:58'),('000006','000007','000008','000006','A','B','9999','2014-12-13 02:12:00'),('000007','000007','000011','000014','I','A','9999','2014-12-20 17:52:30'),('000007','000007','000011','000014','I','B','9999','2014-12-20 17:53:34'),('000007','000007','000011','000014','I','C','9999','2014-12-20 17:53:54'),('000007','000007','000011','000014','I','D','9999','2014-12-20 17:54:14'),('000007','000007','000011','000014','I','E','9999','2014-12-20 17:54:34'),('000008','000001','000013','000014','A','A','9999','2015-02-06 21:03:17');
+/*!40000 ALTER TABLE 'E01TRABAJO' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01TTAB'
+--
+
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E01TTAB' (
+  'CCODTAB' char(3) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'NORDEN' int(3) DEFAULT NULL,
+  'CTIPREG' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODIGO' char(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CDESCRI' varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'MTEXTO' longtext COLLATE utf8_unicode_ci,
+  'CCODUSU' char(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'TMODIFI' timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01TTAB'
+--
+
+/*!40000 ALTER TABLE 'E01TTAB' DISABLE KEYS */;
+INSERT INTO 'E01TTAB' VALUES ('001',0,'0','A','*ESTADO',NULL,'9999','2014-12-05 11:13:21'),('001',0,'1','I','INACTIVO',NULL,'9999','2014-12-12 06:00:48'),('001',0,'1','A','ACTIVO',NULL,'9999','2014-12-12 06:00:48'),('049',0,'0','A','*PERFIL DE USUARIO',NULL,'9999','2014-12-05 11:18:31'),('017',0,'0','A','*SEXO',NULL,'9999','2014-12-05 11:25:16'),('017',0,'1','F','FEMENINO',NULL,'9999','2014-12-05 11:25:16'),('017',0,'1','M','MASCULINO',NULL,'9999','2014-12-05 11:25:16'),('018',0,'0','A','*ESTADO CIVIL',NULL,'9999','2014-12-05 11:27:35'),('018',0,'1','C','CASADO/A',NULL,'9999','2014-12-05 11:27:35'),('018',0,'1','S','SOLTERO/A',NULL,'9999','2014-12-05 11:27:35'),('018',0,'1','T','CONVIVIENTE',NULL,'9999','2014-12-05 11:27:35'),('018',0,'1','V','VIUDO/A',NULL,'9999','2014-12-05 11:27:35'),('049',0,'1','C','CUENTAS POR COBRAR',NULL,'9999','2014-12-11 00:27:31'),('049',0,'1','B','PEDIDOS',NULL,'9999','2014-12-11 00:27:31'),('049',0,'1','A','ADMINISTRADOR',NULL,'9999','2014-12-11 00:27:31'),('099',0,'0','AAAA','*CIIU','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','0111','Cultivo de cereales y otros cultivos n.c.p.','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','0112','Cultivo de hortalizas y legumbres, especialidades horticolas y productos de vivero','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','0113','Cultivo de frutas, nueces, plantas cuyas hojas o frutas se utilizan para preparar bebidas y especias','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','0121','Cría de ganado vacuno y de ovejas, cabras, caballos, asnos, mulas y burdeganos; cría de ganado leche','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','0122','Cría de otros animales; elaboración de productos animales n.c.p.','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','0130','Cultivo de productos agricolas en combinación con la cría de animales (explotación mixta)','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','0140','Actividades de servicios agricolas y ganaderos, excepto las actividades veterinarias','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','0150','Caza ordinaría y mediante trampas, y repoblación de animales de caza, incluso las actividades de ser','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','0200','Silvicultura, extracción de madera y actividades de servicios conexas','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','0500','Pesca, explotación de criaderos de peces y granjas pisciicolas; actividades de servicios relacionada','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1010','Extracción y aglomeración de carbon de piedra','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1020','Extracción y aglomeración de lignito','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1030','Extracción y aglomeración de lignito','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1110','Extracción de petróleo crudo y de gas natural','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1120','Actividades de servicios relaciónados con la extracción de petróleo y de gas, excepto las actividade','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1200','Extracción de minerales de uranio y torio','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1310','Extracción de minerales de hierro','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1320','Extracción de minerales metaliferos no ferrosos, excepto minerales de uranio y torio','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1410','Extracción de piedra, arena y arcilla','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1421','Extracción de minerales para la fabricación de abonos y productos quimicos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1422','Extracción de sal','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1429','Explotación de otras minas y canteras n.c.p.','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1511','Produccion, procesamiento y conservación de carne y de productos carnicos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1512','Elaboración y conservación de pescado y productos de pescado','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1513','Elaboración y conservación de frutas, legumbres y hortalizas','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1514','Elaboración de aceite y grasas de origen vegetal y animal','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1515','Elaboración de aceite de pescado','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1520','Elaboración de productos lácteos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1531','Elaboración de productos de molinería','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1532','Elaboración de almidones y productos derivados del almidon','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1533','Elaboración de alimentos preparados para animales','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1541','Elaboración de productos de panadería','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1542','Elaboración de azúcar','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1543','Elaboración de cacao y chocolate y de productos de confitería','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1544','Elaboración de macarrones, fideos, alcuzcuz y productos farinaceos similares','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1549','Elaboración de otros productos alimenticios n.c.p.','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1551','Destilacion, rectificación y mezcla de bebidas alcohólicas; producción de alcohol etílico a partir d','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1552','Elaboración de vinos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1553','Elaboración de bebidas malteadas y de malta','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1554','Elaboración de bebidas no alcohólicas; producción de aguas minerales','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1600','Elaboración de productos de tabaco','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1711','Preparación e hilatura de fibras textiles; tejedura de productos textiles','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1712','Acabado de productos textiles','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1721','Fabricación de artículos confeccionados de materiales textiles, excepto prendas de vestir','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1722','Fabricación de tapices y alfombras','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1723','Fabricación de cuerdas, cordeles, bramantes y redes','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1729','Fabricación de otros productos textiles n.c.p.','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1730','Fabricación de tejidos y artículos de punto y ganchillo','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1810','Fabricación de prendas de vestir; excepto prendas de piel','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1820','Adobo y teñido de pieles; fabricación de artículos de piel','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1911','Curtido y adobo de cueros','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1912','Fabricación de maletas, bolsos de mano y artículos similares, y de artículos de talabartería y guarn','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','1920','Fabricación de calzado','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2010','Aserrado y acepilladura de madera','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2021','Fabricación de hojas de madera para enchapados; fabricación de tableros contrachapados, tableros lam','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2022','Fabricación de partes y piezas de carpintería para edificios y construcciones','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2023','Fabricación de recipientes de madera','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2029','Fabricación de otros productos de madera; fabricación de artículos de corcho, paja y materiales tren','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2101','Fabricación de pasta de madera, papel y carton','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2102','Fabricación de papel y carton ondulado y de envases de papel y carton','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2109','Fabricación de otros artículos de papel y carton','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2211','Edición de libros, folletos, partituras y otras publicaciones','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2212','Edición de periodicos, revistas y publicaciones periodicas','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2213','Edición de grabaciones','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2219','Otras actividades de edición','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2221','Actividades de impresión','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2222','Actividades de servicios relacionados con la impresión','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2230','Reproducción de grabaciones','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2310','Fabricación de productos de hornos de coque','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2320','Fabricación de productos de la refinación del petróleo','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2330','Elaboración de combustible nuclear','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2411','Fabricación de sustancias quimicas basicas, excepto abonos y compuestos de nitrogeno','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2412','Fabricación de abonos y compuestos de nitrogeno','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2413','Fabricación de plasticos en formas primarias y de caucho sintetico','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2421','Fabricación de plagulcidas y otros productos quimicos de uso agropecuario','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2422','Fabricación de pinturas, barnices y productos de revestimiento similares, tintas de imprenta y masil','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2423','Fabricación de productos farmaceuticos, sustancias quimicas medicinales y productos botanicos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2424','Fabricación de jabones y detergentes, preparados para limpiar y pulir, perfumes y preparados de toca','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2429','Fabricación de otros productos quimicos n.c.p.','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2430','Fabricación de fibras manufacturadas','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2511','Fabricación de cubiertas y camaras de caucho; recauchado y renovación de cubiertas de caucho','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2519','Fabricación de otros productos de caucho','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2520','Fabricación de productos de plástico','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2610','Fabricación de vidrio y productos de vidrio','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2691','Fabricación de productos de ceramica no refractaría para uso no estructural','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2692','Fabricación de productos de ceramica refractaría ','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2693','Fabricación de productos de arcilla y ceramica no refractarias para uso estructural','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2694','Fabricación de cemento, cal y yeso','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2695','Fabricación de artículos de hormigon, cemento y yeso','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2696','Corte, tallado y acabado de la piedra','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2699','Fabricación de otros productos minerales no metalicos n.c.p.','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2710','Industrias básicas de hierro y acero','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2720','Fabricación de productos primarios de metales preciosos y metales no ferrosos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2731','Fundición de hierro y acero','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2732','Fundición de metales no ferrosos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2811','Fabricación de productos metalicos para uso estructural','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2812','Fabricación de tanques, depositos y recipientes de metal','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2813','Fabricación de generadores de vapor, excepto calderas de agua caliente para calefacción central','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2891','Forja, prensado, estampado y laminado de metales; pulvimetalurgia','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2892','Tratamiento y revestimiento de metales; obras de ingeniería mecanica en general realizadas a cambio ','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2893','Fabricación de artículos de cuchilleria, herramientas de mano y artículos de ferretería','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2899','Fabricación de otros productos elaborados de metal n.c.p.','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2911','Fabricación de motores y turbinas,excepto motores para aeronaves, vehiculos automotres y motocicleta','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2912','Fabricación de bombas, compresores, grifos y valvulas','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2913','Fabricación de cojinetes, engranajes, trenes de engranajes y piezas de transmisión.','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2914','Fabricación de hornos, hogares y quemadores','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2915','Fabricación de equipo de elevación y manipulación','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2919','Fabricación de otros tipos de maquinaria de uso general','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2921','Fabricación de maquinaria agropecuaría y forestal','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2922','Fabricación de maquinas herramienta','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2923','Fabricación de maquinaria metalúrgica','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2924','Fabricación de maquinaria para la explotación de minas y canteras y para obras de construcción','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2925','Fabricación de maquinaria para la elaboración de alimentos, bebidas y tabaco','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2926','Fabricación de maquinaria para la elaboración de productos textiles, prendas de vestir y cueros','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2927','Fabricación de armas y municiones','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2929','Fabricación de otros tipos de maquinaria de uso especial','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','2930','Fabricación de aparatos de uso domestico n.c.p.','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3000','Fabricación de maquinaria de oficina, fabricación de maquinaria de oficina, contabilidad e informáti','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3110','Fabricación de motores, generadores y transformadores eléctricos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3120','Fabricación de aparatos de distribución y control de la energía eléctrica','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3130','Fabricación de hilos y cables aislados','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3140','Fabricación de acumuladores, de pilas y de baterías primarias','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3150','Fabricación de lamparas eléctricas y equipo de iluminación','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3190','Fabricación de otros tipos de equipo eléctrico n.c.p.','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3210','Fabricación de tubos y válvulas electrónicas y de otros componentes electrónicos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3220','Fabricación de transmisores de radio y televisión y de aparatos para telefonía y telegrafía con hilo','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3230','Fabricación de receptores de radio y televisión, aparatos de grabación y reproducción de sonido y vi','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3311','Fabricación de equipo medico y quirúrgico y de aparatos ortopédicos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3312','Fabricación de instrumentos y aparatos para medir, verificar, ensayar, navegar y otros fines, except','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3313','Fabricación de equipo de control de procesos industriales','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3320','Fabricación de instrumentos de óptica y equipo fotográfico','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3330','Fabricación de relojes','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3410','Fabricación de vehículos automotores','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3420','Fabricación de carrocerías para vehículos automotores; fabricación de remolques y semirremolques','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3430','Fabricación de partes, piezas y accesorios para vehículos automotores y sus motores','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3511','Construcción y reparación de buques ','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3512','Construcción y reparación de embarcaciones de recreo y de deporte','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3520','Fabricación de locomotoras y de material rodante para ferrocarriles y tranvías','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3530','Fabricación de aeronaves y naves espaciales','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3591','Fabricación de motocicletas','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3592','Fabricación de bicicletas y de sillones de ruedas para inválidos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3599','Fabricación de otros tipos de equipo de transporte n.c.p.','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3610','Fabricación de muebles','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3691','Fabricación de joyas y artículos conexos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3692','Fabricación de instrumentos de música','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3693','Fabricación de artículos de deporte','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3694','Fabricación de juegos y juguetes','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3699','Otras industrias manufactureras n.c.p.','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3710','Reciclamiento de desperdicios y desechos metálicos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','3720','Reciclamiento de desperdicios y desechos no metálicos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','4010','Generacion, captación y distribución de energía electrica','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','4020','Fabricación de gas; distribución de combustibles gaseosos por tuberias','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','4030','Suministro de vapor y agua caliente','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','4100','Captacion, depuración y distribución de agua','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','4510','Preparación del terreno','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','4520','Construcción de edificios completos y de partes de edificios; obras de ingeniería civil','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','4530','Acondicionamiento de edificios','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','4540','Terminación de edificios','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','4550','Alquiler de equipo de construcción y demolición dotado de operarios','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5010','Venta de vehiculos automotores','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5020','Mantenimiento y reparación de vehiculos automotores','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5030','Venta de partes, piezas y accesorios de vehiculos automotores','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5040','En esta clase se incluyen la venta al por mayor y al por menor de motocicletas y trineos motorizados','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5050','Venta al por menor de combustible para automotores','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5110','Venta al por mayor a cambio de una retribución o por contrata','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5121','Venta al por mayor de materias primas agropecuarias y de animales vivos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5122','Venta al por mayor de alimentos, bebidas y tabaco','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5131','Venta al por mayor de productos textiles, prendas de vestir y calzado','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5139','Venta al por mayor de otros enseres domesticos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5141','Venta al por mayor de combustibles solidos, liquidos y gaseosos y de productos conexos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5142','Venta al por mayor de metales y minerales metaliferos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5143','Venta al por mayor de materiales de contrucción, artículos de ferretería y equipo y materiales de fo','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5149','Venta al por mayor de otros productos intermedios, desperdicios y desechos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5150','Venta al por mayor de maquinaria, equipo y materiales','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5190','Venta al por mayor de otros productos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5211','Venta al por menor en almacenes no especializados con surtido compuesto principalemente de alimentos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5219','Venta al por menor de otros productos en almacenes no especializados','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5220','Venta al por menor de alimentos, bebidas y tabaco en almacenes especializados','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5231','Venta al por menor de productos farmaceuticos y medicinales, cosmeticos y artículos de tocador','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5232','Venta al por menor de productos textiles, prendas de vestir, calzado y artículos de cuero','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5233','Venta al por menor de aparatos, artículos y equipo de uso domestico','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5234','Venta al por menor de artículos de ferreteria, pinturas y productos de vidrio','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5239','Venta al por menor de otros productos en almacenes especializados','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5240','Venta al por menor en almacenes de artículos usados','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5251','Venta al por menor de casas de venta por correo','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5252','Venta al por menor en puestos de venta y mercados','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5259','Otros tipos de venta al por menor no realizado en almacenes','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5260','Reparación de efectos personales y enseres domesticos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5270','Venta al por menor no especificado','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5510','Hoteles; campamentos y otros tipos de hospedaje temporal','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','5520','Restaurantes, bares y cantinas','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6010','Transporte por vía férrea','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6021','Otros tipos de transporte regular de pasajeros por vía terrestre ','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6022','Otros tipos de transporte no regular de pasajeros por vía terrestre','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6023','Transporte de carga por carretera','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6030','Transporte por tuberías','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6110','Transporte marítimo y de cabotaje','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6120','Transporte por vias de navegación interiores','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6210','Transporte regular por vía aérea','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6220','Transporte no regular por vía aérea','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6301','Manipulación de la carga','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6302','Almacenamiento y depósito','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6303','Otras actividades de transportes complementarias','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6304','Actividades de agencias de viajes y organizadores de viajes; actividades de asistencía a turistas n.','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6309','Actividades de otras agencias de transporte','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6411','Actividades postales nacionales','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6412','Actividades de correo distintas de las actividades postales nacionales','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6420','Telecomunicaciones','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6511','Banca central','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6519','Otros tipos de intermediación monetaria','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6591','Arrendamiento financiero','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6592','Otros tipos de crédito','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6599','Otros tipos de intermediación financiera n.c.p.','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6601','Planes de seguros de vida','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6602','Planes de pensiones','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6603','Planes de seguros generales','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6711','Administración de mercados financieros','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6712','Actividades bursátiles','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6719','Actividades auxiliares de la intermediación financiera n.c.p.','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','6720','Actividades auxiliares de la financiación de planes de seguros y de pensiones','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7010','Actividades inmobiliarias realizadas con bienes propios o arrendados','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7020','Actividades inmobiliarias realizadas a cambio de una retribución o por contrata ','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7111','Alquiler de equipo de transporte por vía terrestre ','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7112','Alquiler de equipo de transporte por vía acuática','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7113','Alquiler de equipo de transporte por vía aérea','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7121','Alquiler de maquinaria y equipo agropecuario','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7122','Alquiler de maquinaria y equipo de construcción e ingeniería civil','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7123','Alquiler de maquinaria y equipo de oficina (incluso computadoras)','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7129','Alquiler de otros tipos de maquinaria y equipo n.c.p.','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7130','Alquiler de efectos personales y enseres domésticos n.c.p.','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7210','Consultores en equipo de informática','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7220','Consultores en programas de informática y suministros de programas de informática','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7230','Procesamiento de datos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7240','Procesamiento de datos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7250','Mantenimiento y reparación de maquinaria de oficina, contabilidad e informática','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7290','Otras actividades de informática','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7310','Investigaciones y desarrollo experimental en el campo de las ciencias naturales y la ingeniería','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7320','Investigaciones y desarrollo experimental en el campo de las ciencias sociales y las humanidades','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7411','Actividades jurídicas','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7412','Actividades de contabilidad, teneduría de libros y auditoría; asesoramiento en matería de impuestos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7413','Investigación de mercados y realización de encuestas de opinión pública','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7414','Actividades de asesoramiento empresarial y en matería de gestión','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7421','Actividades de arquitectura e ingeniería y actividades conexas de asesoramiento técnico','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7422','Ensayos y análisis técnicos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7430','Publicidad','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7491','Obtención y dotación de personal','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7492','Actividades de investigación y seguridad','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7493','Actividades de limpieza de edificios','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7494','Actividades de fotografía','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7495','Actividades de envase y empaque','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7499','Otras actividades empresariales n.c.p.','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7511','Actividades de la administración pública en general','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7512','Regulación de las actividades de organismos que prestan servicios sanitarios, educativos, culturales','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7513','Regulación y facilitación de la actividad económica','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7514','Actividades de servicios auxiliares para la administración pública en general','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7521','Relaciones exteriores','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7522','Actividades de defensa','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7523','Actividades de mantenimiento del orden público y de seguridad ','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','7530','Actividades de planes de seguridad social de afiliación obligatoria','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','8010','Enseñanza primaria','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','8021','Enseñanza secundaría de formación general','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','8022','Enseñanza secundaría de formación técnica y profesional','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','8030','Enseñanza superior','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','8090','Enseñanza de adultos y otros tipos de enseñanza','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','8511','Actividades de hospitales','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','8512','Actividades de médicos y odontólogos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','8519','Otras actividades relacionadas con la salud humana','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','8520','Actividades veterinarias','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','8531','Servicios sociales con alojamiento','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','8532','Servicios sociales sin alojamiento','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','9000','Eliminación de desperdicios y aguas residuales, saneamiento y actividades similares','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','9111','Actividades de organización empresariales y de empleadores','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','9112','Actividades de organizaciones profesionales','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','9120','Actividades de sindicatos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','9191','Actividades de organizaciones religiosas','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','9192','Actividades de organizaciones políticas','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','9199','Actividades de otras asociaciones n.c.p.','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','9211','Producción y distribución de filmes y videocintas','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','9212','Exhibición de filmes y videocintas','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','9213','Actividades de radio y televisión','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','9214','Actividades teatrales y musicales y otras actividades artísticas','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','9219','Otras actividades de entretenimiento n.c.p.','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','9220','Actividades de agencias de noticias','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','9231','Actividades de bibliotecas y archivos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','9232','Actividades de museos y preservación de lugares y edificios históricos','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','9233','Actividades de jardines botánicos y zoológicos y de parques nacionales','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','9241','Actividades deportivas','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','9249','Otras actividades de esparcimiento','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','9301','Lavado y limpieza de prendas de tela y de piel, incluso la limpieza en seco ','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','9302','Peluquería y otros tratamientos de belleza','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','9303','Pompas fúnebres y actividades conexas','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','9309','Otras actividades de servicios n.c.p.','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','9500','Hogares privados con servicio doméstico','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','9900','Organizaciones y órganos extraterritoriales','NULL','9999','2014-12-05 21:03:37'),('099',0,'1','9999','Otras actividades no especificadas','NULL','9999','2014-12-05 21:03:37'),('098',0,'0','A','*TIPO DE PERSONA',NULL,'9999','2014-12-05 21:05:47'),('098',0,'1','A','PERSONA NATURAL',NULL,'9999','2014-12-05 21:05:47'),('098',0,'1','B','PERSONA JURIDICA SIN FINES DE LUCRO',NULL,'9999','2014-12-05 21:05:47'),('098',0,'1','C','PERSONA JURIDICA CON FINES DE LUCRO',NULL,'9999','2014-12-05 21:05:47'),('002',0,'0','A','*PRIORIDAD',NULL,'9999','2014-12-06 20:44:53'),('002',0,'1','A','ALTA',NULL,'9999','2014-12-06 20:44:53'),('002',0,'1','B','ALTA / MEDIA',NULL,'9999','2014-12-06 20:44:53'),('002',0,'1','C','MEDIA',NULL,'9999','2014-12-06 20:44:53'),('002',0,'1','D','MEDIA / BAJA',NULL,'9999','2014-12-06 20:44:53'),('002',0,'1','E','BAJA',NULL,'9999','2014-12-06 20:44:53'),('003',0,'0','A','*TIPO DE ALMACEN',NULL,'9999','2014-12-06 22:27:11'),('003',0,'1','I','ALMACEN DE INSUMOS',NULL,'9999','2014-12-06 22:27:11'),('003',0,'1','P','ALMACEN DE PRODUCTOS',NULL,'9999','2014-12-06 22:27:11'),('011',0,'1','03','Tela',NULL,'9999','2014-12-07 06:32:38'),('011',0,'1','02','Agujas',NULL,'9999','2014-12-07 06:32:38'),('011',0,'1','01','Lana',NULL,'9999','2014-12-07 06:32:38'),('011',0,'0','99','* LINEA DE PRODUCCIÓN',NULL,'9999','2014-12-07 01:11:39'),('007',0,'0','A','* UNIDAD DE MEDIDA',NULL,'9999','2014-12-07 00:17:24'),('007',0,'1','A','Bolsas',NULL,'9999','2014-12-07 00:17:24'),('007',0,'1','B','Cajas',NULL,'9999','2014-12-07 00:17:24'),('007',0,'1','C','Paquetes',NULL,'9999','2014-12-07 00:17:24'),('011',0,'1','04','Tinta',NULL,'9999','2014-12-07 06:32:38'),('004',0,'0','A','*TIPO DE PRODUCTO',NULL,'9999','2014-12-07 14:41:06'),('004',0,'1','N','NUEVO',NULL,'9999','2014-12-07 14:41:06'),('004',0,'1','A','ANTIGUO',NULL,'9999','2014-12-07 14:41:06'),('005',0,'0','A','*TIPO DE MAQUINA',NULL,'9999','2014-12-08 06:13:20'),('005',0,'1','A','PARA CORTAR TEJIDO',NULL,'9999','2014-12-08 06:13:20'),('005',0,'1','B','PARA ENRROLLAR HILOS',NULL,'9999','2014-12-08 06:13:20'),('005',0,'1','C','PARA TRANSPORTAR TEJIDOS',NULL,'9999','2014-12-08 06:13:20'),('005',0,'1','D','ENROLLADORES DE TEJIDOS',NULL,'9999','2014-12-08 06:13:20'),('006',0,'0','A','*ESTADO DE MAQUINARIA',NULL,'9999','2014-12-09 05:59:57'),('006',0,'1','O','OCUPADA',NULL,'9999','2014-12-09 05:59:57'),('006',0,'1','L','LIBRE',NULL,'9999','2014-12-09 05:59:57'),('008',0,'0','A','*ESTADO DE PERSONAL',NULL,'9999','2014-12-09 05:59:57'),('008',0,'1','O','OCUPADA',NULL,'9999','2014-12-09 05:59:57'),('008',0,'1','L','LIBRE',NULL,'9999','2014-12-09 05:59:57'),('009',0,'0','A','*ESTADO DE PLANIFICACION',NULL,'9999','2014-12-09 05:59:57'),('009',0,'1','C','COMPLETO',NULL,'9999','2014-12-09 05:59:57'),('009',0,'1','I','INCOMPLETO',NULL,'9999','2014-12-09 05:59:57'),('013',0,'1','AA','AREQUIPA',NULL,'9999','2014-12-10 19:34:20'),('013',0,'0','AA','*CIUDAD',NULL,'9999','2014-12-10 19:34:20'),('010',0,'0','A','*ESTADO DE PRODUCION',NULL,'9999','2014-12-09 05:59:57'),('010',0,'1','P','PENDIENTE',NULL,'9999','2014-12-09 05:59:57'),('010',0,'1','E','EJECUTADO',NULL,'9999','2014-12-09 05:59:57'),('012',0,'0','A','*PROCESOS DE PRODUCION',NULL,'9999','2014-12-09 05:59:57'),('012',0,'1','A','TEÑIDO',NULL,'9999','2014-12-09 05:59:57'),('012',0,'1','B','PREPARACION',NULL,'9999','2014-12-09 05:59:57'),('012',0,'1','C','TEJIDO',NULL,'9999','2014-12-09 05:59:57'),('012',0,'1','D','ENSAMBLAJE',NULL,'9999','2014-12-09 05:59:57'),('012',0,'1','E','ACABADO',NULL,'9999','2014-12-09 05:59:57'),('012',0,'1','I','INCOMPLETO',NULL,'9999','2014-12-09 06:40:26'),('013',0,'1','AB','LIMA',NULL,'9999','2014-12-10 19:34:20'),('013',0,'1','AC','TRUJILLO',NULL,'9999','2014-12-10 19:34:20'),('013',0,'1','AA','CUSCO',NULL,'9999','2014-12-10 19:34:20'),('049',0,'1','D','PRODUCCION',NULL,'9999','2014-12-11 00:27:31'),('049',0,'1','E','PLANIFICACION',NULL,'9999','2014-12-11 00:27:31'),('049',0,'1','F','CUENTAS POR PAGAR',NULL,'9999','2014-12-11 00:27:31'),('049',0,'1','G','ALMACEN DE PRODUCTOS TERMINADOS(DESPACHO)',NULL,'9999','2014-12-11 00:27:31'),('049',0,'1','H','TRABAJADOR',NULL,'9999','2014-12-11 00:27:31'),('001',0,'1','T','TEMPORAL',NULL,'9999','2014-12-12 06:00:48');
+/*!40000 ALTER TABLE 'E01TTAB' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E01TUSU'
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E01TUSU' (
+  'CCODUSU' char(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODPER' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CESTADO' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCLAVE' varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'DFECFIN' date DEFAULT NULL,
+  'CUSUCOD' char(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'TMODIFI' timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  'CPERFIL' char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  KEY 'CCODPER' ('CCODPER')
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E01TUSU'
+--
+
+/*!40000 ALTER TABLE 'E01TUSU' DISABLE KEYS */;
+INSERT INTO 'E01TUSU' VALUES ('9999','999999','A','999999','2014-12-04','9999','2014-12-04 22:28:14','A'),('0014','000014','A','02390356','0000-00-00','9999','2014-12-20 17:43:54','H'),('0013','000013','A','23232323',NULL,'9999','2014-12-13 00:26:40','A'),('0012','000012','A','121212','2014-12-13','9999','2014-12-13 00:19:00','D'),('0011','000011','A','47600274','2014-12-11','9999','2014-12-31 01:37:11','D'),('0010','000010','A','71569269','2014-12-20','9999','2014-12-13 00:19:40','H'),('0009','000009','A','00290575',NULL,'9999','2014-12-12 23:36:58','A'),('0007','000007','A','71459562',NULL,'9999','2014-12-12 22:52:11','A'),('0008','000008','A','71456598',NULL,'9999','2014-12-12 22:52:04','E'),('0006','000006','A','123456','0000-00-00','9999','2014-12-13 02:09:49','D'),('0003','000003','A','030303','0000-00-00','9999','2014-12-13 00:16:54','A'),('0005','000005','A','73020239',NULL,'9999','2014-12-12 22:49:45','A'),('0002','000002','A','73736211','2014-12-12','9999','2014-12-13 01:36:38','H'),('0001','000001','A','71834194','2014-12-10','9999','2014-12-12 23:24:10','A');
+/*!40000 ALTER TABLE 'E01TUSU' ENABLE KEYS */;
+
+--
+-- Table structure for table 'E02DCOM'
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'E02DCOM' (
+  'CCODCOM' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'CCODINS' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'NCANT' int(11) NOT NULL,
+  'CCODUSU' char(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'TMODIFI' timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  KEY 'CCODCOM' ('CCODCOM'),
+  KEY 'CCODINS' ('CCODINS'),
+  CONSTRAINT 'E02DCOM_ibfk_1' FOREIGN KEY ('CCODCOM') REFERENCES 'E01CCOM' ('cCodCom'),
+  CONSTRAINT 'E02DCOM_ibfk_2' FOREIGN KEY ('CCODINS') REFERENCES 'E01MINS' ('cCodIns')
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'E02DCOM'
+--
+
+/*!40000 ALTER TABLE 'E02DCOM' DISABLE KEYS */;
+INSERT INTO 'E02DCOM' VALUES ('000001','010001',10,'9999','2014-12-12 23:42:07'),('000001','010002',20,'9999','2014-12-12 23:42:07'),('000001','020001',30,'9999','2014-12-12 23:42:07'),('000002','010001',10,'9999','2014-12-12 23:42:07'),('000002','030001',1,'9999','2014-12-12 23:42:07'),('000002','040001',2,'9999','2014-12-12 23:42:07');
+/*!40000 ALTER TABLE 'E02DCOM' ENABLE KEYS */;
+
+--
+-- Table structure for table 'TEST'
+--
+
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'TEST' (
+  'CCODPER' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'FECHA' date DEFAULT NULL,
+  'TMODIFI' timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  'DATS' varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'TEST'
+--
+
+/*!40000 ALTER TABLE 'TEST' DISABLE KEYS */;
+/*!40000 ALTER TABLE 'TEST' ENABLE KEYS */;
+
+--
+-- Table structure for table 'TEST1'
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE 'TEST1' (
+  'CCODPER' char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  'FECHA' date DEFAULT NULL,
+  'TMODIFI' timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  'MDATOS' longtext COLLATE utf8_unicode_ci,
+  'NSERIAL' int(10) DEFAULT NULL,
+  'DATS' varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table 'TEST1'
+--
+
+/*!40000 ALTER TABLE 'TEST1' DISABLE KEYS */;
+/*!40000 ALTER TABLE 'TEST1' ENABLE KEYS */;
+
+--
+-- Temporary table structure for view 'V_E01CPED'
+--
+
+/*!50001 DROP VIEW IF EXISTS 'V_E01CPED'*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE 'V_E01CPED' (
+  'CCODPED' tinyint NOT NULL,
+  'CCODCLI' tinyint NOT NULL,
+  'CNOMBRE' tinyint NOT NULL,
+  'NTOTAL' tinyint NOT NULL,
+  'DFECLIS' tinyint NOT NULL,
+  'CPRIORI' tinyint NOT NULL,
+  'CDESPRIO' tinyint NOT NULL,
+  'CESTADOPL' tinyint NOT NULL,
+  'CDESPL' tinyint NOT NULL,
+  'CESTADOPR' tinyint NOT NULL,
+  'CDESPR' tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view 'V_E01DPED'
+--
+
+DROP TABLE IF EXISTS 'V_E01DPED';
+/*!50001 DROP VIEW IF EXISTS 'V_E01DPED'*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE 'V_E01DPED' (
+  'CCODPED' tinyint NOT NULL,
+  'CCODPROD' tinyint NOT NULL,
+  'CDESCRI' tinyint NOT NULL,
+  'NCANT' tinyint NOT NULL,
+  'CESTADOPL' tinyint NOT NULL,
+  'CDESPL' tinyint NOT NULL,
+  'CESTADOPR' tinyint NOT NULL,
+  'CDESPR' tinyint NOT NULL,
+  'CPROCESO' tinyint NOT NULL,
+  'CDESPROC' tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view 'V_E01MINS'
+--
+
+
+/*!50001 DROP VIEW IF EXISTS 'V_E01MINS'*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE 'V_E01MINS' (
+  'CCODINS' tinyint NOT NULL,
+  'CDESCRI' tinyint NOT NULL,
+  'CUNIMED' tinyint NOT NULL,
+  'CDESUNI' tinyint NOT NULL,
+  'NPRECIO' tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view 'V_E01MPROD'
+--
+
+
+/*!50001 DROP VIEW IF EXISTS 'V_E01MPROD'*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE 'V_E01MPROD' (
+  'CCODPROD' tinyint NOT NULL,
+  'CDESCRI' tinyint NOT NULL,
+  'CESTADO' tinyint NOT NULL,
+  'CDESEST' tinyint NOT NULL,
+  'CTIPO' tinyint NOT NULL,
+  'CDESTIP' tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view 'V_E01PALM'
+--
+
+
+/*!50001 DROP VIEW IF EXISTS 'V_E01PALM'*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE 'V_E01PALM' (
+  'CCODALM' tinyint NOT NULL,
+  'CCODINS' tinyint NOT NULL,
+  'NCANT' tinyint NOT NULL,
+  'NCANGRAT' tinyint NOT NULL,
+  'CDESCRI' tinyint NOT NULL,
+  'CUNIMED' tinyint NOT NULL,
+  'CDESUNI' tinyint NOT NULL,
+  'NPRECIO' tinyint NOT NULL,
+  'NCANGRA' tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view 'V_E01PPER'
+--
+
+
+/*!50001 DROP VIEW IF EXISTS 'V_E01PPER'*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE 'V_E01PPER' (
+  'cCodProd' tinyint NOT NULL,
+  'CDESPROD' tinyint NOT NULL,
+  'cTipo' tinyint NOT NULL,
+  'cDESTIP' tinyint NOT NULL,
+  'cCodIns' tinyint NOT NULL,
+  'CDESINS' tinyint NOT NULL,
+  'cUniMed' tinyint NOT NULL,
+  'nPrecio' tinyint NOT NULL,
+  'nCanGra' tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view 'V_E01PPROD'
+--
+
+
+/*!50001 DROP VIEW IF EXISTS 'V_E01PPROD'*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE 'V_E01PPROD' (
+  'cCodProd' tinyint NOT NULL,
+  'CDESPROD' tinyint NOT NULL,
+  'cTipo' tinyint NOT NULL,
+  'cDESTIP' tinyint NOT NULL,
+  'cCodIns' tinyint NOT NULL,
+  'CDESINS' tinyint NOT NULL,
+  'cUniMed' tinyint NOT NULL,
+  'CDESUNI' tinyint NOT NULL,
+  'nPrecio' tinyint NOT NULL,
+  'nCanGra' tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view 'V_E01TTAB'
+--
+
+/*!50001 DROP VIEW IF EXISTS 'V_E01TTAB'*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE 'V_E01TTAB' (
+  'cCodTab' tinyint NOT NULL,
+  'cCodigo' tinyint NOT NULL,
+  'cDescri' tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view 'V_E01TUSU'
+--
+
+
+/*!50001 DROP VIEW IF EXISTS 'V_E01TUSU'*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE 'V_E01TUSU' (
+  'cCodUsu' tinyint NOT NULL,
+  'cCodPer' tinyint NOT NULL,
+  'cEstado' tinyint NOT NULL,
+  'cClave' tinyint NOT NULL,
+  'dFecFin' tinyint NOT NULL,
+  'cNombre' tinyint NOT NULL,
+  'cPerfil' tinyint NOT NULL,
+  'cDesPer' tinyint NOT NULL,
+  'cEmail' tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Final view structure for view 'V_E01CPED'
+--
+
+/*!50001 DROP TABLE IF EXISTS 'V_E01CPED'*/;
+/*!50001 DROP VIEW IF EXISTS 'V_E01CPED'*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER='u153430615_knt'@'localhost' SQL SECURITY DEFINER */
+/*!50001 VIEW 'V_E01CPED' AS select 'A'.'CCODPED' AS 'CCODPED','A'.'CCODCLI' AS 'CCODCLI','B'.'CNOMBRE' AS 'CNOMBRE','A'.'NTOTAL' AS 'NTOTAL','A'.'DFECLIS' AS 'DFECLIS','A'.'CPRIORI' AS 'CPRIORI','C'.'cDescri' AS 'CDESPRIO','A'.'CESTADOPL' AS 'CESTADOPL','D'.'cDescri' AS 'CDESPL','A'.'CESTADOPR' AS 'CESTADOPR','E'.'cDescri' AS 'CDESPR' from (((('E01CPED' 'A' join 'E01MCLI' 'B' on(('B'.'CCODCLI' = 'A'.'CCODCLI'))) left join 'V_E01TTAB' 'C' on((('C'.'cCodigo' = 'A'.'CPRIORI') and ('C'.'cCodTab' = '002')))) left join 'V_E01TTAB' 'D' on((('D'.'cCodigo' = 'A'.'CESTADOPL') and ('D'.'cCodTab' = '009')))) left join 'V_E01TTAB' 'E' on((('E'.'cCodigo' = 'A'.'CESTADOPR') and ('E'.'cCodTab' = '010')))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view 'V_E01DPED'
+--
+
+/*!50001 DROP TABLE IF EXISTS 'V_E01DPED'*/;
+/*!50001 DROP VIEW IF EXISTS 'V_E01DPED'*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER='u153430615_knt'@'localhost' SQL SECURITY DEFINER */
+/*!50001 VIEW 'V_E01DPED' AS select 'A'.'CCODPED' AS 'CCODPED','A'.'CCODPROD' AS 'CCODPROD','B'.'CDESCRI' AS 'CDESCRI','A'.'NCANT' AS 'NCANT','A'.'CESTADOPL' AS 'CESTADOPL','C'.'cDescri' AS 'CDESPL','A'.'CESTADOPR' AS 'CESTADOPR','D'.'cDescri' AS 'CDESPR','A'.'CPROCESO' AS 'CPROCESO','E'.'cDescri' AS 'CDESPROC' from (((('E01DPED' 'A' join 'E01MPROD' 'B' on(('A'.'CCODPROD' = 'B'.'CCODPROD'))) left join 'V_E01TTAB' 'C' on((('C'.'cCodigo' = 'A'.'CESTADOPL') and ('C'.'cCodTab' = '009')))) left join 'V_E01TTAB' 'D' on((('D'.'cCodigo' = 'A'.'CESTADOPR') and ('D'.'cCodTab' = '010')))) left join 'V_E01TTAB' 'E' on((('E'.'cCodigo' = 'A'.'CPROCESO') and ('E'.'cCodTab' = '012')))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view 'V_E01MINS'
+--
+
+/*!50001 DROP TABLE IF EXISTS 'V_E01MINS'*/;
+/*!50001 DROP VIEW IF EXISTS 'V_E01MINS'*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER='u153430615_knt'@'localhost' SQL SECURITY DEFINER */
+/*!50001 VIEW 'V_E01MINS' AS select 'A'.'cCodIns' AS 'CCODINS','A'.'cDescri' AS 'CDESCRI','A'.'cUniMed' AS 'CUNIMED','B'.'cDescri' AS 'CDESUNI','A'.'nPrecio' AS 'NPRECIO' from ('E01MINS' 'A' left join 'V_E01TTAB' 'B' on((('B'.'cCodigo' = 'A'.'cUniMed') and ('B'.'cCodTab' = '007')))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view 'V_E01MPROD'
+--
+
+/*!50001 DROP TABLE IF EXISTS 'V_E01MPROD'*/;
+/*!50001 DROP VIEW IF EXISTS 'V_E01MPROD'*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER='u153430615_knt'@'localhost' SQL SECURITY DEFINER */
+/*!50001 VIEW 'V_E01MPROD' AS select 'A'.'CCODPROD' AS 'CCODPROD','A'.'CDESCRI' AS 'CDESCRI','A'.'CESTADO' AS 'CESTADO','B'.'cDescri' AS 'CDESEST','A'.'cTipo' AS 'CTIPO','C'.'cDescri' AS 'CDESTIP' from (('E01MPROD' 'A' left join 'V_E01TTAB' 'B' on((('A'.'CESTADO' = 'B'.'cCodigo') and ('B'.'cCodTab' = '001')))) left join 'V_E01TTAB' 'C' on((('A'.'cTipo' = 'C'.'cCodigo') and ('C'.'cCodTab' = '004')))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view 'V_E01PALM'
+--
+
+/*!50001 DROP TABLE IF EXISTS 'V_E01PALM'*/;
+/*!50001 DROP VIEW IF EXISTS 'V_E01PALM'*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER='u153430615_knt'@'localhost' SQL SECURITY DEFINER */
+/*!50001 VIEW 'V_E01PALM' AS select 'A'.'CCODALM' AS 'CCODALM','A'.'CCODINS' AS 'CCODINS','A'.'NCANT' AS 'NCANT','A'.'NCANGRAT' AS 'NCANGRAT','B'.'cDescri' AS 'CDESCRI','B'.'cUniMed' AS 'CUNIMED','C'.'cDescri' AS 'CDESUNI','B'.'nPrecio' AS 'NPRECIO','B'.'nCanGra' AS 'NCANGRA' from (('E01PALM' 'A' join 'E01MINS' 'B' on(('A'.'CCODINS' = 'B'.'cCodIns'))) left join 'V_E01TTAB' 'C' on((('B'.'cUniMed' = 'C'.'cCodigo') and ('C'.'cCodTab' = '007')))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view 'V_E01PPER'
+--
+
+/*!50001 DROP TABLE IF EXISTS 'V_E01PPER'*/;
+/*!50001 DROP VIEW IF EXISTS 'V_E01PPER'*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER='u153430615_knt'@'localhost' SQL SECURITY DEFINER */
+/*!50001 VIEW 'V_E01PPER' AS select 'A'.'CCODPROD' AS 'cCodProd','C'.'CDESCRI' AS 'CDESPROD','C'.'cTipo' AS 'cTipo','D'.'cDescri' AS 'cDESTIP','A'.'CCODINS' AS 'cCodIns','B'.'cDescri' AS 'CDESINS','B'.'cUniMed' AS 'cUniMed','B'.'nPrecio' AS 'nPrecio','B'.'nCanGra' AS 'nCanGra' from ((('E01PPROD' 'A' join 'E01MINS' 'B' on(('A'.'CCODINS' = 'B'.'cCodIns'))) join 'E01MPROD' 'C' on(('A'.'CCODPROD' = 'C'.'CCODPROD'))) left join 'V_E01TTAB' 'D' on((('C'.'cTipo' = 'D'.'cCodigo') and ('D'.'cCodTab' = '004')))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view 'V_E01PPROD'
+--
+
+/*!50001 DROP TABLE IF EXISTS 'V_E01PPROD'*/;
+/*!50001 DROP VIEW IF EXISTS 'V_E01PPROD'*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER='u153430615_knt'@'localhost' SQL SECURITY DEFINER */
+/*!50001 VIEW 'V_E01PPROD' AS select 'A'.'CCODPROD' AS 'cCodProd','C'.'CDESCRI' AS 'CDESPROD','C'.'cTipo' AS 'cTipo','D'.'CDESCRI' AS 'cDESTIP','A'.'CCODINS' AS 'cCodIns','B'.'cDescri' AS 'CDESINS','B'.'cUniMed' AS 'cUniMed','E'.'CDESCRI' AS 'CDESUNI','B'.'nPrecio' AS 'nPrecio','B'.'nCanGra' AS 'nCanGra' from (((('E01PPROD' 'A' join 'E01MINS' 'B' on(('A'.'CCODINS' = 'B'.'cCodIns'))) join 'E01MPROD' 'C' on(('A'.'CCODPROD' = 'C'.'CCODPROD'))) left join 'E01TTAB' 'D' on((('C'.'cTipo' = 'D'.'CCODIGO') and ('D'.'CCODTAB' = '004')))) left join 'E01TTAB' 'E' on((('B'.'cUniMed' = 'E'.'CCODIGO') and ('E'.'CCODTAB' = '007')))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view 'V_E01TTAB'
+--
+
+/*!50001 DROP TABLE IF EXISTS 'V_E01TTAB'*/;
+/*!50001 DROP VIEW IF EXISTS 'V_E01TTAB'*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER='u153430615_knt'@'localhost' SQL SECURITY DEFINER */
+/*!50001 VIEW 'V_E01TTAB' AS select 'A'.'CCODTAB' AS 'cCodTab','A'.'CCODIGO' AS 'cCodigo','A'.'CDESCRI' AS 'cDescri' from 'E01TTAB' 'A' where ('A'.'CTIPREG' = '1') order by 'A'.'CCODTAB','A'.'CTIPREG','A'.'NORDEN','A'.'CCODIGO' */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view 'V_E01TUSU'
+--
+
+/*!50001 DROP TABLE IF EXISTS 'V_E01TUSU'*/;
+/*!50001 DROP VIEW IF EXISTS 'V_E01TUSU'*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER='u153430615_knt'@'localhost' SQL SECURITY DEFINER */
+/*!50001 VIEW 'V_E01TUSU' AS (select 'A'.'CCODUSU' AS 'cCodUsu','A'.'CCODPER' AS 'cCodPer','A'.'CESTADO' AS 'cEstado','A'.'CCLAVE' AS 'cClave','A'.'DFECFIN' AS 'dFecFin','B'.'CNOMBRE' AS 'cNombre','A'.'CPERFIL' AS 'cPerfil','C'.'cDescri' AS 'cDesPer','B'.'CEMAIL' AS 'cEmail' from (('E01TUSU' 'A' join 'E01MPER' 'B' on(('A'.'CCODPER' = 'B'.'CCODPER'))) left join 'V_E01TTAB' 'C' on((('A'.'CPERFIL' = 'C'.'cCodigo') and ('C'.'cCodTab' = '049'))))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2015-03-21 11:57:38

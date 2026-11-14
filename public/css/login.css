@@ -1,0 +1,20 @@
+﻿.login-wrapper { box-sizing: border-box; width: calc(100% - 10px); }
+.login-wrapper #MH ul { display: flex; justify-content: center; }
+.login-wrapper #MH li { float: none; text-align: center; }
+.login-main { display: grid; place-items: center; min-height: 65vh; padding: 40px 20px; }
+.login-card { box-sizing: border-box; width: 100%; max-width: 400px; padding: 32px; border: 1px solid #E8E8E8; border-radius: 8px; background: #FFFFFF; }
+.login-card h2 { margin-bottom: 12px; }
+.login-intro { line-height: 1.7; margin-bottom: 26px; }
+.login-field { margin-bottom: 20px; }
+.login-field label { display: block; margin-bottom: 8px; font-weight: bold; }
+.login-field input { box-sizing: border-box; width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid #333; border-radius: 4px; font-size: 14px; }
+.login-card input:focus-visible { outline: 2px solid #EE6600; outline-offset: 3px; }
+.login-card input[type=submit] { width: 100%; min-height: 44px; cursor: pointer; }
+.login-card input[type=submit]:disabled { cursor: wait; }
+.login-message { min-height: 2.8em; line-height: 1.5; margin: 0 0 12px; overflow-wrap: anywhere; }
+.login-message[data-error] { padding-left: 12px; border-left: 3px solid #EE6600; }
+@media (max-width: 480px) {
+    .login-main { padding: 28px 12px; min-height: 60vh; }
+    .login-card { padding: 24px 16px; }
+    .login-field input { font-size: 16px; }
+}

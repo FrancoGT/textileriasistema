@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> 
+<html>
+<head>
+   <link href="CSS/Sixavi.css" media="screen" rel="stylesheet" type="text/css" />
+   <title>TEXTILERIA</title>
+   <script src="CSS/Libreria.js" language="JavaScript"></script>
+</head>
+<body>
+<form action="ERP5010.php#no-back" method="post">
+   <div class="wrapper">
+   <div id="MH">
+           <ul>
+                <li style="margin-left: 50px;"><h1>Logistica Generar Factura</h1></li>
+				<li style="float:right;margin-right: 100px;"><a onclick="self.location = 'index.php'"> Cerrar Sesión</a></li>
+           </ul>
+   </div>
+   <div id="topnavbar"></div>
+   <div id="navigation">
+   <div id="navcontainer">
+   {if $scBehavior eq "0"}
+	 <tr>
+         <td>Provedores:</td>
+         <td>
+            <select name="pcCodPrv">
+            {foreach from = $saCodPrv item = i}
+               <option value="{$i[0]}" {if $i[0] eq $scCodPrv} selected {/if}>{$i[1]}</option>
+            {/foreach}
+            </select>			
+         </td>
+         </tr>
+<tr>
+         <td>Insumos:</td>
+         <td>
+            <select name="pcCodIns">
+            {foreach from = $saCodIns item = i}
+               <option value="{$i[0]}" {if $i[0] eq $scCodIns} selected {/if}>{$i[1]}</option>
+            {/foreach}
+            </select>
+			<input type="submit" name="Boton1" value="Agregar" />
+         </td>
+         </tr>
+      </table>
+	  
+	  <fieldset style="width:500px">
+      <legend align="left"><font face="calibri" size=3 color=blue>Detalle de Insumos</font></legend>
+      <div id="content-table" style="overflow:scroll; height:400px; width:800px; overflow:auto; border: 1px;">
+      <table border=1 style="font-size:11px">
+         <tr>
+         <th width='20' align="center">Id</th>
+         <th width='30' align="center">Codigo Insumo</th>
+         <th width='80' align="center">Descripcion</th>
+         <th width='100' align="center">Unidad de Medida</th>
+		 <th width='100' align="center">Precio</th>
+		 <th width='100' align="center">Unidades T.</th>
+         <th width='20' align="center"><img src="CSS/anular.bmp" style="width: 100%; height: 100%;"/></th>
+         <th style="visibility: hidden"></th>
+         </tr>
+         {foreach from = $saDataI item = i name = count}
+            <tr>
+            <td width="25" align="center"><font style="font-size:10px">{$smarty.foreach.count.index + 1}</font></td>
+            <td width="50" align="center">{$i['0']}<input type="hidden" name="paDataI[{$i[0]}][0]" value="{$i[0]}" /></td>
+            <td width="100"align="center">{$i['1']}<input type="hidden" name="paDataI[{$i[0]}][1]" value="{$i[1]}" /></td>
+            <td width="100"align="center">{$i['2']}<input type="hidden" name="paDataI[{$i[0]}][2]" value="{$i[2]}" /></td>
+			<td width="100"align="center">{$i['3']}<input type="hidden" name="paDataI[{$i[0]}][3]" value="{$i[3]}" /></td>
+			<td width="100"align="center"><input type="text" name="paDataI[{$i[0]}][4]" value="{$i[4]}"/></td>
+			</tr>
+         {/foreach}
+      </table>
+      </div>
+      </fieldset>
+      <table>
+         <tr>
+         <td></td>
+         <td><input type="submit" name="Boton1" value="Grabar" /></td>
+         <td><input type="submit" name="Boton1" value="Cancelar" /></td>
+         </tr>
+      </table>
+	{elseif $scBehavior eq "2"}
+     <table style="font-size:11px">
+	 <tr>
+         <td>Proveedor:</td>
+         <td><input type="text" maxlength="90" name="pcCodPrv" value="{$scCodPrv}" size="60" disabled/></td>
+     </tr>
+	 <tr>
+         <td>Nombre:</td>
+         <td><input type="text" maxlength="90" name="pcNomPrv" value="{$scNomPrv}" size="60" disabled/></td>
+     </tr>
+</table>
+	<fieldset style="width:500px">
+      <legend align="left"><font face="calibri" size=3 color=blue>Detalle de Insumos</font></legend>
+      <div id="content-table" style="overflow:scroll; height:400px; width:800px; overflow:auto; border: 1px;">
+      <table border=1 style="font-size:11px">
+         <tr>
+         <th width='20' align="center">Id</th>
+         <th width='30' align="center">Codigo Insumo</th>
+         <th width='80' align="center">Descripcion</th>
+         <th width='100' align="center">Unidad de Medida</th>
+		 <th width='100' align="center">Precio c/u</th>
+		 <th width='100' align="center">Unidades</th>         
+         <th style="visibility: hidden"></th>
+         </tr>
+         {foreach from = $saDataID item = i name = count}
+            <tr>
+            <td width="25" align="center"><font style="font-size:10px">{$smarty.foreach.count.index + 1}</font></td>
+            <td width="50" align="center">{$i['0']}</td>
+            <td width="100"align="center">{$i['1']}</td>
+            <td width="100"align="center">{$i['2']}</td>
+			<td width="100"align="center">{$i['3']}</td>
+			<td width="100"align="center">{$i['4']}</td>
+            </tr>
+         {/foreach}
+      </table>
+      </div>
+      </fieldset>
+
+      <table>
+         <tr>
+         <td></td>
+         <td><input type="submit" name="Boton1" value="Cancelar" /></td>
+         </tr>
+      </table>
+
+   {/if}
+   </div>
+   </div>
+   <div id="content"></div>
+   <div id="footer"></div>
+   </div>
+</form>
+</body>
+</html>

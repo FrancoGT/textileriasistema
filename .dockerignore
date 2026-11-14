@@ -1,0 +1,20 @@
+# No enviar al contexto de build
+.git
+.idea
+.vscode
+vendor
+var
+node_modules
+public/bundles
+compose*.yaml
+.env.local
+.env.*.local
+.env.docker.prod
+.logs
+public_html
+db
+docs
+legacy/templates_c/*
+legacy/cache/*
+**/*.css~
+**/*~

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> 
+<html>
+<head>
+   <link href="CSS/Sixavi.css" media="screen" rel="stylesheet" type="text/css" />
+   <title>TEXTILERIA</title>
+   <script src="CSS/Libreria.js" language="JavaScript"></script>
+</head>
+<script language="javascript">
+function fAgrega()
+    {
+        var div = document.getElementById("jnTotal").value/document.getElementById("jnPago").value;
+        if(div==Infinity){
+            document.getElementById("jnLetra").value=0;
+            document.getElementById("jnLetra1").value=0;
+	}
+        else{
+            document.getElementById("jnLetra").value=div;
+            document.getElementById("jnLetra1").value=div;
+	}
+    }</script>
+<body>
+<form action="ERP6030.php#no-back" method="post">
+   <div class="wrapper">
+   <div id="MH">
+           <ul>
+                <li style="margin-left: 50px;"><h1>Reporte de Facturan Pendientes</h1></li>
+				<li style="float:right;margin-right: 100px;"><a onclick="self.location = 'index.php'"> Cerrar Sesión</a></li>
+           </ul>
+   </div>
+   <div id="topnavbar"></div>
+   <div id="navigation">
+   <div id="navcontainer">
+   {if $scBehavior eq "0"}
+      <table border=2 style="font-size:11px">
+         <th bgcolor="#F29818" width="25" align="center">Nro</th>
+         <th bgcolor="#F29818" width="100" align="center">Codigo de Pedido</th>
+	 <th bgcolor="#F29818" width="100" align="center">Codigo Cliente</th>
+	 <th bgcolor="#F29818" width="220" align="center">Nombre / Razon Social</th>
+	 <th bgcolor="#F29818" width="100" align="center">Estado</th><!--ESTADO PENDIENTE EJECUTADO-->
+	 <th bgcolor="#F29818" width="100" align="center">Prioridad</th>
+	 <th bgcolor="#F29818" width="70" align="center">Fecha Listo</th>
+         <th width='25' align="center"><img src="CSS/Edit.png" style="width: 100%; height: 10%;"/></th>
+      </table>
+      
+      <div style="overflow:scroll; height:500px; width:1000px; overflow:auto; border:1px">
+      <table border=2 style="font-size:11px">
+         {foreach from = $saDataPed item = i name = count}
+            <tr>
+            <td width="25" align="center"><font style="font-size:10px">{$smarty.foreach.count.index + 1}</font></td>
+            <td width="100" align="center">{$i['0']}</td>
+            <td width="100"align="center">{$i['1']}</td>
+            <td width="220"align="center">{$i['2']}</td>
+            <td width="100" align="center">{$i['3']}</td>
+            <td width="100" align="center">{$i['4']}</td>
+            <td width="70" align="center">{$i['5']}</td>			
+            <td width="25" align="center"><input type="radio" name="pcCodPed" value="{$i[0]}"/></td>			
+            </tr>
+         {/foreach}
+      </table>
+      </div>
+      <table>
+         <tr>
+         <td><input type="submit" name="Boton0" value="Aplicar" /></td>
+         <td><input type="submit" name="Boton0" value="Salir" /></td>
+         </tr>
+      </table>   
+	{elseif $scBehavior eq "1"}
+         <table>
+         <tr>
+         <td>Código de Pedido:</td>
+         <td>{$scCodPed}<input type="hidden" maxlength="90" name="pcCodPed" value="{$scCodPed}" size="60"/></td>
+         </tr><tr>
+         <td>Total a Pagar:</td>
+         <td>{$snTotal}<input type="hidden" maxlength="90" name="pnTotal" value="{$snTotal}" size="60" id="jnTotal"/></td>
+         </tr><tr>
+         <td>Número de Pagos:</td>
+         <td><input type="text" maxlength="30" name="pnPago" value="{$snPago}" size="20" id="jnPago" onkeyup="fAgrega();"/></td>
+         </tr><tr>
+         <td>Letra:</td>
+         <td><input type="text" maxlength="20" value="0" size="20" disabled="true" id="jnLetra"/></td>
+<input type="hidden" maxlength="20" name="pnLetra" value="0" size="20" id="jnLetra1"/>
+         </tr><tr>
+         <td>Fecha Límite:</td>
+         <td><input type="text" name="pcFecLim" value="{$sdFecLim}"  maxlength="11" placeholder="aaaa-mm-dd" size="11"/></td>
+         </tr>
+         </table>
+      <table>
+         <tr>
+         <td><input type="submit" name="Boton1" value="Grabar" /></td>
+         <td><input type="submit" name="Boton1" value="Cancelar" /></td>
+         </tr>
+      </table>   
+	 {elseif $scBehavior eq "2"}
+	     <table style="font-size:11px">
+		 <tr>
+         <td>Código de Pedido:</td>
+         <td><input type="text" maxlength="90" name="pcCodPed" value="{$scCodPed}" size="60" disabled/></td>
+         </tr>
+         <tr>
+         <td>Código de Producto:</td>
+         <td><input type="text" maxlength="90" name="pcCodProd" value="{$scCodProd}" size="60" disabled/></td>
+         </tr>
+		 <tr>
+         <td>Nombre de Producto:</td>
+         <td><input type="text" maxlength="90" name="pcDescri" value="{$scDescri}" size="60" disabled/></td>
+         </tr><tr>
+		 <td>Cantidad:</td>
+         <td><input type="text" maxlength="90" name="pnCant" value="{$snCant}" size="60" disabled/></td>
+         </tr>
+         <tr>
+		 <td>PROCESO TERMINADO:</td>
+         <td><input type="text" maxlength="90" name="pcProc" value="{$scProc}" size="60" disabled/></td>
+         </tr>
+         {if {$scProc} eq "ACABADO"}{/if}
+<!--suba la foto de acabado-->		 
+      </table>
+	  <tr>
+         <td>Maquinas:</td>
+         <td>
+            <select name="pcCodMaq">
+            {foreach from = $saCodMaq item = i}
+               <option value="{$i[0]}" {if $i[0] eq $scCodMaq} selected {/if}>{$i[1]}</option>
+            {/foreach}
+            </select>			
+         </td>
+         </tr>
+	  <tr>
+         <td>Personal:</td>
+         <td>
+            <select name="pcCodPer">
+            {foreach from = $saCodPer item = i}
+               <option value="{$i[0]}" {if $i[0] eq $scCodPer} selected {/if}>{$i[1]}</option>
+            {/foreach}
+            </select>
+         </td>
+         </tr>
+      <table>
+         <tr>
+         <td><input type="submit" name="Boton2" value="Grabar" /></td>
+		 <td><input type="submit" name="Boton2" value="Cancelar" /></td>
+         </tr>
+      </table>   
+
+	   {/if}
+   </div>
+   </div>
+   <div id="content"></div>
+   <div id="footer"></div>
+   </div>
+</form>
+</body>
+</html>

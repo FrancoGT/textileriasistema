@@ -1,0 +1,50 @@
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/*/*.decrypt.private.php
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+
+###> textileria ###
+/.env.docker.prod
+/legacy/templates_c/*
+/legacy/cache/*
+!/legacy/templates_c/.gitkeep
+!/legacy/cache/.gitkeep
+# Generated reports and uploaded files. Keep Xls/ report templates in Git.
+/legacy/Ficheros/*
+/legacy/FILES/*
+!/legacy/Ficheros/.gitkeep
+!/legacy/FILES/.gitkeep
+/public_html/templates_c/*
+/public_html/cache/*
+/public_html/Ficheros/*
+/public_html/FILES/*
+/public_html/.quarantine/
+/public_html/.tmb/
+
+# Local dependencies, logs and test output.
+node_modules/
+/.logs/
+*.log
+/.phpunit.cache/
+/.phpunit.result.cache
+/coverage/
+/playwright-report/
+/test-results/
+
+# Editor and operating system files.
+.idea/
+.vscode/
+/.symfony.local.yaml
+.DS_Store
+Thumbs.db
+Desktop.ini
+*~
+*.swp
+*.swo
+###< textileria ###

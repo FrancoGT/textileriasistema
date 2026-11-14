@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}TEXTILERIA{% endblock %}</title>
+    {# Los estilos legacy se sirven desde legacy/CSS a traves de LegacyController #}
+    <link href="/CSS/Sixavi.css" media="screen" rel="stylesheet" type="text/css">
+    {% block stylesheets %}{% endblock %}
+    {% block javascripts %}{% endblock %}
+</head>
+<body>
+    {% block body %}{% endblock %}
+</body>
+</html>

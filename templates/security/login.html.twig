@@ -1,0 +1,41 @@
+﻿{% extends 'base.html.twig' %}
+
+{% block title %}TEXTILERIA - Inicio de sesión{% endblock %}
+
+{% block stylesheets %}
+    <link href="{{ app.request.basePath }}/css/login.css" rel="stylesheet">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ app.request.basePath }}/js/login.js" defer></script>
+{% endblock %}
+
+{% block body %}
+<form id="login-form" action="{{ path('legacy', {path: 'Mnu0000.php'}) }}?Id=0000" method="post">
+    <div class="wrapper login-wrapper">
+        <div id="MH">
+            <ul>
+                <li><h1>Sistema ERP-X</h1></li>
+            </ul>
+        </div>
+        <div id="topnavbar"></div>
+        <main class="login-main">
+            <section class="login-card" aria-labelledby="login-title">
+                <h2 id="login-title">Acceso al sistema</h2>
+                <p class="login-intro">Ingrese su código de usuario y clave para continuar.</p>
+                <div class="login-field">
+                    <label for="pcCodigo">Código de usuario</label>
+                    <input type="text" id="pcCodigo" maxlength="10" name="pcCodigo" autocomplete="username" autocapitalize="none" spellcheck="false" autofocus required>
+                </div>
+                <div class="login-field">
+                    <label for="pcClave">Clave</label>
+                    <input type="password" id="pcClave" maxlength="20" name="pcClave" autocomplete="current-password" required>
+                </div>
+                <p id="login-message" class="login-message" role="status" aria-live="polite" aria-atomic="true"></p>
+                <input id="login-submit" type="submit" value="Iniciar sesión">
+            </section>
+        </main>
+        <div id="footer"></div>
+    </div>
+</form>
+{% endblock %}
