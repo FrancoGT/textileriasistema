@@ -2,7 +2,7 @@
 
 The shared legacy bridge now separates URL dispatch, script execution, variable
 collection, response conversion, asset delivery and session compatibility. The
-Personnel and supplier maintenance now have Symfony controllers, services and
+personnel, machine and supplier maintenance now have Symfony controllers, services and
 DBAL repositories. Their existing views remain in use through a rendering
 adapter. Other business modules still run in `legacy/`. The new PHP code and
 database behavior are pending runtime validation.
@@ -24,8 +24,9 @@ for the remaining scripts.
 | `LegacyAssetResponseFactory` | Set file MIME types, cache policy and conditional responses. |
 | `LegacySession` | Clear identity keys used by the native session bridge. |
 | `LegacyTemplateRenderer` | Render existing Smarty views without executing legacy entry scripts. |
-| `PersonnelService`, `SupplierService` | Validate maintenance operations and enforce module permissions. |
-| `DbalPersonnelRepository`, `DbalSupplierRepository` | Persist maintenance data with bound SQL and transactions. |
+| `PersonnelService`, `MachineService`, `SupplierService` | Validate maintenance operations and enforce module permissions. |
+| `DbalPersonnelRepository`, `DbalMachineRepository`, `DbalSupplierRepository` | Persist maintenance data with bound SQL and transactions. |
+| `MaintenanceFormState` | Keep the form token, opened record and status message of one screen in the shared session. |
 | `DatabaseModulePermission` | Check existing active profile grants through a repository. |
 
 Services use constructor injection and the existing service discovery configuration.
@@ -81,6 +82,6 @@ existing app service, for example `docker compose exec -T app php tests/php/lega
 The bridge checks do not connect to the database. The browser checks use actual
 templates with fixture data. They do not test legacy business operations.
 
-PHP and container checks were not executed during this refactor because the
-available shell has no runnable PHP binary and access to Docker is denied.
-Database integration and performance have not been measured.
+On 2026-11-14 the bridge checks (6), the maintenance database checks (14) and
+`lint:container` passed in the Docker `app` service with PHP 8.4 and MariaDB 10.11.
+Performance has not been measured.

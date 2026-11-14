@@ -20,7 +20,7 @@ final class MaintenanceInputResolver implements ValueResolverInterface
         }
         $data = $request->request->all();
         $fields = [];
-        foreach (['pcCodPer', 'pcCodPrv', 'pcNombre', 'pcDirecc', 'pcEmail', 'pcNroDni', 'pcSexo', 'pcEstCiv', 'pcEstado', 'pcNroRuc', 'pcTipPer', 'pdFecNac', 'pcTexCon', '_token', 'Boton0', 'Boton1', 'Boton2'] as $name) {
+        foreach (['pcCodPer', 'pcCodPrv', 'pcNombre', 'pcDirecc', 'pcEmail', 'pcNroDni', 'pcSexo', 'pcEstCiv', 'pcEstado', 'pcNroRuc', 'pcTipPer', 'pdFecNac', 'pcTexCon', 'pcCodMaq', 'pcNomMaq', 'pcTipo', '_token', 'Boton0', 'Boton1', 'Boton2'] as $name) {
             if (isset($data[$name]) && !\is_string($data[$name])) {
                 throw new BadRequestHttpException('El campo '.$name.' debe ser texto.');
             }

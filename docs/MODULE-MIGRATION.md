@@ -1,6 +1,6 @@
 # Business module migration inventory
 
-134 root PHP scripts are present. 2 maintenance routes have new
+134 root PHP scripts are present. 3 maintenance routes have new
 controllers, services and DBAL repositories. The remaining scripts still execute
 legacy business code. Authentication and shared menu rendering remain legacy.
 
@@ -20,7 +20,7 @@ Regenerate with node bin/migration-inventory.cjs.
 | ERP1010.php | Legacy | ERP1010 | CMtoUsuarios.php, CMtoPerfiles.php | 25 |
 | ERP1020.php | Legacy | ERP1020 | CMtoPerfiles.php | 10 |
 | ERP1030.php | Legacy | ERP1030 | CMtoClientes.php, CMtoPerfiles.php | 22 |
-| ERP1040.php | Legacy | ERP1040 | CMtoMaquinas.php, CMtoPerfiles.php | 17 |
+| ERP1040.php | Symfony controller and DBAL repositories, pending runtime validation | ERP1040 | CMtoMaquinas.php, CMtoPerfiles.php | 17 |
 | ERP1050.php | Legacy | ERP1050 | CMtoInsumos.php, CMtoPerfiles.php | 30 |
 | ERP1060.php | Symfony controller and DBAL repositories, pending runtime validation | ERP1000 | CMtoProveedores.php, CMtoPerfiles.php | 46 |
 | ERP1070.php | Legacy | ERP1070 | CMtoProductos.php, CMtoPerfiles.php | 22 |

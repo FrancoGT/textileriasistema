@@ -2,17 +2,21 @@
 
 declare(strict_types=1);
 
+use App\Controller\MachineController;
 use App\Controller\PersonnelController;
 use App\Controller\SupplierController;
 use App\Http\MaintenanceInput;
 use App\Http\MaintenanceInputResolver;
 use App\Legacy\LegacySession;
 use App\Legacy\LegacyTemplateRenderer;
+use App\Maintenance\MachineData;
+use App\Maintenance\MachineService;
 use App\Maintenance\PersonnelData;
 use App\Maintenance\PersonnelService;
 use App\Maintenance\SupplierData;
 use App\Maintenance\SupplierService;
 use App\Repository\CatalogRepository;
+use App\Repository\DbalMachineRepository;
 use App\Repository\DbalPersonnelRepository;
 use App\Repository\DbalSupplierRepository;
 use App\Repository\ModulePermissionRepository;
@@ -64,14 +68,14 @@ $failures = [];
 $cases = [];
 try {
     $dump = file_get_contents(dirname(__DIR__, 2).'/docker/mysql/init/01-textileria.sql');
-    foreach (['E01MPER', 'E01MPRV', 'E01DPRV', 'E01TUSU', 'E01PPRF'] as $table) {
+    foreach (['E01MPER', 'E01MPRV', 'E01DPRV', 'E01TUSU', 'E01PPRF', 'E01MMAQ'] as $table) {
         if (!preg_match('/CREATE TABLE `'.preg_quote($table, '/').'` \([\s\S]*?\) ENGINE=[^;]+;/', $dump, $match)) {
             throw new RuntimeException('Missing schema for '.$table);
         }
         $connection->executeStatement(str_replace('ENGINE=MyISAM', 'ENGINE=InnoDB', $match[0]));
         $ownedTables[] = $table;
     }
-    $connection->executeStatement("CREATE VIEW V_E01TTAB AS SELECT '001' AS cCodTab, 'A' AS cCodigo, 'Activo' AS cDescri UNION ALL SELECT '017', 'M', 'Masculino' UNION ALL SELECT '018', 'S', 'Soltero' UNION ALL SELECT '098', 'B', 'Empresa' UNION ALL SELECT '011', '01', 'Hilos' UNION ALL SELECT '011', '02', 'Tintes'");
+    $connection->executeStatement("CREATE VIEW V_E01TTAB AS SELECT '001' AS cCodTab, 'A' AS cCodigo, 'Activo' AS cDescri UNION ALL SELECT '017', 'M', 'Masculino' UNION ALL SELECT '018', 'S', 'Soltero' UNION ALL SELECT '098', 'B', 'Empresa' UNION ALL SELECT '011', '01', 'Hilos' UNION ALL SELECT '011', '02', 'Tintes' UNION ALL SELECT '005', 'A1', 'Hiladora'");
     $viewCreated = true;
     foreach (['1000' => 'A', '2000' => 'B', '3000' => 'C'] as $user => $profile) {
         $connection->insert('E01TUSU', ['CCODUSU' => (string) $user, 'CPERFIL' => $profile]);
@@ -79,12 +83,14 @@ try {
     $connection->insert('E01PPRF', ['CCODOPC' => 'ERP1000', 'CPERFIL' => 'A', 'CESTADO' => 'A']);
     $connection->insert('E01PPRF', ['CCODOPC' => 'ERP1000', 'CPERFIL' => 'C', 'CESTADO' => 'I']);
     $connection->insert('E01PPRF', ['CCODOPC' => 'ERP1060', 'CPERFIL' => 'B', 'CESTADO' => 'A']);
+    $connection->insert('E01PPRF', ['CCODOPC' => 'ERP1040', 'CPERFIL' => 'A', 'CESTADO' => 'A']);
     $tables = new TransactionalTables($connection);
     $permissions = new DatabaseModulePermission(new ModulePermissionRepository($connection));
     $personRepository = new DbalPersonnelRepository($connection, $tables);
     $supplierRepository = new DbalSupplierRepository($connection, $tables);
     $people = new PersonnelService($personRepository, $permissions);
     $suppliers = new SupplierService($supplierRepository, $permissions);
+    $machines = new MachineService(new DbalMachineRepository($connection, $tables), new CatalogRepository($connection), $permissions);
     $person = new PersonnelData("O'NEIL", 'Av. Central', 'oneil@example.test', '12345678', 'M', 'S', 'A');
     $supplier = new SupplierData("O'REILLY SAC", 'Av. Sur', '', '12345678901', 'B', '2024-01-02', 'Initial notes', ['01']);
     $personCode = '';
@@ -196,6 +202,53 @@ try {
         $same(422, $personnel(Request::create('/ERP1000.php', 'POST'), $tampered)->getStatusCode());
         $same(false, $session->verifyToken('personnel', $session->token('suppliers')));
         $session->logout();
+    };
+    $cases['machine permissions deny reads and writes without ERP1040'] = static function () use ($throws, $machines, $connection, $same): void {
+        foreach (['', '2000', '3000'] as $user) {
+            $throws(AccessDeniedHttpException::class, static fn () => $machines->choices($user));
+            $throws(AccessDeniedHttpException::class, static fn () => $machines->save($user, null, new MachineData('Cortadora', 'A', 'A')));
+        }
+        $same(0, (int) $connection->fetchOne('SELECT COUNT(*) FROM E01MMAQ'));
+    };
+    $cases['machine create and update store uppercase values, initial flag and audit user'] = static function () use ($machines, $connection, $same): void {
+        $code = $machines->save('1000', null, new MachineData("o'brien cortadora", 'A', 'A'));
+        $same('000001', $code);
+        $same(['code' => '000001', 'description' => "O'BRIEN CORTADORA", 'status' => 'A', 'type' => 'A'], $machines->find('1000', $code));
+        $same('L', $connection->fetchOne('SELECT cFlag FROM E01MMAQ WHERE cCodMaq = :code', ['code' => $code]));
+        $machines->save('1000', $code, new MachineData('Hiladora', 'A', 'A'));
+        $same('HILADORA', $machines->find('1000', $code)['description']);
+        $same([['000001', 'HILADORA']], $machines->choices('1000'));
+        $same('1000', $connection->fetchOne('SELECT cCodUsu FROM E01MMAQ WHERE cCodMaq = :code', ['code' => $code]));
+    };
+    $cases['machine validation rejects unknown catalog values, long names and missing codes'] = static function () use ($machines, $throws, $connection, $same): void {
+        $throws(DomainException::class, static fn () => $machines->save('1000', null, new MachineData('', 'A', 'A')));
+        $throws(DomainException::class, static fn () => $machines->save('1000', null, new MachineData(str_repeat('X', 51), 'A', 'A')));
+        $throws(DomainException::class, static fn () => $machines->save('1000', null, new MachineData('Name', 'Z', 'A')));
+        $throws(DomainException::class, static fn () => $machines->save('1000', null, new MachineData('Name', 'A', 'Z')));
+        $throws(DomainException::class, static fn () => $machines->save('1000', '999999', new MachineData('Name', 'A', 'A')));
+        $throws(DomainException::class, static fn () => $machines->find('1000', "' OR 1=1 --"));
+        $same(1, (int) $connection->fetchOne('SELECT COUNT(*) FROM E01MMAQ'));
+    };
+    $cases['machine controller enforces tokens and saves only the opened record'] = static function () use ($machines, $throws, $same, $connection): void {
+        $session = new LegacySession();
+        $controller = new MachineController($machines, $session, new LegacyTemplateRenderer(dirname(__DIR__, 2).'/legacy'));
+        $session->logout();
+        $same('/index.php', $controller(Request::create('/ERP1040.php'), new MaintenanceInput('', [], []))->headers->get('Location'));
+        $session->set('gcCodUsu', '2000');
+        $throws(AccessDeniedHttpException::class, static fn () => $controller(Request::create('/ERP1040.php'), new MaintenanceInput('', [], [])));
+        $session->set('gcCodUsu', '1000');
+        $same(200, $controller(Request::create('/ERP1040.php'), new MaintenanceInput('', [], []))->getStatusCode());
+        $throws(AccessDeniedHttpException::class, static fn () => $controller(Request::create('/ERP1040.php', 'POST'), new MaintenanceInput('Nuevo', [], [])));
+        $token = $session->token('machines');
+        $same(200, $controller(Request::create('/ERP1040.php', 'POST'), new MaintenanceInput('Aplicar', ['_token' => $token, 'pcCodMaq' => '000001'], []))->getStatusCode());
+        $tampered = new MaintenanceInput('Grabar', ['_token' => $token, 'pcCodMaq' => '000999', 'pcNomMaq' => 'X', 'pcEstado' => 'A', 'pcTipo' => 'A'], []);
+        $same(422, $controller(Request::create('/ERP1040.php', 'POST'), $tampered)->getStatusCode());
+        $valid = new MaintenanceInput('Grabar', ['_token' => $token, 'pcCodMaq' => '000001', 'pcNomMaq' => 'Tejedora', 'pcEstado' => 'A', 'pcTipo' => 'A'], []);
+        $same(303, $controller(Request::create('/ERP1040.php', 'POST'), $valid)->getStatusCode());
+        $same('TEJEDORA', $connection->fetchOne("SELECT cDescri FROM E01MMAQ WHERE cCodMaq = '000001'"));
+        $same(422, $controller(Request::create('/ERP1040.php', 'POST'), $valid)->getStatusCode());
+        $session->logout();
+        $same(null, $session->get('_maintenance_machines_edit'));
     };
     foreach ($cases as $name => $case) {
         try {

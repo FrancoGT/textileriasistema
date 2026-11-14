@@ -55,7 +55,10 @@ final class LegacySession
         }
 
         unset($_SESSION['gcNombre'], $_SESSION['gcCodUsu'], $_SESSION['gcTipo'], $_SESSION['login_change_password']);
-        unset($_SESSION['_maintenance_personnel_edit'], $_SESSION['_maintenance_supplier_edit']);
-        unset($_SESSION['_maintenance_token_personnel'], $_SESSION['_maintenance_token_suppliers']);
+        foreach (array_keys($_SESSION) as $key) {
+            if (str_starts_with((string) $key, '_maintenance_')) {
+                unset($_SESSION[$key]);
+            }
+        }
     }
 }
