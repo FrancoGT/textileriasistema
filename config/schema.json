@@ -1608,6 +1608,154 @@
                 },
                 "additionalProperties": false
             },
+            "doctrine_migrations": {
+                "$ref": "#/$defs/types/object_null",
+                "properties": {
+                    "enable_service_migrations": {
+                        "$ref": "#/$defs/types/boolean",
+                        "default": false,
+                        "description": "Whether to enable fetching migrations from the service container."
+                    },
+                    "migrations_paths": {
+                        "$ref": "#/$defs/types/object_null",
+                        "additionalProperties": {
+                            "$ref": "#/$defs/types/scalar"
+                        },
+                        "description": "A list of namespace/path pairs where to look for migrations."
+                    },
+                    "services": {
+                        "$ref": "#/$defs/types/object_null",
+                        "additionalProperties": {
+                            "$ref": "#/$defs/types/scalar"
+                        },
+                        "description": "A set of services to pass to the underlying doctrine/migrations library, allowing to change its behaviour."
+                    },
+                    "factories": {
+                        "$ref": "#/$defs/types/object_null",
+                        "additionalProperties": {
+                            "$ref": "#/$defs/types/scalar"
+                        },
+                        "description": "A set of callables to pass to the underlying doctrine/migrations library as services, allowing to change its behaviour."
+                    },
+                    "storage": {
+                        "$ref": "#/$defs/types/object_null",
+                        "properties": {
+                            "table_storage": {
+                                "$ref": "#/$defs/types/object_null",
+                                "properties": {
+                                    "table_name": {
+                                        "$ref": "#/$defs/types/scalar",
+                                        "default": null
+                                    },
+                                    "version_column_name": {
+                                        "$ref": "#/$defs/types/scalar",
+                                        "default": null
+                                    },
+                                    "version_column_length": {
+                                        "$ref": "#/$defs/types/scalar",
+                                        "default": null
+                                    },
+                                    "executed_at_column_name": {
+                                        "$ref": "#/$defs/types/scalar",
+                                        "default": null
+                                    },
+                                    "execution_time_column_name": {
+                                        "$ref": "#/$defs/types/scalar",
+                                        "default": null
+                                    }
+                                },
+                                "additionalProperties": false,
+                                "default": {
+                                    "table_name": null,
+                                    "version_column_name": null,
+                                    "version_column_length": null,
+                                    "executed_at_column_name": null,
+                                    "execution_time_column_name": null
+                                },
+                                "description": "The default metadata storage, implemented as a table in the database."
+                            }
+                        },
+                        "additionalProperties": false,
+                        "default": {
+                            "table_storage": {
+                                "table_name": null,
+                                "version_column_name": null,
+                                "version_column_length": null,
+                                "executed_at_column_name": null,
+                                "execution_time_column_name": null
+                            }
+                        },
+                        "description": "Storage to use for migration status metadata."
+                    },
+                    "migrations": {
+                        "$ref": "#/$defs/types/array_null",
+                        "items": {
+                            "$ref": "#/$defs/types/scalar"
+                        },
+                        "description": "A list of migrations to load in addition to the one discovered via \"migrations_paths\"."
+                    },
+                    "connection": {
+                        "$ref": "#/$defs/types/scalar",
+                        "default": null,
+                        "description": "Connection name to use for the migrations database."
+                    },
+                    "em": {
+                        "$ref": "#/$defs/types/scalar",
+                        "default": null,
+                        "description": "Entity manager name to use for the migrations database (available when doctrine/orm is installed)."
+                    },
+                    "all_or_nothing": {
+                        "$ref": "#/$defs/types/scalar",
+                        "default": false,
+                        "description": "Run all migrations in a transaction."
+                    },
+                    "check_database_platform": {
+                        "$ref": "#/$defs/types/scalar",
+                        "default": true,
+                        "description": "Adds an extra check in the generated migrations to allow execution only on the same platform as they were initially generated on."
+                    },
+                    "custom_template": {
+                        "$ref": "#/$defs/types/scalar",
+                        "default": null,
+                        "description": "Custom template path for generated migration classes."
+                    },
+                    "organize_migrations": {
+                        "$ref": "#/$defs/types/scalar",
+                        "default": false,
+                        "description": "Organize migrations mode. Possible values are: \"BY_YEAR\", \"BY_YEAR_AND_MONTH\", false"
+                    },
+                    "enable_profiler": {
+                        "$ref": "#/$defs/types/boolean",
+                        "default": false,
+                        "description": "Whether or not to enable the profiler collector to calculate and visualize migration status. This adds some queries overhead."
+                    },
+                    "transactional": {
+                        "$ref": "#/$defs/types/boolean",
+                        "default": true,
+                        "description": "Whether or not to wrap migrations in a single transaction."
+                    }
+                },
+                "patternProperties": {
+                    "^migration$": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/$defs/types/scalar"
+                            },
+                            {
+                                "$ref": "#/$defs/types/array_null",
+                                "items": {
+                                    "$ref": "#/$defs/types/scalar"
+                                },
+                                "description": "A list of migrations to load in addition to the one discovered via \"migrations_paths\"."
+                            }
+                        ]
+                    },
+                    "^migrations_path$": {
+                        "$ref": "#/$defs/types/variable"
+                    }
+                },
+                "additionalProperties": false
+            },
             "framework": {
                 "$ref": "#/$defs/types/object_null",
                 "properties": {
@@ -4030,6 +4178,9 @@
         "doctrine": {
             "$ref": "#/$defs/nodes/doctrine"
         },
+        "doctrine_migrations": {
+            "$ref": "#/$defs/nodes/doctrine_migrations"
+        },
         "framework": {
             "$ref": "#/$defs/nodes/framework"
         },
@@ -4056,6 +4207,9 @@
                 },
                 "doctrine": {
                     "$ref": "#/$defs/nodes/doctrine"
+                },
+                "doctrine_migrations": {
+                    "$ref": "#/$defs/nodes/doctrine_migrations"
                 },
                 "framework": {
                     "$ref": "#/$defs/nodes/framework"
@@ -4089,6 +4243,9 @@
                 },
                 "doctrine": {
                     "$ref": "#/$defs/nodes/doctrine"
+                },
+                "doctrine_migrations": {
+                    "$ref": "#/$defs/nodes/doctrine_migrations"
                 },
                 "framework": {
                     "$ref": "#/$defs/nodes/framework"
@@ -4124,6 +4281,9 @@
                 },
                 "doctrine": {
                     "$ref": "#/$defs/nodes/doctrine"
+                },
+                "doctrine_migrations": {
+                    "$ref": "#/$defs/nodes/doctrine_migrations"
                 },
                 "framework": {
                     "$ref": "#/$defs/nodes/framework"

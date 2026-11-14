@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block body %}
-<form id="login-form" action="{{ path('legacy', {path: 'Mnu0000.php'}) }}?Id=0000" method="post">
+<form id="login-form" action="{{ path('app_login') }}" method="post">
     <div class="wrapper login-wrapper">
         <div id="MH">
             <ul>
@@ -29,9 +29,9 @@
                 </div>
                 <div class="login-field">
                     <label for="pcClave">Clave</label>
-                    <input type="password" id="pcClave" maxlength="20" name="pcClave" autocomplete="current-password" required>
+                    <input type="password" id="pcClave" maxlength="64" name="pcClave" autocomplete="current-password" required>
                 </div>
-                <p id="login-message" class="login-message" role="status" aria-live="polite" aria-atomic="true"></p>
+                <p id="login-message" class="login-message" role="status" aria-live="polite" aria-atomic="true"{% if error is defined %} data-error{% endif %}>{{ error|default('') }}</p>
                 <input id="login-submit" type="submit" value="Iniciar sesión">
             </section>
         </main>

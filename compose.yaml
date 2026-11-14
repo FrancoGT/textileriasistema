@@ -28,6 +28,8 @@ services:
       <<: *db-env
       APP_ENV: dev
       APP_DEBUG: 1
+      # 0 omite doctrine:migrations:migrate al arrancar (ver docker/entrypoint.sh)
+      RUN_MIGRATIONS: ${RUN_MIGRATIONS:-1}
     ports:
       - "${APP_PORT:-8080}:80"
     volumes:

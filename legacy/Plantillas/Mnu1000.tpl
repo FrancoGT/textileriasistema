@@ -7,6 +7,7 @@
 </head>
 <body>
 <form action="Mnu1000.php#no-back" method="post">
+   {if isset($maintenanceToken)}<input type="hidden" name="_token" value="{$maintenanceToken}" />{/if}
    <div class="wrapper">
    <div id="MH">
       <ul>
@@ -17,19 +18,20 @@
    <div id="topnavbar"></div>
    <div id="navigation">
    <div id="navcontainer">
+   {if isset($maintenanceMessage) && $maintenanceMessage ne ''}<p role="status">{$maintenanceMessage}</p>{/if}
    <table>
       <tr>
       <td>Código:</td>
       <td>{$scNombre}</td>
       </tr><tr>
       <td>Clave Antigua:</td>
-      <td><input type="password" maxlength="30" name="pcClave" autofocus/></td>
+      <td><input type="password" maxlength="64" name="pcClave" autofocus/></td>
       </tr><tr>
       <td>Clave Nueva:</td>
-      <td><input type="password" maxlength="30" name="pcClave1"/></td>
+      <td><input type="password" maxlength="64" minlength="8" name="pcClave1"/></td>
       </tr><tr>
       <td>Clave (Reingrese):</td>
-      <td><input type="password" maxlength="30" name="pcClave2"/></td>
+      <td><input type="password" maxlength="64" minlength="8" name="pcClave2"/></td>
       </tr>
    </table>
    <table>

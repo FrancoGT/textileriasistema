@@ -8,6 +8,11 @@ use App\Controller\CatalogTableController;
 use App\Controller\ClientController;
 use App\Controller\MachineController;
 use App\Controller\PersonnelController;
+use App\Controller\ProductController;
+use App\Controller\ProfileController;
+use App\Controller\StockTransferController;
+use App\Controller\UserController;
+use App\Inventory\StockTransferService;
 use App\Controller\SupplierController;
 use App\Controller\SupplyController;
 use App\Controller\WarehouseController;
@@ -28,6 +33,7 @@ use App\Maintenance\MachineData;
 use App\Maintenance\MachineService;
 use App\Maintenance\PersonnelData;
 use App\Maintenance\PersonnelService;
+use App\Maintenance\ProductService;
 use App\Maintenance\SupplierData;
 use App\Maintenance\SupplierService;
 use App\Maintenance\SupplyData;
@@ -41,12 +47,28 @@ use App\Repository\DbalCatalogTableRepository;
 use App\Repository\DbalClientRepository;
 use App\Repository\DbalMachineRepository;
 use App\Repository\DbalPersonnelRepository;
+use App\Repository\DbalProductRepository;
+use App\Repository\DbalProfileRepository;
+use App\Repository\DbalStockRepository;
+use App\Repository\DbalUserRepository;
 use App\Repository\DbalSupplierRepository;
 use App\Repository\DbalSupplyRepository;
 use App\Repository\DbalWarehouseRepository;
 use App\Repository\ModulePermissionRepository;
 use App\Repository\TransactionalTables;
 use App\Security\DatabaseModulePermission;
+use App\Security\ProfileService;
+use App\Security\UserService;
+use App\Controller\LoginController;
+use App\Controller\PasswordChangeController;
+use App\Migrations\Version20261114000001;
+use App\Migrations\Version20261114000002;
+use App\Migrations\Version20261114000003;
+use App\Repository\DbalCredentialRepository;
+use App\Security\LoginService;
+use App\Security\UserPasswordHasher;
+use Doctrine\DBAL\Schema\Schema;
+use Psr\Log\NullLogger;
 use Doctrine\DBAL\DriverManager;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\HttpFoundation\Request;
@@ -94,15 +116,40 @@ $failures = [];
 $cases = [];
 try {
     $dump = file_get_contents(dirname(__DIR__, 2).'/docker/mysql/init/01-textileria.sql');
-    foreach (['E01MPER', 'E01MPRV', 'E01DPRV', 'E01TUSU', 'E01PPRF', 'E01MMAQ', 'E01MCLI', 'E01MINS', 'E01DCOM', 'E01DPOG', 'E01TTAB', 'E01MALM', 'E01MBAN', 'E01PCTA'] as $table) {
+    foreach (['E01MPER', 'E01MPRV', 'E01DPRV', 'E01TUSU', 'E01PPRF', 'E01MMAQ', 'E01MCLI', 'E01MINS', 'E01DCOM', 'E01DPOG', 'E01TTAB', 'E01MALM', 'E01MBAN', 'E01PCTA', 'E01PALM', 'E01MPROD', 'E01PPROD', 'E01TOPC'] as $table) {
         if (!preg_match('/CREATE TABLE `'.preg_quote($table, '/').'` \([\s\S]*?\) ENGINE=[^;]+;/', $dump, $match)) {
             throw new RuntimeException('Missing schema for '.$table);
         }
-        $connection->executeStatement(str_replace('ENGINE=MyISAM', 'ENGINE=InnoDB', $match[0]));
+        // The migrations convert their own tables, so those keep the engine of the dump.
+        $connection->executeStatement(in_array($table, Version20261114000001::TABLES, true) ? $match[0] : str_replace('ENGINE=MyISAM', 'ENGINE=InnoDB', $match[0]));
         $ownedTables[] = $table;
     }
-    $connection->executeStatement("CREATE VIEW V_E01TTAB AS SELECT '001' AS cCodTab, 'A' AS cCodigo, 'Activo' AS cDescri UNION ALL SELECT '017', 'M', 'Masculino' UNION ALL SELECT '018', 'S', 'Soltero' UNION ALL SELECT '098', 'B', 'Empresa' UNION ALL SELECT '011', '01', 'Hilos' UNION ALL SELECT '011', '02', 'Tintes' UNION ALL SELECT '005', 'A1', 'Hiladora' UNION ALL SELECT '098', 'A', 'Natural' UNION ALL SELECT '098', 'C', 'Empresa' UNION ALL SELECT '002', 'A', 'Alta' UNION ALL SELECT '099', '1721', 'Tejidos' UNION ALL SELECT '007', 'A', 'Bolsas' UNION ALL SELECT '003', 'I', 'Insumos' UNION ALL SELECT '013', 'AB', 'Lima'");
+    $connection->executeStatement("CREATE VIEW V_E01TTAB AS SELECT '001' AS cCodTab, 'A' AS cCodigo, 'Activo' AS cDescri UNION ALL SELECT '017', 'M', 'Masculino' UNION ALL SELECT '018', 'S', 'Soltero' UNION ALL SELECT '098', 'B', 'Empresa' UNION ALL SELECT '011', '01', 'Hilos' UNION ALL SELECT '011', '02', 'Tintes' UNION ALL SELECT '005', 'A1', 'Hiladora' UNION ALL SELECT '098', 'A', 'Natural' UNION ALL SELECT '098', 'C', 'Empresa' UNION ALL SELECT '002', 'A', 'Alta' UNION ALL SELECT '099', '1721', 'Tejidos' UNION ALL SELECT '007', 'A', 'Bolsas' UNION ALL SELECT '003', 'I', 'Insumos' UNION ALL SELECT '013', 'AB', 'Lima' UNION ALL SELECT '049', 'A', 'Administrador' UNION ALL SELECT '049', 'B', 'Pedidos' UNION ALL SELECT '004', 'A', 'Con receta'");
     $viewCreated = true;
+    // Before the migrations: the dump keeps MyISAM and the 36-character password column.
+    $passwords = new UserPasswordHasher();
+    $narrowCredentials = new DbalCredentialRepository($connection);
+    $connection->insert('E01TUSU', ['CCODUSU' => '4000', 'CCODPER' => '004000', 'CESTADO' => 'A', 'CCLAVE' => 'Clave.Antigua']);
+    $connection->insert('E01TUSU', ['CCODUSU' => '4001', 'CESTADO' => 'I', 'CCLAVE' => 'secreta1', 'DFECFIN' => '2014-12-04']);
+    $same(false, $narrowCredentials->canStoreHashes());
+    $same('4000', (new LoginService($narrowCredentials, $passwords, new NullLogger()))->authenticate('4000', 'Clave.Antigua')['code']);
+    $same('Clave.Antigua', $connection->fetchOne("SELECT CCLAVE FROM E01TUSU WHERE CCODUSU = '4000'"));
+    $migrate = static function () use ($connection): int {
+        $statements = 0;
+        foreach ([Version20261114000001::class, Version20261114000002::class, Version20261114000003::class] as $class) {
+            $migration = new $class($connection, new NullLogger());
+            $migration->up(new Schema());
+            foreach ($migration->getSql() as $query) {
+                $connection->executeStatement($query->getStatement(), $query->getParameters(), $query->getTypes());
+                ++$statements;
+            }
+        }
+
+        return $statements;
+    };
+    $passwordColumn = $connection->fetchNumeric("SELECT CHARACTER_SET_NAME, COLLATION_NAME, CHARACTER_MAXIMUM_LENGTH FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND UPPER(TABLE_NAME) = 'E01TUSU' AND UPPER(COLUMN_NAME) = 'CCLAVE'");
+    $migrate();
+    $login = new LoginService(new DbalCredentialRepository($connection), $passwords, new NullLogger());
     foreach (['1000' => 'A', '2000' => 'B', '3000' => 'C'] as $user => $profile) {
         $connection->insert('E01TUSU', ['CCODUSU' => (string) $user, 'CPERFIL' => $profile]);
     }
@@ -116,6 +163,9 @@ try {
     $connection->insert('E01PPRF', ['CCODOPC' => 'ERP1090', 'CPERFIL' => 'A', 'CESTADO' => 'A']);
     $connection->insert('E01PPRF', ['CCODOPC' => 'ERP1093', 'CPERFIL' => 'A', 'CESTADO' => 'A']);
     $connection->insert('E01PPRF', ['CCODOPC' => 'ERP1094', 'CPERFIL' => 'A', 'CESTADO' => 'A']);
+    foreach (['ERP1091', 'ERP1070', 'ERP1010', 'ERP1020'] as $option) {
+        $connection->insert('E01PPRF', ['CCODOPC' => $option, 'CPERFIL' => 'A', 'CESTADO' => 'A']);
+    }
     $tables = new TransactionalTables($connection);
     $permissions = new DatabaseModulePermission(new ModulePermissionRepository($connection));
     $personRepository = new DbalPersonnelRepository($connection, $tables);
@@ -128,6 +178,11 @@ try {
     $warehouses = new WarehouseService(new DbalWarehouseRepository($connection, $tables), new CatalogRepository($connection), $permissions);
     $banks = new BankService(new DbalBankRepository($connection, $tables), new CatalogRepository($connection), $permissions);
     $bankAccounts = new BankAccountService(new DbalBankAccountRepository($connection, $tables), $permissions);
+    $stock = new DbalStockRepository($connection, $tables);
+    $transfers = new StockTransferService($stock, $permissions);
+    $products = new ProductService(new DbalProductRepository($connection, $tables), $stock, new CatalogRepository($connection), $permissions);
+    $users = new UserService(new DbalUserRepository($connection, $tables, new DbalCredentialRepository($connection), $passwords), new CatalogRepository($connection), $permissions);
+    $profiles = new ProfileService(new DbalProfileRepository($connection, $tables), new CatalogRepository($connection), $permissions);
     $machines = new MachineService(new DbalMachineRepository($connection, $tables), new CatalogRepository($connection), $permissions);
     $person = new PersonnelData("O'NEIL", 'Av. Central', 'oneil@example.test', '12345678', 'M', 'S', 'A');
     $supplier = new SupplierData("O'REILLY SAC", 'Av. Sur', '', '12345678901', 'B', '2024-01-02', 'Initial notes', ['01']);
@@ -583,6 +638,222 @@ try {
         $same('000003', $connection->fetchOne("SELECT cCodBan FROM E01PCTA WHERE nCuenta = '42345678901234'"));
         $same('/Mnu0000.php?Id=1000', $account('Salir', [])->headers->get('Location'));
         $session->logout();
+    };
+    $stockOf = static fn (string $warehouse, string $supply): mixed => $connection->fetchOne('SELECT nCant FROM E01PALM WHERE cCodAlm = :w AND cCodIns = :s', ['w' => $warehouse, 's' => $supply]);
+    $cases['new modules deny access without their permission'] = static function () use ($throws, $transfers, $products, $users, $profiles): void {
+        foreach (['', '2000', '3000'] as $user) {
+            $throws(AccessDeniedHttpException::class, static fn () => $transfers->warehouses($user));
+            $throws(AccessDeniedHttpException::class, static fn () => $transfers->transfer($user, '9999', 'W00001', ['Z00001' => '1']));
+            $throws(AccessDeniedHttpException::class, static fn () => $products->create($user, 'Chompa', 'A'));
+            $throws(AccessDeniedHttpException::class, static fn () => $users->create($user, '000777', 'A'));
+            $throws(AccessDeniedHttpException::class, static fn () => $profiles->grant($user, 'B', 'ERP1030', 'A'));
+            $throws(AccessDeniedHttpException::class, static fn () => $profiles->revoke($user, 'A', 'ERP1030'));
+        }
+    };
+    $cases['stock transfers add from supplier, move between warehouses and roll back on shortage'] = static function () use ($transfers, $connection, $stockOf, $throws, $same): void {
+        $connection->insert('E01MINS', ['cCodIns' => 'Z00001', 'cDescri' => 'LANA FINA', 'cUniMed' => 'A', 'nPrecio' => '7.25']);
+        $connection->insert('E01MINS', ['cCodIns' => 'Z00002', 'cDescri' => 'TINTE AZUL', 'cUniMed' => 'A', 'nPrecio' => '3.00']);
+        $connection->insert('E01MALM', ['CCODALM' => 'W00001', 'CNOMALM' => 'PRIMERO', 'CESTADO' => 'A', 'CTIPO' => 'I']);
+        $connection->insert('E01MALM', ['CCODALM' => 'W00002', 'CNOMALM' => 'TERCERO', 'CESTADO' => 'A', 'CTIPO' => 'I']);
+        $third = 'W00002';
+        $transfers->transfer('1000', '9999', 'W00001', ['Z00001' => '10', 'Z00002' => '4']);
+        $transfers->transfer('1000', '9999', 'W00001', ['Z00001' => '5']);
+        $same(['15', '4'], [$stockOf('W00001', 'Z00001'), $stockOf('W00001', 'Z00002')]);
+        $transfers->transfer('1000', 'W00001', $third, ['Z00001' => '6']);
+        $same(['9', '6'], [$stockOf('W00001', 'Z00001'), $stockOf($third, 'Z00001')]);
+        $throws(DomainException::class, static fn () => $transfers->transfer('1000', 'W00001', $third, ['Z00002' => '1', 'Z00001' => '100']));
+        $same(['4', false], [$stockOf('W00001', 'Z00002'), $stockOf($third, 'Z00002')]);
+        foreach ([['W00001', 'W00001', ['Z00001' => '1']], ['W00001', '9999', ['Z00001' => '1']], ['999998', $third, ['Z00001' => '1']],
+            ['9999', $third, []], ['9999', $third, ['999999' => '1']], ['9999', $third, ['Z00001' => '0']], ['9999', $third, ['Z00001' => '1.5']]] as [$origin, $destination, $lines]) {
+            $throws(DomainException::class, static fn () => $transfers->transfer('1000', $origin, $destination, $lines));
+        }
+        $same('9', $stockOf('W00001', 'Z00001'));
+        $same(['Z00001', 'LANA FINA', 'Bolsas', '7.25', '9'], $transfers->stock('1000', 'W00001')['stock'][0]);
+    };
+    $cases['stock transfer controller keeps lines and saves with a token'] = static function () use ($transfers, $stockOf, $throws, $same): void {
+        $session = new LegacySession();
+        $controller = new StockTransferController($transfers, $session, new LegacyTemplateRenderer(dirname(__DIR__, 2).'/legacy'));
+        $post = static fn (string $action, array $fields, array $grids = []) => $controller(Request::create('/ERP1091.php', 'POST'), new MaintenanceInput($action, $fields + ['_token' => $session->token('stock_transfer')], [], $grids));
+        $session->logout();
+        $same('/index.php', $controller(Request::create('/ERP1091.php'), new MaintenanceInput('', [], []))->headers->get('Location'));
+        $session->set('gcCodUsu', '1000');
+        $throws(AccessDeniedHttpException::class, static fn () => $controller(Request::create('/ERP1091.php', 'POST'), new MaintenanceInput('Grabar', [], [])));
+        $same(200, $post('Detalle', ['pcCodAlm' => 'W00001'])->getStatusCode());
+        $same(422, $post('Detalle', ['pcCodAlm' => '999999'])->getStatusCode());
+        $same(200, $post('Asignar Insumos', [])->getStatusCode());
+        $same(200, $post('Agregar', ['pcCodIns' => 'Z00002', 'pcOrigen' => '9999', 'pcDestino' => 'W00001'])->getStatusCode());
+        $lines = ['paDataI' => ['Z00002' => ['Z00002', 'tampered', 'x', 'x', '2'], 'Z00001' => ['Z00001', '', '', '', '1']]];
+        $same(200, $post('Eliminar', ['pcOrigen' => '9999', 'pcDestino' => 'W00001'], $lines + ['paCheck' => ['Z00001']])->getStatusCode());
+        $same(422, $post('Grabar', ['pcOrigen' => '9999', 'pcDestino' => '9999'], $lines)->getStatusCode());
+        $same(303, $post('Grabar', ['pcOrigen' => '9999', 'pcDestino' => 'W00001'], $lines)->getStatusCode());
+        $same(['6', '10'], [$stockOf('W00001', 'Z00002'), $stockOf('W00001', 'Z00001')]);
+        $session->logout();
+    };
+    $cases['products are created without recipe and recipes replace lines in one transaction'] = static function () use ($products, $connection, $throws, $same): void {
+        $connection->insert('E01MPROD', ['cCodProd' => '900001', 'cDescri' => 'Reservado', 'cEstado' => 'A']);
+        $code = $products->create('1000', "chompa o'neil", 'A');
+        $same(['000001', "CHOMPA O'NEIL", 'N'], array_values($connection->fetchNumeric('SELECT cCodProd, cDescri, cTipo FROM E01MPROD WHERE cCodProd = :c', ['c' => $code])));
+        $throws(DomainException::class, static fn () => $products->create('1000', '', 'A'));
+        $throws(DomainException::class, static fn () => $products->create('1000', 'X', 'Z'));
+        $products->saveRecipe('1000', $code, 'Chompa', ['Z00001', 'Z00002', 'Z00001']);
+        $same(['code' => '000001', 'description' => 'CHOMPA', 'status' => 'A', 'recipe' => ['Z00001', 'Z00002']], $products->find('1000', $code));
+        $same('A', $connection->fetchOne('SELECT cTipo FROM E01MPROD WHERE cCodProd = :c', ['c' => $code]));
+        $throws(DomainException::class, static fn () => $products->saveRecipe('1000', $code, 'Chompa', []));
+        $throws(DomainException::class, static fn () => $products->saveRecipe('1000', $code, 'Chompa', ['999999']));
+        $throws(DomainException::class, static fn () => $products->saveRecipe('1000', '000999', 'Chompa', ['Z00001']));
+        $same(['Z00001', 'Z00002'], $products->find('1000', $code)['recipe']);
+    };
+    $cases['product controller edits the recipe kept in the form state'] = static function () use ($products, $same, $connection): void {
+        $session = new LegacySession();
+        $controller = new ProductController($products, $session, new LegacyTemplateRenderer(dirname(__DIR__, 2).'/legacy'));
+        $post = static fn (string $action, array $fields, array $grids = []) => $controller(Request::create('/ERP1070.php', 'POST'), new MaintenanceInput($action, $fields + ['_token' => $session->token('products')], [], $grids));
+        $session->set('gcCodUsu', '1000');
+        $same(200, $controller(Request::create('/ERP1070.php'), new MaintenanceInput('', [], []))->getStatusCode());
+        $same(200, $post('Nuevo', ['Boton0' => 'Nuevo'])->getStatusCode());
+        $same(303, $post('Grabar', ['Boton2' => 'Grabar', 'pcCodProd' => '', 'pcDescri' => 'Bufanda', 'pcEstado' => 'A'])->getStatusCode());
+        $code = $connection->fetchOne("SELECT cCodProd FROM E01MPROD WHERE cDescri = 'BUFANDA'");
+        $same(200, $post('Detalle', ['Boton0' => 'Detalle', 'pcCodProd' => $code])->getStatusCode());
+        $same(422, $post('Grabar', ['Boton1' => 'Grabar', 'pcCodProd' => $code, 'pcDescri' => 'Bufanda'])->getStatusCode());
+        $same(200, $post('Agregar', ['Boton1' => 'Agregar', 'pcCodProd' => $code, 'pcCodIns1' => 'Z00001'])->getStatusCode());
+        $same(200, $post('Agregar', ['Boton1' => 'Agregar', 'pcCodProd' => $code, 'pcCodIns1' => 'Z00002'])->getStatusCode());
+        $same(200, $post('Agregar', ['Boton1' => 'Agregar', 'pcCodProd' => $code, 'pcCodIns1' => '999999'])->getStatusCode());
+        $same(200, $post('Eliminar', ['Boton1' => 'Eliminar', 'pcCodProd' => $code], ['paCheck' => ['Z00001']])->getStatusCode());
+        $same(303, $post('Grabar', ['Boton1' => 'Grabar', 'pcCodProd' => $code, 'pcDescri' => 'Bufanda larga'])->getStatusCode());
+        $same(['Z00002'], $products->find('1000', $code)['recipe']);
+        $same('BUFANDA LARGA', $products->find('1000', $code)['description']);
+        $session->logout();
+    };
+    $cases['users are created with the legacy login contract and updated with validation'] = static function () use ($users, $connection, $passwords, $throws, $same): void {
+        $connection->insert('E01MPER', ['cCodPer' => '000777', 'cNombre' => 'ANA', 'cNroDni' => '44556677', 'cEstado' => 'A']);
+        $connection->insert('E01MPER', ['cCodPer' => '010777', 'cNombre' => 'LUIS', 'cNroDni' => '11223344', 'cEstado' => 'A']);
+        $connection->insert('E01MPER', ['cCodPer' => '000888', 'cNombre' => 'CESADO', 'cNroDni' => '99887766', 'cEstado' => 'I']);
+        $same(['000777', '010777'], array_values(array_intersect(['000777', '010777', '000888'], array_column($users->candidates('1000'), 0))));
+        $same('0777', $users->create('1000', '000777', 'B'));
+        $row = $connection->fetchNumeric("SELECT cClave, dFecFin, cEstado, cPerfil, cUsuCod FROM E01TUSU WHERE cCodUsu = '0777'");
+        $same([true, null, 'A', 'B', '1000'], [$passwords->verify((string) $row[0], '44556677'), ...array_slice($row, 1)]);
+        $throws(DomainException::class, static fn () => $users->create('1000', '010777', 'B'));
+        $throws(DomainException::class, static fn () => $users->create('1000', '000777', 'B'));
+        $throws(DomainException::class, static fn () => $users->create('1000', '000888', 'B'));
+        $throws(DomainException::class, static fn () => $users->create('1000', '000777', 'Z'));
+        $users->update('1000', '0777', 'A', 'A', '2027-01-31');
+        $same(['code' => '0777', 'name' => 'ANA', 'status' => 'A', 'end_date' => '2027-01-31', 'profile' => 'A'], $users->find('1000', '0777'));
+        $throws(DomainException::class, static fn () => $users->update('1000', '0777', 'A', 'A', '2027-02-30'));
+        $throws(DomainException::class, static fn () => $users->update('1000', '0777', 'Z', 'A', '2027-01-31'));
+        $throws(DomainException::class, static fn () => $users->update('1000', '9999', 'A', 'A', '2027-01-31'));
+        $same([['0777', 'ANA', 'Administrador']], array_values(array_filter($users->all('1000'), static fn (array $row): bool => '0777' === $row[0])));
+    };
+    $cases['user controller creates and updates through the opened form'] = static function () use ($users, $same, $connection): void {
+        $session = new LegacySession();
+        $controller = new UserController($users, $session, new LegacyTemplateRenderer(dirname(__DIR__, 2).'/legacy'));
+        $post = static fn (string $action, array $fields) => $controller(Request::create('/ERP1010.php', 'POST'), new MaintenanceInput($action, $fields + ['_token' => $session->token('users')], []));
+        $session->set('gcCodUsu', '1000');
+        $same(200, $controller(Request::create('/ERP1010.php'), new MaintenanceInput('', [], []))->getStatusCode());
+        $same(422, $post('Grabar', ['pcCodPer' => '010777', 'pcPerfil' => 'B'])->getStatusCode());
+        $connection->delete('E01MPER', ['cCodPer' => '010777']);
+        $connection->insert('E01MPER', ['cCodPer' => '000999', 'cNombre' => 'EVA', 'cNroDni' => '55667788', 'cEstado' => 'A']);
+        $same(200, $post('Nuevo', [])->getStatusCode());
+        $same(303, $post('Grabar', ['pcCodPer' => '000999', 'pcPerfil' => 'B'])->getStatusCode());
+        $same(200, $post('Editar', ['pcCodUsu' => '0999'])->getStatusCode());
+        $same(422, $post('Actualizar', ['pcCodUsu' => '0777', 'pcEstado' => 'A', 'pcPerfil' => 'B', 'pdFecFin' => '2027-01-31'])->getStatusCode());
+        $same(303, $post('Actualizar', ['pcCodUsu' => '0999', 'pcEstado' => 'A', 'pcPerfil' => 'A', 'pdFecFin' => '2027-03-01'])->getStatusCode());
+        $same('2027-03-01', $connection->fetchOne("SELECT dFecFin FROM E01TUSU WHERE cCodUsu = '0999'"));
+        $session->logout();
+    };
+    $cases['profiles grant and revoke options without locking out the current user'] = static function () use ($profiles, $connection, $throws, $same): void {
+        foreach ([['ERP1030', 'Clientes', 'A'], ['ERP1020', 'Perfiles', 'A'], ['OLD0001', 'Inactiva', 'I']] as [$option, $description, $state]) {
+            $connection->insert('E01TOPC', ['cCodOpc' => $option, 'cDescri' => $description, 'cEstado' => $state]);
+        }
+        $same([['ERP1030', 'Clientes'], ['ERP1020', 'Perfiles']] === $profiles->available('1000', 'B') ? 'sorted wrong' : 'ok', 'ok');
+        $same(['ERP1020', 'ERP1030'], array_column($profiles->available('1000', 'B'), 0));
+        $profiles->grant('1000', 'B', 'ERP1030', 'A');
+        $same(['ERP1030', 'Clientes', 'Activo'], $profiles->open('1000', 'B')['granted'][0]);
+        $throws(DomainException::class, static fn () => $profiles->grant('1000', 'B', 'ERP1030', 'A'));
+        $throws(DomainException::class, static fn () => $profiles->grant('1000', 'B', 'OLD0001', 'A'));
+        $throws(DomainException::class, static fn () => $profiles->grant('1000', 'B', 'ERP1020', 'Z'));
+        $throws(DomainException::class, static fn () => $profiles->grant('1000', 'Z', 'ERP1020', 'A'));
+        $throws(DomainException::class, static fn () => $profiles->revoke('1000', 'A', 'ERP1020'));
+        $same(1, (int) $connection->fetchOne("SELECT COUNT(*) FROM E01PPRF WHERE cPerfil = 'A' AND cCodOpc = 'ERP1020'"));
+        $profiles->revoke('1000', 'B', 'ERP1030');
+        $same([], $profiles->open('1000', 'B')['granted']);
+        $throws(DomainException::class, static fn () => $profiles->revoke('1000', 'B', 'ERP1030'));
+    };
+    $cases['profile controller keeps the selected profile between steps'] = static function () use ($profiles, $same, $connection): void {
+        $session = new LegacySession();
+        $controller = new ProfileController($profiles, $session, new LegacyTemplateRenderer(dirname(__DIR__, 2).'/legacy'));
+        $post = static fn (string $action, array $fields) => $controller(Request::create('/ERP1020.php', 'POST'), new MaintenanceInput($action, $fields + ['_token' => $session->token('profiles')], []));
+        $session->set('gcCodUsu', '1000');
+        $same(422, $post('Nuevo', [])->getStatusCode());
+        $same(200, $post('Aplicar', ['pcPerfil' => 'B'])->getStatusCode());
+        $same(200, $post('Nuevo', [])->getStatusCode());
+        $same(200, $post('Grabar', ['pcCodOpc' => 'ERP1030', 'pcEstado' => 'A'])->getStatusCode());
+        $same(1, (int) $connection->fetchOne("SELECT COUNT(*) FROM E01PPRF WHERE cPerfil = 'B' AND cCodOpc = 'ERP1030'"));
+        $same(200, $post('Eliminar', ['pcCodOpc' => 'ERP1030'])->getStatusCode());
+        $same(0, (int) $connection->fetchOne("SELECT COUNT(*) FROM E01PPRF WHERE cPerfil = 'B' AND cCodOpc = 'ERP1030'"));
+        $same(422, $post('Aplicar', ['pcPerfil' => 'Z'])->getStatusCode());
+        $session->logout();
+    };
+    $cases['migrations convert the tables, widen the password column and hash plain-text passwords'] = static function () use ($connection, $passwords, $migrate, $passwordColumn, $same): void {
+        $engines = $connection->fetchAllKeyValue("SELECT UPPER(TABLE_NAME), ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND UPPER(TABLE_NAME) IN ('E01MPER', 'E01TUSU', 'E01PPRF', 'E01TTAB') ORDER BY 1");
+        $same(['E01MPER' => 'InnoDB', 'E01PPRF' => 'InnoDB', 'E01TTAB' => 'InnoDB', 'E01TUSU' => 'InnoDB'], $engines);
+        $same(true, (new DbalCredentialRepository($connection))->canStoreHashes());
+        $stored = (string) $connection->fetchOne("SELECT CCLAVE FROM E01TUSU WHERE CCODUSU = '4000'");
+        $same([false, true, false], [UserPasswordHasher::isPlainText($stored), $passwords->verify($stored, 'Clave.Antigua'), $passwords->verify($stored, 'clave.antigua')]);
+        $same([$passwordColumn[0], $passwordColumn[1], 36, 255], [...array_slice($connection->fetchNumeric("SELECT CHARACTER_SET_NAME, COLLATION_NAME, CHARACTER_MAXIMUM_LENGTH FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND UPPER(TABLE_NAME) = 'E01TUSU' AND UPPER(COLUMN_NAME) = 'CCLAVE'"), 0, 2), (int) $passwordColumn[2], (int) $connection->fetchNumeric("SELECT CHARACTER_SET_NAME, COLLATION_NAME, CHARACTER_MAXIMUM_LENGTH FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND UPPER(TABLE_NAME) = 'E01TUSU' AND UPPER(COLUMN_NAME) = 'CCLAVE'")[2]]);
+        $same(0, $migrate());
+    };
+    $cases['login upgrades plain text and rejects injection, inactive users and wrong passwords'] = static function () use ($login, $connection, $passwords, $throws, $same): void {
+        $same(['code' => '4000', 'name' => '', 'must_change' => true], $login->authenticate('4000', 'Clave.Antigua'));
+        foreach ([['4000', 'clave.antigua'], ['4000', 'Clave.Antigua '], ['4000', ''], ['4000', "' OR '1'='1"], ["4000' OR '1'='1", 'Clave.Antigua'],
+            ["' OR 1=1 -- ", 'x'], ['9998', 'Clave.Antigua'], ['4001', 'secreta1'], ['', 'Clave.Antigua']] as [$code, $password]) {
+            $throws(DomainException::class, static fn () => $login->authenticate($code, $password));
+        }
+        // A database restored from an old backup still has plain-text passwords.
+        $connection->insert('E01TUSU', ['CCODUSU' => '4002', 'CESTADO' => 'A', 'CCLAVE' => 'legacy-99', 'DFECFIN' => '2027-01-01']);
+        $same(['code' => '4002', 'name' => '', 'must_change' => false], $login->authenticate('4002', 'legacy-99'));
+        $stored = (string) $connection->fetchOne("SELECT CCLAVE FROM E01TUSU WHERE CCODUSU = '4002'");
+        $same([false, true], [UserPasswordHasher::isPlainText($stored), $passwords->verify($stored, 'legacy-99')]);
+        $same('4002', $login->authenticate('4002', 'legacy-99')['code']);
+    };
+    $cases['password change validates input and stores a hash with the next expiration date'] = static function () use ($login, $connection, $passwords, $throws, $same): void {
+        foreach ([['mala', 'NuevaClave1', 'NuevaClave1'], ['Clave.Antigua', 'corta', 'corta'], ['Clave.Antigua', 'NuevaClave1', 'NuevaClave2'],
+            ['Clave.Antigua', 'Clave.Antigua', 'Clave.Antigua'], ['Clave.Antigua', str_repeat('x', 65), str_repeat('x', 65)]] as [$current, $new, $repeated]) {
+            $throws(DomainException::class, static fn () => $login->changePassword('4000', $current, $new, $repeated));
+        }
+        $throws(DomainException::class, static fn () => $login->changePassword('9998', 'x', 'NuevaClave1', 'NuevaClave1'));
+        $login->changePassword('4000', 'Clave.Antigua', 'NuevaClave1', 'NuevaClave1');
+        $row = $connection->fetchNumeric("SELECT CCLAVE, DFECFIN = CURRENT_DATE + INTERVAL 45 DAY FROM E01TUSU WHERE CCODUSU = '4000'");
+        $same([true, 1], [$passwords->verify((string) $row[0], 'NuevaClave1'), (int) $row[1]]);
+        $throws(DomainException::class, static fn () => $login->authenticate('4000', 'Clave.Antigua'));
+        $same(false, $login->authenticate('4000', 'NuevaClave1')['must_change']);
+    };
+    $cases['login and password change controllers keep the legacy session contract'] = static function () use ($login, $connection, $throws, $same): void {
+        $session = new LegacySession();
+        $session->logout();
+        $controller = new LoginController($login, $session);
+        $post = static fn (array $fields) => $controller(Request::create('/Mnu0000.php', 'POST', $fields, server: ['HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest']));
+        $response = $post(['pcCodigo' => '4000', 'pcClave' => 'mala']);
+        $same([401, false, ''], [$response->getStatusCode(), json_decode((string) $response->getContent(), true)['ok'], $session->user()]);
+        $same(400, $post(['pcCodigo' => ['4000'], 'pcClave' => 'NuevaClave1'])->getStatusCode());
+        $same(400, $post(['pcCodigo' => '4000'])->getStatusCode());
+        $response = $post(['pcCodigo' => '4000', 'pcClave' => 'NuevaClave1']);
+        $same([200, ['ok' => true, 'redirect' => 'Mnu0000.php?Id=0000'], '4000', 'no-store, private'],
+            [$response->getStatusCode(), json_decode((string) $response->getContent(), true), $session->user(), $response->headers->get('Cache-Control')]);
+        $connection->update('E01TUSU', ['DFECFIN' => null], ['CCODUSU' => '4000']);
+        $same('Mnu1000.php', json_decode((string) $post(['pcCodigo' => '4000', 'pcClave' => 'NuevaClave1'])->getContent(), true)['redirect']);
+        $response = $controller(Request::create('/Mnu0000.php', 'POST', ['pcCodigo' => '4000', 'pcClave' => 'NuevaClave1']));
+        $same([303, '/Mnu1000.php'], [$response->getStatusCode(), $response->headers->get('Location')]);
+
+        $change = new PasswordChangeController($login, $session, new LegacyTemplateRenderer(dirname(__DIR__, 2).'/legacy'));
+        $input = static fn (string $action, array $fields) => new MaintenanceInput($action, $fields, []);
+        $same(200, $change(Request::create('/Mnu1000.php'), $input('', []))->getStatusCode());
+        $throws(AccessDeniedHttpException::class, static fn () => $change(Request::create('/Mnu1000.php', 'POST'), $input('Grabar', ['pcClave' => 'NuevaClave1', 'pcClave1' => 'OtraClave22', 'pcClave2' => 'OtraClave22'])));
+        $token = $session->token('password');
+        $same(422, $change(Request::create('/Mnu1000.php', 'POST'), $input('Grabar', ['_token' => $token, 'pcClave' => 'NuevaClave1', 'pcClave1' => 'corta', 'pcClave2' => 'corta']))->getStatusCode());
+        $response = $change(Request::create('/Mnu1000.php', 'POST'), $input('Grabar', ['_token' => $token, 'pcClave' => 'NuevaClave1', 'pcClave1' => 'OtraClave22', 'pcClave2' => 'OtraClave22']));
+        $same([303, '/Mnu0000.php?Id=0000'], [$response->getStatusCode(), $response->headers->get('Location')]);
+        $same(false, $login->authenticate('4000', 'OtraClave22')['must_change']);
+        $session->logout();
+        $same('/index.php', $change(Request::create('/Mnu1000.php'), $input('', []))->headers->get('Location'));
     };
     foreach ($cases as $name => $case) {
         try {

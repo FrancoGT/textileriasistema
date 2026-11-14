@@ -15,12 +15,13 @@ final class MaintenanceInputResolver implements ValueResolverInterface
 {
     private const LIST_FIELD = 'paTipArs';
     // Table fields posted as paData[row][column] and paCheck[].
-    private const GRID_FIELDS = ['paData', 'paCheck'];
+    private const GRID_FIELDS = ['paData', 'paDataI', 'paCheck'];
     private const MAX_GRID_ROWS = 1000;
     private const MAX_GRID_CELLS = 10;
     // Submit button names used by the legacy templates, in order of precedence.
     private const BUTTONS = ['Boton2', 'Boton1', 'Boton0', 'Boton', 'Boton3', 'Boton4', 'Boton5', 'Aceptar', 'Aplicar', 'Grabar', 'Cancelar', 'Salir'];
-    private const ACTIONS = ['', 'Aceptar', 'Aplicar', 'Nuevo', 'Salir', 'Grabar', 'Cancelar', 'Editar', 'Eliminar'];
+    private const ACTIONS = ['', 'Aceptar', 'Aplicar', 'Nuevo', 'Salir', 'Grabar', 'Cancelar', 'Editar', 'Eliminar',
+        'Detalle', 'Asignar Insumos', 'Agregar', 'Actualizar'];
 
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {

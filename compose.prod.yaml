@@ -27,6 +27,8 @@ services:
       <<: *db-env
       APP_ENV: prod
       APP_DEBUG: 0
+      # 0 omite doctrine:migrations:migrate al arrancar (ver docker/entrypoint.sh)
+      RUN_MIGRATIONS: ${RUN_MIGRATIONS:-1}
       APP_SECRET: ${APP_SECRET:?Defina APP_SECRET en .env.docker.prod}
       DEFAULT_URI: ${DEFAULT_URI:-http://localhost}
       TRUSTED_PROXIES: ${TRUSTED_PROXIES:-127.0.0.1,REMOTE_ADDR}

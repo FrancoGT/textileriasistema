@@ -256,8 +256,10 @@ class CMtoUsuario extends CBase {
 	  $lcNroDni=$laFila[0];
       // Validar codigo de personal
 	  $lcCodUsu=substr($this->pcCodPer,2,6);
-      $lcSql = "INSERT INTO E01TUSU (cCodUsu, cCodPer, cEstado, cClave, cPerfil, cUsuCod, tModifi) VALUES 
-                   ('$lcCodUsu', '$this->pcCodPer', 'A', ('$lcNroDni'),'$this->pcPerfil', '$this->pcUsuCod', SYSDATE())";
+      // Same hash as App\Security\UserPasswordHasher. Needs the migration that widens E01TUSU.cClave.
+      $lcClave = password_hash(trim($lcNroDni), PASSWORD_BCRYPT, ['cost' => 13]);
+      $lcSql = "INSERT INTO E01TUSU (cCodUsu, cCodPer, cEstado, cClave, cPerfil, cUsuCod, tModifi) VALUES
+                   ('$lcCodUsu', '$this->pcCodPer', 'A', '$lcClave','$this->pcPerfil', '$this->pcUsuCod', SYSDATE())";
       $llOk = $loSql->omExec($lcSql);
       $loSql->omDisconnect();
       if (!$llOk) {

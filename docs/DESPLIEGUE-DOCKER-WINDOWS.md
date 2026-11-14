@@ -79,6 +79,11 @@ docker compose logs -f app
 La primera vez el contenedor `db` importa automáticamente `docker/mysql/init/01-textileria.sql`
 y el contenedor `app` ejecuta `composer install` si falta la carpeta `vendor/`.
 
+En cada arranque el contenedor `app` aplica las migraciones pendientes de `src/Migrations`
+(`doctrine:migrations:migrate`). Así una base nueva y una base existente quedan con el mismo
+esquema. Si una migración falla, el contenedor se detiene y `docker compose logs app` muestra
+el error. Con `RUN_MIGRATIONS=0` el contenedor arranca sin aplicarlas.
+
 | URL | Descripción |
 |---|---|
 | http://localhost:8080 | Aplicación (inicio de sesión) |
@@ -87,7 +92,8 @@ y el contenedor `app` ejecuta `composer install` si falta la carpeta `vendor/`.
 | http://localhost:8081 | phpMyAdmin (opcional, ver 3.3) |
 | `localhost:3307` | MariaDB desde Windows (HeidiSQL, DBeaver, Workbench…) |
 
-Usuario de prueba incluido en el dump: código **9999** (la clave está en la tabla `E01TUSU`).
+Usuario de prueba incluido en el dump: código **9999**. La clave inicial es el valor que trae el
+dump en `E01TUSU`. Después de las migraciones la tabla solo guarda el hash, pero la clave no cambia.
 
 ### 3.2 Comandos del día a día
 
@@ -248,6 +254,10 @@ docker compose -f compose.prod.yaml --env-file .env.docker.prod up -d --no-build
 
 ### 4.4 Actualizar a una nueva versión
 
+Antes de actualizar, haga un respaldo de la base (ver 4.5). El contenedor `app` aplica las
+migraciones al arrancar y estas no se pueden revertir: la versión que cifra las claves de
+`E01TUSU` no puede recuperar las claves originales.
+
 ```bash
 # (Opción A) en el servidor
 git pull   # o copiar los archivos nuevos
@@ -296,4 +306,5 @@ El contenedor escucha HTTP en el puerto 80. Para HTTPS, ponga delante un proxy i
 | Lentitud en Windows | Normal con *bind mounts*. `var/` ya va en un volumen nativo. Mover el proyecto dentro de WSL (`\\wsl$\...`) acelera mucho. |
 | `docker-entrypoint: not found` / `\r` | Archivos con fin de línea CRLF: el Dockerfile ya los normaliza; si persiste, `git config core.autocrlf input`. |
 | Cambios en `.ini`, `vhost.conf` o `Dockerfile` no se aplican | Reconstruir: `docker compose up -d --build`. |
+| El contenedor `app` se reinicia y el log dice `doctrine:migrations:migrate` | Una migración falló. Ver `docker compose logs app`. Si dice que un código de usuario aparece en más de una fila de `E01TUSU`, elimine las filas sobrantes y reinicie. |
 | Tablas "no existen" (`E01TUSU` vs `e01tusu`) | La BD debe arrancar con `--lower-case-table-names=1` (ya está en los compose). Solo se aplica a un volumen nuevo: `docker compose down -v`. |

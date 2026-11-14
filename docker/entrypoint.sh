@@ -27,6 +27,14 @@ if [ -n "${DATABASE_HOST}" ]; then
     done
 fi
 
+# Migraciones de esquema (src/Migrations). Si fallan, el contenedor se detiene:
+# servir la aplicacion con un esquema viejo truncaria las claves cifradas.
+# RUN_MIGRATIONS=0 las omite, por ejemplo para aplicarlas a mano en una ventana de mantenimiento.
+if [ "${RUN_MIGRATIONS:-1}" = "1" ]; then
+    echo "[entrypoint] Aplicando migraciones de base de datos..."
+    php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
+fi
+
 if [ "${APP_ENV:-prod}" = "prod" ]; then
     php bin/console cache:warmup --no-interaction || true
 fi

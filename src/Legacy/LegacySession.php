@@ -47,6 +47,15 @@ final class LegacySession
         return $token;
     }
 
+    /** Stores the legacy identity in a new session id, which prevents session fixation. */
+    public function login(string $user, string $name): void
+    {
+        $this->logout();
+        session_regenerate_id(true);
+        $_SESSION['gcCodUsu'] = $user;
+        $_SESSION['gcNombre'] = $name;
+    }
+
     public function logout(): void
     {
         // Legacy identity is stored outside Symfony's isolated session attributes.

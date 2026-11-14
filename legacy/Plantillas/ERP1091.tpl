@@ -8,6 +8,7 @@
 </head>
 <body>
 <form action="ERP1091.php#no-back" method="post">
+   {if isset($maintenanceToken)}<input type="hidden" name="_token" value="{$maintenanceToken}" />{/if}
    <div class="wrapper">
    <div id="MH">
            <ul>
@@ -18,6 +19,7 @@
    <div id="topnavbar"></div>
    <div id="navigation">
    <div id="navcontainer">
+   {if isset($maintenanceMessage) && $maintenanceMessage ne ''}<p role="status">{$maintenanceMessage}</p>{/if}
    {if $scBehavior eq "0"}
       <div style="overflow:scroll; height:500px; width:800px; overflow:auto; border:1px">
       <table border=2 style="font-size:11px">

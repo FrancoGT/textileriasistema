@@ -94,9 +94,11 @@ inválido) y un `DEFINER` del hosting anterior. `docker/mysql/convert_dump.py` g
 * Aritmética con cadenas vacías/no numéricas (`'' + 1`) lanza `TypeError` en PHP 8.
 * Funciones de cadena con `null` emiten *deprecations* (se registran, no rompen).
 * `utf8_encode()/utf8_decode()` están deprecadas (siguen existiendo en 8.4).
-* Las consultas SQL se arman concatenando `$_REQUEST` → **inyección SQL**. Se recomienda
-  migrar primero los módulos de login/usuarios a Doctrine con parámetros.
-* Las claves de usuario están en texto plano en `E01TUSU` → migrar a `PasswordHasher` de Symfony.
+* Las consultas SQL de las pantallas legacy se arman concatenando `$_REQUEST` → **inyección SQL**.
+  El login, el cambio de clave y las pantallas de mantenimiento ya usan DBAL con parámetros.
+* Las claves de `E01TUSU` se guardan con `password_hash()` (bcrypt) desde la migración
+  `Version20261114000003`. El login acepta todavía una clave en texto plano, por ejemplo de un
+  respaldo antiguo, y la reemplaza por un hash cuando el usuario inicia sesión.
 
 ## Cómo migrar una pantalla (ejemplo `ERP1000.php`)
 

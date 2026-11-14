@@ -17,16 +17,32 @@ The original `E01MPER`, `E01MPRV` and `E01DPRV` tables use MyISAM. A transaction
 cannot roll back writes to these tables. The repositories reject writes until
 all tables needed by the operation use InnoDB.
 
-Apply [001-maintenance-transactions.sql](migrations/001-maintenance-transactions.sql)
-to the target database before deploying these routes. Clients (ERP1030) and
-catalog tables (ERP1080) also need
-[002-catalog-client-transactions.sql](migrations/002-catalog-client-transactions.sql),
-because `E01MCLI` and `E01TTAB` use MyISAM. Take a backup and schedule
-the conversion because `ALTER TABLE` can lock tables and commits implicitly.
-The conversion script has not been applied by this change. It does not change
-column definitions, character sets or existing data.
+Schema changes are Doctrine migrations in `src/Migrations`. The container runs
+`doctrine:migrations:migrate` at start (see `docker/entrypoint.sh`), so a fresh
+database imported from `docker/mysql/init/` and an existing database reach the
+same schema. Each migration checks the current state, so it also works on a
+database where the former SQL scripts of `docs/migrations` were applied by hand.
 
-Changes from the legacy screens in ERP1030 to ERP1094:
+- `Version20261114000001` converts `E01MPER`, `E01MPRV`, `E01DPRV`, `E01MCLI`,
+  `E01TTAB`, `E01TUSU` and `E01PPRF` to InnoDB. Stock transfers (ERP1091) and
+  products (ERP1070) use tables that are already InnoDB.
+- `Version20261114000002` widens `E01TUSU.cClave` to 255 characters and keeps
+  its character set and collation.
+- `Version20261114000003` replaces the plain-text passwords with bcrypt hashes.
+  It stops when a user code appears in more than one row.
+
+The migrations cannot be reverted. Take a backup before the first start of this
+version, because `ALTER TABLE` locks the tables and commits implicitly. On the
+current data the three migrations take about 10 seconds; hashing takes most of
+that time (about 0.6 seconds per user). Set `RUN_MIGRATIONS=0` to start the
+container without them and run `bin/console doctrine:migrations:migrate` later.
+
+Write new migrations by hand with `doctrine:migrations:generate`. No entity maps
+the legacy tables, so `doctrine.dbal.schema_filter` hides `E0*` tables and
+`V_E0*` views from `doctrine:migrations:diff` and `doctrine:schema:update`.
+Without the filter, these commands would drop the legacy tables.
+
+Changes from the legacy screens in ERP1010 to ERP1094:
 
 - New codes for clients, supplies and banks use the highest existing code. The
   legacy clients and supplies screens used `COUNT(*) + 1`, and the legacy banks
@@ -41,6 +57,17 @@ Changes from the legacy screens in ERP1030 to ERP1094:
   The legacy deletion targeted the missing table `E01MARS`.
 - Client edits keep type, name, DNI and RUC, which the form shows read-only.
 - Bank account registration stores the audit user and rejects duplicates.
+- Stock transfers run in one transaction and lock the warehouses involved. The
+  legacy screen wrote each line separately, so a failure left partial stock.
+  A transfer is refused when the origin does not have enough units.
+- New products are saved without the error message that the legacy screen
+  always showed. Recipe saves also store the edited description, which the
+  legacy screen ignored, and replace the recipe lines in one transaction.
+- New users keep the legacy login contract: the initial password is the DNI
+  and an empty `dFecFin` forces a password change at the first login. The
+  reserved user 9999 cannot be edited, and the end date must be a valid date.
+- A user cannot remove ERP1020 from their own profile. A duplicate option in a
+  profile is rejected.
 
 Supplier saves include the header and replacement production lines in one
 transaction. New supplier codes use the highest existing code rather than row
@@ -53,6 +80,33 @@ audit user and production lines change, as in the previous entry point.
 Invalid dates on new suppliers and invalid DNI/RUC values are rejected instead
 of relying on permissive database coercion. Personnel email is limited to the
 actual 50-character column. Existing supplier dates are not rewritten.
+
+## Login and password change
+
+`LoginController` receives the login form (POST `/Mnu0000.php`). A GET of
+`/Mnu0000.php` still shows the legacy menu. `PasswordChangeController` replaces
+`Mnu1000.php`. `Clases/CLogin.php` and `Mnu1000.php` were removed. Changes from
+the legacy login:
+
+- Queries use bound parameters. The legacy login built the SQL from the request,
+  so a crafted code or password could log in without a valid password.
+- Passwords are stored as bcrypt hashes. A plain-text value is still accepted
+  and replaced by a hash at the next successful login.
+- Passwords are compared exactly. The legacy SQL comparison ignored case and
+  trailing spaces.
+- Inactive users (`cEstado` other than `A`) cannot log in.
+- The login no longer reads the code and password from the query string.
+- A successful login gets a new session id. The legacy login did this only for
+  the JavaScript form.
+- Users with an empty `dFecFin` go to the password change form, as before. The
+  new password needs 8 to 64 characters and must differ from the current one.
+  The next expiration date is today plus 45 days. The legacy screen added 45 to
+  `SYSDATE()` as a number, which stored today's date or `0000-00-00`.
+- A failed password change shows the error on the form. The legacy screen showed
+  an alert and ended the session.
+
+The legacy user screens `Seg1390.php` and `ERP1010.php` (shadowed by Symfony)
+now store the initial password as a hash. Their other SQL is unchanged.
 
 ## Permissions and forms
 

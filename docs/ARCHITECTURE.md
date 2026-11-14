@@ -2,8 +2,7 @@
 
 The shared legacy bridge now separates URL dispatch, script execution, variable
 collection, response conversion, asset delivery and session compatibility. The
-maintenance screens ERP1000 to ERP1094 (except ERP1010, ERP1020, ERP1070 and
-ERP1091) now have Symfony controllers, services and DBAL repositories. Their existing views remain in use through a rendering
+maintenance screens ERP1000 to ERP1094 now have Symfony controllers, services and DBAL repositories. Their existing views remain in use through a rendering
 adapter. Other business modules still run in `legacy/`. The new PHP code and
 database behavior are pending runtime validation.
 
@@ -83,6 +82,6 @@ existing app service, for example `docker compose exec -T app php tests/php/lega
 The bridge checks do not connect to the database. The browser checks use actual
 templates with fixture data. They do not test legacy business operations.
 
-On 2026-11-14 the bridge checks (6), the maintenance database checks (35) and
+On 2026-11-14 the bridge checks (6), the maintenance database checks (48) and
 `lint:container` passed in the Docker `app` service with PHP 8.4 and MariaDB 10.11.
 Performance has not been measured.

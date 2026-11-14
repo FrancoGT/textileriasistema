@@ -277,8 +277,10 @@ class CMtoUsuario extends CBase {
       $i = (int)$lcCodUsu + 1;
       $lcCodUsu = (string)$i;
       $lcCodUsu = right('00000'.trim($lcCodUsu), 4);
-      $lcSql = "INSERT INTO E01TUSU (cCodUsu, cCodPer, cEstado, cClave, dFecFin, cPerfil, cUsuCod, tModifi) VALUES 
-                   ('$lcCodUsu', '$this->pcCodPer', 'A', ('$lcNroDni'),
+      // Same hash as App\Security\UserPasswordHasher. Needs the migration that widens E01TUSU.cClave.
+      $lcClave = password_hash(trim($lcNroDni), PASSWORD_BCRYPT, ['cost' => 13]);
+      $lcSql = "INSERT INTO E01TUSU (cCodUsu, cCodPer, cEstado, cClave, dFecFin, cPerfil, cUsuCod, tModifi) VALUES
+                   ('$lcCodUsu', '$this->pcCodPer', 'A', '$lcClave',
                    SYSDATE(), '$this->pcPerfil', '$this->pcUsuCod', SYSDATE())";
       $llOk = $loSql->omExec($lcSql);
       $loSql->omDisconnect();
