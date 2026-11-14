@@ -18,6 +18,7 @@ test('menu button has an accessible icon and follows every existing close action
     const elements = Object.fromEntries(['erp-workspace', 'menu-toggle', 'workspace-title', 'workspace-status', 'workspace-welcome'].map(id => [id, element(id)]));
     const link = element('link');
     vm.runInNewContext(readFileSync('public/js/menu.js', 'utf8'), {
+        window: {},
         document: {
             getElementById: id => elements[id], querySelectorAll: selector => selector === '.menu-group a' ? [link] : [],
             addEventListener: (name, handler) => { handlers[name] = handler; },

@@ -11,6 +11,7 @@
         if (pending || !form.reportValidity()) return;
 
         pending = true;
+        const finishFeedback = window.ErpFeedback?.start(submit, 'Validando sus datos. Espere un momento…') || (() => {});
         submit.disabled = true;
         submit.value = 'Validando…';
         form.setAttribute('aria-busy', 'true');
@@ -38,6 +39,7 @@
             message.dataset.error = '';
             message.textContent = 'No se pudo completar la solicitud. Revise su conexión e intente nuevamente.';
         } finally {
+            finishFeedback();
             pending = false;
             submit.disabled = false;
             submit.value = 'Iniciar sesión';

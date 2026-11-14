@@ -2,8 +2,14 @@
 
 The shared legacy bridge now separates URL dispatch, script execution, variable
 collection, response conversion, asset delivery and session compatibility. The
-business modules still run in `legacy/`. They have not been rewritten as Symfony
-controllers or Doctrine repositories.
+Personnel and supplier maintenance now have Symfony controllers, services and
+DBAL repositories. Their existing views remain in use through a rendering
+adapter. Other business modules still run in `legacy/`. The new PHP code and
+database behavior are pending runtime validation.
+
+See [maintenance migration](MAINTENANCE-MIGRATION.md) for the required InnoDB
+conversion and integration tests, and [the module inventory](MODULE-MIGRATION.md)
+for the remaining scripts.
 
 ## Current services
 
@@ -17,6 +23,10 @@ controllers or Doctrine repositories.
 | `LegacyResponseFactory` | Convert captured content, status and headers to a Symfony response. |
 | `LegacyAssetResponseFactory` | Set file MIME types, cache policy and conditional responses. |
 | `LegacySession` | Clear identity keys used by the native session bridge. |
+| `LegacyTemplateRenderer` | Render existing Smarty views without executing legacy entry scripts. |
+| `PersonnelService`, `SupplierService` | Validate maintenance operations and enforce module permissions. |
+| `DbalPersonnelRepository`, `DbalSupplierRepository` | Persist maintenance data with bound SQL and transactions. |
+| `DatabaseModulePermission` | Check existing active profile grants through a repository. |
 
 Services use constructor injection and the existing service discovery configuration.
 Symfony resolves the executor interface from its single implementation. Native

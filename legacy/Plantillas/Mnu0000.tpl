@@ -6,6 +6,7 @@
     <title>TEXTILERIA</title>
     <link href="/CSS/Sixavi.css" media="screen" rel="stylesheet" type="text/css">
     <link href="/css/menu.css" rel="stylesheet" type="text/css">
+    <script src="/js/ui-feedback.js" defer></script>
     <script src="/js/menu.js" defer></script>
 </head>
 <body class="menu-page">

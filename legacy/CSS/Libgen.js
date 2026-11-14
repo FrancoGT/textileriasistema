@@ -1,4 +1,12 @@
 
+(() => {
+   if (window.ErpFeedback || document.querySelector('script[src="/js/ui-feedback.js"]')) return;
+   const script = document.createElement('script');
+   script.src = '/js/ui-feedback.js';
+   script.defer = true;
+   document.head.appendChild(script);
+})();
+
 function justNumbers(e) {
    var keynum = window.event ? window.event.keyCode : e.which;
    

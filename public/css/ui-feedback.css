@@ -1,0 +1,17 @@
+button, input[type=submit], input[type=button], a[href] { transition: opacity 120ms ease, filter 120ms ease; }
+button:active, input[type=submit]:active, input[type=button]:active, a[href]:active { filter: brightness(.9); }
+.erp-feedback-busy { cursor: progress; opacity: .65; }
+.erp-feedback-pending::before { content: ''; position: fixed; inset: 0 0 auto; height: 3px; background: linear-gradient(90deg, transparent, #EE6600, transparent); background-size: 200% 100%; z-index: 2147483646; pointer-events: none; animation: erp-feedback-progress 1.2s ease-in-out infinite; }
+.erp-feedback-notice { position: fixed; right: 12px; bottom: 12px; left: auto; z-index: 2147483646; display: flex; align-items: center; gap: 10px; box-sizing: border-box; max-width: min(400px, calc(100% - 24px)); padding: 12px; border: 1px solid #E8E8E8; border-left: 3px solid #EE6600; border-radius: 4px; background: #FFFFFF; color: #333333; box-shadow: 0 3px 12px #0002; font: 13px/1.5 Verdana, Arial, sans-serif; }
+.erp-feedback-notice[hidden] { display: none; }
+.erp-feedback-notice [role=status] { min-width: 0; overflow-wrap: anywhere; }
+.erp-feedback-spinner { flex: 0 0 18px; box-sizing: border-box; width: 18px; height: 18px; border: 2px solid #E8E8E8; border-top-color: #EE6600; border-radius: 50%; animation: erp-feedback-spin .7s linear infinite; }
+.erp-feedback-notice .erp-feedback-dismiss { flex: 0 0 44px; width: 44px; height: 44px; min-width: 0; min-height: 44px; margin: -8px; padding: 0; border: 0; background: transparent; color: #333333; font-size: 22px; cursor: pointer; }
+.erp-feedback-dismiss:focus-visible { outline: 2px solid #EE6600; outline-offset: -2px; }
+@keyframes erp-feedback-spin { to { transform: rotate(360deg); } }
+@keyframes erp-feedback-progress { from { background-position: 150% 0; } to { background-position: -150% 0; } }
+@media (prefers-reduced-motion: reduce) {
+    button, input[type=submit], input[type=button], a[href] { transition: none; }
+    .erp-feedback-spinner, .erp-feedback-pending::before { animation: none; }
+    .erp-feedback-pending::before { background: #EE6600; }
+}

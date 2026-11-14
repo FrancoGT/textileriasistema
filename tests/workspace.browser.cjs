@@ -12,7 +12,8 @@ function cachedBinary(name, executable) {
 }
 
 function moduleFixture(name) {
-    const html = fs.readFileSync(`legacy/Plantillas/${name}.tpl`, 'utf8');
+    const html = fs.readFileSync(`legacy/Plantillas/${name}.tpl`, 'utf8')
+        .replace(/\{if isset\(\$maintenance(?:Token|Message)\)[\s\S]*?\{\/if\}/g, '');
     const start = html.indexOf('{if $scBehavior');
     const branch = html.slice(html.indexOf('}', start) + 1, html.indexOf('{elseif', start));
     return (html.slice(0, start) + branch + html.slice(html.lastIndexOf('{/if}') + 5))
@@ -25,6 +26,8 @@ function moduleFixture(name) {
 }
 
 test('shared mobile workspace contains controls and wide supplier tables', { timeout: 60000 }, async () => {
+    const submissions = [];
+    let releaseSave;
     const server = http.createServer((req, res) => {
         let content, type = 'text/html; charset=utf-8';
         if (/^\/ERP(1000|1060)\.php/.test(req.url)) content = moduleFixture(req.url.slice(1, 8));
@@ -32,6 +35,23 @@ test('shared mobile workspace contains controls and wide supplier tables', { tim
         else if (req.url === '/CSS/Sixavi.css') { content = fs.readFileSync('legacy/CSS/Sixavi.css'); type = 'text/css'; }
         else if (req.url === '/css/menu.css') { content = fs.readFileSync('public/css/menu.css'); type = 'text/css'; }
         else if (req.url === '/js/menu.js') { content = fs.readFileSync('public/js/menu.js'); type = 'text/javascript'; }
+        else if (req.url === '/js/ui-feedback.js') { content = fs.readFileSync('public/js/ui-feedback.js'); type = 'text/javascript'; }
+        else if (req.url === '/css/ui-feedback.css') { content = fs.readFileSync('public/css/ui-feedback.css'); type = 'text/css'; }
+        else if (req.url === '/js/login.js') { content = fs.readFileSync('public/js/login.js'); type = 'text/javascript'; }
+        else if (req.url === '/feedback-save') {
+            let body = '';
+            req.on('data', chunk => { body += chunk; });
+            req.on('end', () => {
+                submissions.push(body);
+                const timer = setTimeout(() => { if (!res.writableEnded) res.end('<!doctype html><body>Saved</body>'); }, 5000);
+                releaseSave = () => { clearTimeout(timer); res.end('<!doctype html><body>Saved</body>'); };
+            });
+            return;
+        }
+        else if (req.url === '/feedback-login') {
+            setTimeout(() => { res.writeHead(401, { 'Content-Type': 'application/json' }); res.end('{"ok":false,"message":"Credenciales inválidas"}'); }, 300);
+            return;
+        }
         else { res.writeHead(404); res.end(); return; }
         res.setHeader('Content-Type', type); res.end(content);
     });
@@ -215,6 +235,115 @@ test('shared mobile workspace contains controls and wide supplier tables', { tim
                 } catch (error) { failures.push(`${width} ${module}: ${error.message}`); }
             }
         }
+        await command('/goog/cdp/execute', { cmd: 'Emulation.setDeviceMetricsOverride', params: { width: 320, height: 800, deviceScaleFactor: 1, mobile: false } });
+        const invalid = await execute(() => {
+            const page = document.getElementById('erp-workspace').contentDocument;
+            const form = page.createElement('form');
+            form.action = '/feedback-save'; form.method = 'POST';
+            form.innerHTML = '<input name="pcNombre" required><input type="submit" name="Boton1" value="Aplicar">';
+            page.body.replaceChildren(form);
+            // Reinsert the existing notice after replacing the fixture content.
+            page.__erpFeedbackController.reset();
+            form.requestSubmit(form.querySelector('[type=submit]'));
+            return form.hasAttribute('aria-busy');
+        });
+        assert.equal(invalid, false, 'invalid forms do not enter a loading state');
+        // Reload a fixture so the feedback notice is connected to the document again.
+        await execute(() => { document.getElementById('erp-workspace').src = '/ERP1000.php'; });
+        for (let attempt = 0; attempt < 40; attempt++) {
+            if (await execute(() => !!document.getElementById('erp-workspace').contentDocument.querySelector('.erp-feedback-notice'))) break;
+            await new Promise(resolve => setTimeout(resolve, 50));
+        }
+        const pending = await execute(() => {
+            const page = document.getElementById('erp-workspace').contentDocument;
+            const form = page.querySelector('form');
+            form.action = '/feedback-save'; form.method = 'POST';
+            form.innerHTML = '<input name="pcNombre" value="Test"><input type="submit" name="Boton1" value="Aplicar">';
+            const button = form.querySelector('[type=submit]');
+            const before = button.getBoundingClientRect();
+            form.requestSubmit(button);
+            form.requestSubmit(button);
+            const after = button.getBoundingClientRect();
+            const api = window.ErpFeedback.attach(page);
+            page.defaultView.ErpFeedback.attach(page);
+            return {
+                formBusy: form.getAttribute('aria-busy'), buttonBusy: button.getAttribute('aria-busy'), disabled: button.disabled,
+                notice: !page.querySelector('.erp-feedback-notice').hidden,
+                notices: page.querySelectorAll('.erp-feedback-notice').length,
+                unchanged: before.width === after.width && before.height === after.height,
+                payload: [...new page.defaultView.FormData(form, button).entries()],
+                overflow: page.documentElement.scrollWidth > page.documentElement.clientWidth
+            };
+        });
+        assert.equal(pending.formBusy, 'true'); assert.equal(pending.buttonBusy, 'true');
+        assert.equal(pending.disabled, false, 'submitter remains in the native payload');
+        assert.equal(pending.notice, true); assert.equal(pending.notices, 1, 'iframe attachment is idempotent');
+        assert.equal(pending.unchanged, true); assert.equal(pending.overflow, false);
+        assert.ok(pending.payload.some(([key, value]) => key === 'Boton1' && value === 'Aplicar'));
+        for (let attempt = 0; attempt < 40 && !submissions.length; attempt++) await new Promise(resolve => setTimeout(resolve, 25));
+        assert.equal(submissions.length, 1, 'duplicate native submission is blocked');
+        assert.match(submissions[0], /Boton1=Aplicar/);
+        releaseSave();
+        for (let attempt = 0; attempt < 40; attempt++) {
+            if (await execute(() => document.getElementById('erp-workspace').contentDocument.body.textContent.includes('Saved'))) break;
+            await new Promise(resolve => setTimeout(resolve, 25));
+        }
+        const recovery = await execute(async () => {
+            const page = document.getElementById('erp-workspace').contentDocument;
+            const api = window.ErpFeedback.attach(page);
+            const button = page.createElement('button'); button.textContent = 'Nuevo'; page.body.appendChild(button);
+            api.start(button);
+            page.defaultView.dispatchEvent(new page.defaultView.PageTransitionEvent('pageshow', { persisted: true }));
+            const restored = !button.hasAttribute('aria-busy') && page.querySelector('.erp-feedback-notice').hidden;
+            const form = page.createElement('form'); form.innerHTML = '<button type="submit">Apply</button>';
+            page.body.appendChild(form); form.addEventListener('submit', event => event.preventDefault());
+            form.requestSubmit();
+            return restored && !form.hasAttribute('aria-busy');
+        });
+        assert.ok(recovery, 'back navigation and canceled submissions recover');
+        const ignoredLinks = await execute(() => {
+            const page = document.getElementById('erp-workspace').contentDocument;
+            const results = [];
+            for (const attributes of [{ href: '#' }, { href: '/download.pdf', download: '' }, { href: '/ERP1000.php', target: '_blank' }]) {
+                const link = page.createElement('a');
+                Object.entries(attributes).forEach(([name, value]) => link.setAttribute(name, value));
+                page.body.appendChild(link);
+                page.defaultView.addEventListener('click', event => event.preventDefault(), { once: true });
+                link.click();
+                results.push(!link.hasAttribute('aria-busy'));
+                link.remove();
+            }
+            return results.every(Boolean);
+        });
+        assert.ok(ignoredLinks, 'anchors, downloads and new tabs do not get stuck loading');
+        await command('/goog/cdp/execute', { cmd: 'Emulation.setEmulatedMedia', params: { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] } });
+        const reduced = await execute(() => {
+            const page = document.getElementById('erp-workspace').contentDocument;
+            return page.defaultView.getComputedStyle(page.querySelector('.erp-feedback-spinner')).animationName;
+        });
+        assert.equal(reduced, 'none', 'reduced motion disables the spinner animation');
+        const loginPending = await execute(async () => {
+            const page = document.getElementById('erp-workspace').contentDocument;
+            const form = page.createElement('form'); form.id = 'login-form'; form.action = '/feedback-login';
+            form.innerHTML = '<input name="pcCodigo" value="test"><input name="pcClave" value="bad"><input type="submit" id="login-submit" value="Iniciar sesión"><p id="login-message"></p>';
+            page.body.appendChild(form);
+            await new Promise(resolve => { const script = page.createElement('script'); script.src = '/js/login.js'; script.onload = resolve; page.head.appendChild(script); });
+            form.requestSubmit(form.querySelector('[type=submit]'));
+            return !page.querySelector('.erp-feedback-notice').hidden && form.getAttribute('aria-busy') === 'true';
+        });
+        assert.ok(loginPending, 'login shows the shared loading feedback');
+        let loginRecovered = false;
+        for (let attempt = 0; attempt < 40; attempt++) {
+            loginRecovered = await execute(() => {
+                const page = document.getElementById('erp-workspace').contentDocument;
+                return page.getElementById('login-message').textContent === 'Credenciales inválidas'
+                    && !page.getElementById('login-submit').disabled && page.querySelector('.erp-feedback-notice').hidden;
+            });
+            if (loginRecovered) break;
+            await new Promise(resolve => setTimeout(resolve, 25));
+        }
+        assert.ok(loginRecovered, 'login errors clear feedback and allow retry');
+        console.log('Loading feedback: native payload, duplicate protection, validation, recovery, login errors and reduced motion pass');
         assert.deepEqual(failures, []);
     } finally {
         if (session) await request(`/session/${session}`, undefined, 'DELETE').catch(() => {});

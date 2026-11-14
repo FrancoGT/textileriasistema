@@ -6,6 +6,7 @@
     const status = document.getElementById('workspace-status');
     const welcome = document.getElementById('workspace-welcome');
     const links = [...document.querySelectorAll('.menu-group a')];
+    let finishNavigation = () => {};
     document.querySelectorAll('.menu-group').forEach(group => {
         const summary = group.querySelector('summary');
         const syncExpanded = () => summary.setAttribute('aria-expanded', String(group.open));
@@ -27,6 +28,8 @@
     });
     links.forEach(link => link.addEventListener('click', (event) => {
         if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+        finishNavigation();
+        finishNavigation = window.ErpFeedback?.start(link, 'Cargando módulo. Espere un momento…') || (() => {});
         welcome.hidden = true;
         frame.hidden = false;
         frame.setAttribute('aria-busy', 'true');
@@ -37,8 +40,12 @@
         closeMenu();
     }));
     frame.addEventListener('load', () => {
+        finishNavigation();
+        frame.removeAttribute('aria-busy');
+        status.textContent = '';
         const page = frame.contentDocument;
         if (!page || frame.contentWindow.location.href === 'about:blank') return;
+        window.ErpFeedback?.attach(page);
         const path = frame.contentWindow.location.pathname;
         if (/\/(?:index\.php)?$/.test(path)) {
             window.location.assign('/index.php');
@@ -103,6 +110,5 @@
             });
         }
         status.textContent = '';
-        frame.removeAttribute('aria-busy');
     });
 })();
