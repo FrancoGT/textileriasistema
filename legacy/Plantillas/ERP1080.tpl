@@ -34,6 +34,7 @@
 </head>
 <body>
 <form method="post" action="ERP1080.php#no-back" onsubmit="return htable();">
+   {if isset($maintenanceToken)}<input type="hidden" name="_token" value="{$maintenanceToken}" />{/if}
    <div class="wrapper">
    <div id="MH">
       <ul>
@@ -44,6 +45,7 @@
    <div id="topnavbar"></div>
    <div id="navigation">
    <div id="navcontainer">
+   {if isset($maintenanceMessage) && $maintenanceMessage ne ''}<p role="status">{$maintenanceMessage}</p>{/if}
    {if $scBehavior eq '0'}
       <fieldset style="width:500px">
       <legend align="left"><font face="calibri" size=3 color=blue>Sub-Tablas</font></legend>
@@ -75,7 +77,7 @@
       <table style="font-size:11px">
          <tr>
          <td>Tabla:</td>
-         <td><font color=blue>{$scCodTab} - {$scDescri}</font></td>
+         <td><font color=blue>{$scCodTab} - {$scDescri}</font><input type="hidden" name="pcCodTab" value="{$scCodTab}"/></td>
          </tr>
       </table>
       </fieldset>

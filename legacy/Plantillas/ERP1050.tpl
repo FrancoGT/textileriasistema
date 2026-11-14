@@ -19,6 +19,7 @@
 </head>
 <body>
 <form action="ERP1050.php#no-back" method="post">
+   {if isset($maintenanceToken)}<input type="hidden" name="_token" value="{$maintenanceToken}" />{/if}
    <div class="wrapper">
    <div id="MH">
            <ul>
@@ -29,6 +30,7 @@
    <div id="topnavbar"></div>
    <div id="navigation">
    <div id="navcontainer">
+   {if isset($maintenanceMessage) && $maintenanceMessage ne ''}<p role="status">{$maintenanceMessage}</p>{/if}
    {if $scBehavior eq '0'}                
          <div style="overflow:scroll; height:300px; width:1000px; overflow:auto; border: 1px">
          <table border = 2 style = "font-size:11px">
@@ -59,9 +61,9 @@
       <table>         
          <tr>   
           <td>Subtipo de Producto:</td>
-         {if $scUniMed}
+         {if $scCodIns}
          <td>
-             <input type="hidden" name="pcUniMed" value="{$scUniMed}">
+             <input type="hidden" name="pcCodIns" value="{$scCodIns}">
              <select name="pcSubTip" disabled="true">
             {foreach from = $saSubTip item = i}
                <option value = "{$i[0]}" {if $i[0] eq $scSubTip} selected {/if}>{$i[1]} </option>               
@@ -79,7 +81,7 @@
          {/if}
          </tr><tr>
          <td>Descripción:</td>
-         {if $scDescri}
+         {if $scCodIns}
              <td>{$scDescri}<input type="hidden" name="pcDescri" value="{$scDescri}"style="text-transform:uppercase;"></td>                 
          {else}
             <td><input type="text" name="pcDescri" value="{$scDescri}"style="text-transform:uppercase;"></td>                 
@@ -88,7 +90,6 @@
          <tr>
          <td>Unidad:</td>         
          <td>
-             <input type="hidden" name="pcUniMed" value="{$scUniMed}">
             <select name="pcUniMed">
             {foreach from = $saUniMed item = i}
                <option value = "{$i[0]}" {if $i[0] eq $scUniMed} selected {/if}>{$i[1]} </option>               

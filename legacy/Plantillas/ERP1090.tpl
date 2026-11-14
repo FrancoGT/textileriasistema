@@ -8,6 +8,7 @@
 </head>
 <body>
 <form action="ERP1090.php#no-back" method="post">
+   {if isset($maintenanceToken)}<input type="hidden" name="_token" value="{$maintenanceToken}" />{/if}
    <div class="wrapper">
    <div id="MH">
            <ul>
@@ -18,6 +19,7 @@
    <div id="topnavbar"></div>
    <div id="navigation">
    <div id="navcontainer">
+   {if isset($maintenanceMessage) && $maintenanceMessage ne ''}<p role="status">{$maintenanceMessage}</p>{/if}
    {if $scBehavior eq "0"}
       <table>
          <tr>
@@ -47,10 +49,10 @@
          {/if}
          </tr><tr>
          <td>Nombre:</td>
-         <td><input type="text" maxlength="90" name="pcNomAlm" value="{$scNomAlm}" size="60"style="text-transform:uppercase;"/></td>
+         <td><input type="text" maxlength="100" name="pcNomAlm" value="{$scNomAlm}" size="60"style="text-transform:uppercase;"/></td>
          </tr><tr>
          <td>Dirección:</td>
-         <td><input type="text" maxlength="90" name="pcDirec" value="{$scDirec}" size="60"style="text-transform:uppercase;"/></td>
+         <td><input type="text" maxlength="100" name="pcDirec" value="{$scDirec}" size="60"style="text-transform:uppercase;"/></td>
          </tr><tr>
          <td>Estado:</td>
          <td>
@@ -82,10 +84,10 @@
       <table style="font-size:11px">
          <tr>
          <td>Nombre:</td>
-         <td><input type="text" maxlength="90" name="pcNomAlm" value="{$scNomAlm}" size="60" style="text-transform:uppercase;"/></td>
+         <td><input type="text" maxlength="100" name="pcNomAlm" value="{$scNomAlm}" size="60" style="text-transform:uppercase;"/></td>
          </tr><tr>
          <td>Dirección:</td>
-         <td><input type="text" maxlength="90" name="pcDirec" value="{$scDirec}" size="60" style="text-transform:uppercase;"/></td>
+         <td><input type="text" maxlength="100" name="pcDirec" value="{$scDirec}" size="60" style="text-transform:uppercase;"/></td>
          </tr><tr>
          <td>Estado:</td>
          <td>

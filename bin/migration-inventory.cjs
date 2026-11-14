@@ -1,7 +1,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
-const migrated = new Set(['ERP1000.php', 'ERP1040.php', 'ERP1060.php']);
+const migrated = new Set(['ERP1000.php', 'ERP1030.php', 'ERP1040.php', 'ERP1050.php', 'ERP1060.php', 'ERP1080.php', 'ERP1090.php', 'ERP1093.php', 'ERP1094.php']);
 const pages = fs.readdirSync('legacy').filter(file => file.endsWith('.php')).sort();
 const rows = pages.map(file => {
     const source = fs.readFileSync(path.join('legacy', file), 'utf8');

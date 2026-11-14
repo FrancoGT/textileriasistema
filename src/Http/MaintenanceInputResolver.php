@@ -13,6 +13,15 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 #[AsTargetedValueResolver]
 final class MaintenanceInputResolver implements ValueResolverInterface
 {
+    private const LIST_FIELD = 'paTipArs';
+    // Table fields posted as paData[row][column] and paCheck[].
+    private const GRID_FIELDS = ['paData', 'paCheck'];
+    private const MAX_GRID_ROWS = 1000;
+    private const MAX_GRID_CELLS = 10;
+    // Submit button names used by the legacy templates, in order of precedence.
+    private const BUTTONS = ['Boton2', 'Boton1', 'Boton0', 'Boton', 'Boton3', 'Boton4', 'Boton5', 'Aceptar', 'Aplicar', 'Grabar', 'Cancelar', 'Salir'];
+    private const ACTIONS = ['', 'Aceptar', 'Aplicar', 'Nuevo', 'Salir', 'Grabar', 'Cancelar', 'Editar', 'Eliminar'];
+
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
         if (MaintenanceInput::class !== $argument->getType()) {
@@ -20,13 +29,21 @@ final class MaintenanceInputResolver implements ValueResolverInterface
         }
         $data = $request->request->all();
         $fields = [];
-        foreach (['pcCodPer', 'pcCodPrv', 'pcNombre', 'pcDirecc', 'pcEmail', 'pcNroDni', 'pcSexo', 'pcEstCiv', 'pcEstado', 'pcNroRuc', 'pcTipPer', 'pdFecNac', 'pcTexCon', 'pcCodMaq', 'pcNomMaq', 'pcTipo', '_token', 'Boton0', 'Boton1', 'Boton2'] as $name) {
-            if (isset($data[$name]) && !\is_string($data[$name])) {
+        $grids = [];
+        foreach ($data as $name => $value) {
+            if (self::LIST_FIELD === $name) {
+                continue;
+            }
+            if (\in_array($name, self::GRID_FIELDS, true)) {
+                $grids[$name] = $this->grid($name, $value);
+                continue;
+            }
+            if (!\is_string($value)) {
                 throw new BadRequestHttpException('El campo '.$name.' debe ser texto.');
             }
-            $fields[$name] = $data[$name] ?? '';
+            $fields[(string) $name] = $value;
         }
-        $lines = $data['paTipArs'] ?? [];
+        $lines = $data[self::LIST_FIELD] ?? [];
         if (!\is_array($lines) || \count($lines) > 100) {
             throw new BadRequestHttpException('Las líneas de producción no son válidas.');
         }
@@ -35,11 +52,40 @@ final class MaintenanceInputResolver implements ValueResolverInterface
                 throw new BadRequestHttpException('La línea de producción debe ser texto.');
             }
         }
-        $action = $fields['Boton2'] ?: ($fields['Boton1'] ?: $fields['Boton0']);
-        if (!\in_array($action, ['', 'Aplicar', 'Nuevo', 'Salir', 'Grabar', 'Cancelar', 'Editar'], true)) {
+        $action = '';
+        foreach (self::BUTTONS as $button) {
+            if ('' !== ($fields[$button] ?? '')) {
+                $action = $fields[$button];
+                break;
+            }
+        }
+        if (!\in_array($action, self::ACTIONS, true)) {
             throw new BadRequestHttpException('La acción no es válida.');
         }
 
-        yield new MaintenanceInput($action, $fields, array_values(array_unique($lines)));
+        yield new MaintenanceInput($action, $fields, array_values(array_unique($lines)), $grids);
+    }
+
+    /** @return array<array-key, string|array<array-key, string>> */
+    private function grid(string $name, mixed $value): array
+    {
+        if (!\is_array($value) || \count($value) > self::MAX_GRID_ROWS) {
+            throw new BadRequestHttpException('El campo '.$name.' no es válido.');
+        }
+        foreach ($value as $row) {
+            if (\is_string($row)) {
+                continue;
+            }
+            if (!\is_array($row) || \count($row) > self::MAX_GRID_CELLS) {
+                throw new BadRequestHttpException('El campo '.$name.' no es válido.');
+            }
+            foreach ($row as $cell) {
+                if (!\is_string($cell)) {
+                    throw new BadRequestHttpException('El campo '.$name.' debe contener texto.');
+                }
+            }
+        }
+
+        return $value;
     }
 }

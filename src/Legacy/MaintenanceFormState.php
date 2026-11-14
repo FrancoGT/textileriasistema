@@ -54,6 +54,18 @@ final class MaintenanceFormState
         return $edit['code'];
     }
 
+    public function remember(string $name, ?string $value): void
+    {
+        $this->session->set($this->key($name), $value);
+    }
+
+    public function recall(string $name): ?string
+    {
+        $value = $this->session->get($this->key($name));
+
+        return \is_string($value) ? $value : null;
+    }
+
     public function flash(string $message): void
     {
         $this->session->set($this->key('message'), $message);

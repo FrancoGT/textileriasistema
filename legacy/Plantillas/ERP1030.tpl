@@ -19,6 +19,7 @@
 </head>
 <body>
 <form action="ERP1030.php#no-back" method="post">
+   {if isset($maintenanceToken)}<input type="hidden" name="_token" value="{$maintenanceToken}" />{/if}
    <div class="wrapper">
    <div id="MH">
            <ul>
@@ -29,6 +30,7 @@
    <div id="topnavbar"></div>
    <div id="navigation">
    <div id="navcontainer">
+   {if isset($maintenanceMessage) && $maintenanceMessage ne ''}<p role="status">{$maintenanceMessage}</p>{/if}
    {if $scBehavior eq "0"}      
        <table>         
            <tr>
@@ -50,18 +52,18 @@
        <table>
          <tr>
          <td>Nombre/Razón Social:</td>
-         <td><input type="text" maxlength="70" name="pcNombre" size="70" value="" style="text-transform:uppercase;"/></td>
+         <td><input type="text" maxlength="70" name="pcNombre" size="70" value="{$scNombre}" style="text-transform:uppercase;"/></td>
          </tr>
 		 
 		 {if $scTipo eq 'A'}
 		 <tr>		 
          <td>DNI:</td>
-         <td><input type="text" class="input_num" name="pcNroDNI" size="8" maxlength="8" value="" /></td>
+         <td><input type="text" class="input_num" name="pcNroDNI" size="8" maxlength="8" value="{$scNroDNI}" /></td>
          </tr>
 		 {else}
 		 <tr>
          <td>RUC:</td>
-         <td><input type="text" class="input_num" name="pcNroRUC" size="11" maxlength="11"value="" /></td>
+         <td><input type="text" class="input_num" name="pcNroRUC" size="11" maxlength="11" value="{$scNroRUC}" /></td>
          </tr>
 		 {/if}
 		 <tr>
@@ -75,12 +77,12 @@
          </td>
          </tr><tr>
          <td>Dirección:</td>
-         <td><input type="text" maxlength="70" name="pcDirec" size="51" value="" style="text-transform:uppercase;"/></td>
+         <td><input type="text" maxlength="70" name="pcDirec" size="51" value="{$scDirec}" style="text-transform:uppercase;"/></td>
          </tr>
 		 
 		 <tr>
          <td>Telefono:</td>
-         <td><input type="text" class="input_num" maxlength="70" name="pcTelef" size="15" value="" /></td>
+         <td><input type="text" class="input_num" maxlength="15" name="pcTelef" size="15" value="{$scTelef}" /></td>
          </tr>
 
 		 {if $scTipo eq 'A'}
@@ -100,7 +102,7 @@
 		 {else}
 		 <tr>
          <td>SIGLAS:</td>
-         <td><input type="text" maxlength="4" name="pcSiglas" size="11" value="" style="text-transform:uppercase;"/></td>
+         <td><input type="text" maxlength="4" name="pcSiglas" size="11" value="{$scSiglas}" style="text-transform:uppercase;"/></td>
          </tr>
 		 {/if}
 		 <tr>
@@ -247,7 +249,7 @@
 		 
 		 <tr>
          <td>Telefono:</td>
-         <td><input type="text" class="input_num" maxlength="70" name="pcTelef" size="15" value="{$scTelef}" /></td>
+         <td><input type="text" class="input_num" maxlength="15" name="pcTelef" size="15" value="{$scTelef}" /></td>
          </tr>
 
 	 {if $scTipo eq 'A'}

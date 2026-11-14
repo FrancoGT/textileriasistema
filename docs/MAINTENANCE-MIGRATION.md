@@ -18,10 +18,29 @@ cannot roll back writes to these tables. The repositories reject writes until
 all tables needed by the operation use InnoDB.
 
 Apply [001-maintenance-transactions.sql](migrations/001-maintenance-transactions.sql)
-to the target database before deploying these routes. Take a backup and schedule
+to the target database before deploying these routes. Clients (ERP1030) and
+catalog tables (ERP1080) also need
+[002-catalog-client-transactions.sql](migrations/002-catalog-client-transactions.sql),
+because `E01MCLI` and `E01TTAB` use MyISAM. Take a backup and schedule
 the conversion because `ALTER TABLE` can lock tables and commits implicitly.
 The conversion script has not been applied by this change. It does not change
 column definitions, character sets or existing data.
+
+Changes from the legacy screens in ERP1030 to ERP1094:
+
+- New codes for clients, supplies and banks use the highest existing code. The
+  legacy clients and supplies screens used `COUNT(*) + 1`, and the legacy banks
+  screen produced the same code for every new bank.
+- Catalog table saves update existing rows and insert new rows. The legacy
+  screen deleted and inserted all rows, which removed `mTexto` (for example the
+  295 CIIU texts of table 099). A save is rejected when another user changed
+  the table after it was opened.
+- Supply edits update the selected supply. The legacy update filtered on a
+  column that does not exist. Supply deletion removes the row from `E01MINS` and
+  is refused while `E01DCOM`, `E01DPOG` or a foreign key references the code.
+  The legacy deletion targeted the missing table `E01MARS`.
+- Client edits keep type, name, DNI and RUC, which the form shows read-only.
+- Bank account registration stores the audit user and rejects duplicates.
 
 Supplier saves include the header and replacement production lines in one
 transaction. New supplier codes use the highest existing code rather than row

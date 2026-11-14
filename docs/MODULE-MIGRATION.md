@@ -1,6 +1,6 @@
 # Business module migration inventory
 
-134 root PHP scripts are present. 3 maintenance routes have new
+134 root PHP scripts are present. 9 maintenance routes have new
 controllers, services and DBAL repositories. The remaining scripts still execute
 legacy business code. Authentication and shared menu rendering remain legacy.
 
@@ -19,16 +19,16 @@ Regenerate with node bin/migration-inventory.cjs.
 | ERP1000.php | Symfony controller and DBAL repositories, pending runtime validation | ERP1000 | CMtoEmpleados.php, CMtoPerfiles.php | 56 |
 | ERP1010.php | Legacy | ERP1010 | CMtoUsuarios.php, CMtoPerfiles.php | 25 |
 | ERP1020.php | Legacy | ERP1020 | CMtoPerfiles.php | 10 |
-| ERP1030.php | Legacy | ERP1030 | CMtoClientes.php, CMtoPerfiles.php | 22 |
+| ERP1030.php | Symfony controller and DBAL repositories, pending runtime validation | ERP1030 | CMtoClientes.php, CMtoPerfiles.php | 22 |
 | ERP1040.php | Symfony controller and DBAL repositories, pending runtime validation | ERP1040 | CMtoMaquinas.php, CMtoPerfiles.php | 17 |
-| ERP1050.php | Legacy | ERP1050 | CMtoInsumos.php, CMtoPerfiles.php | 30 |
+| ERP1050.php | Symfony controller and DBAL repositories, pending runtime validation | ERP1050 | CMtoInsumos.php, CMtoPerfiles.php | 30 |
 | ERP1060.php | Symfony controller and DBAL repositories, pending runtime validation | ERP1000 | CMtoProveedores.php, CMtoPerfiles.php | 46 |
 | ERP1070.php | Legacy | ERP1070 | CMtoProductos.php, CMtoPerfiles.php | 22 |
-| ERP1080.php | Legacy | ERP1080 | CMtoTablas.php, CMtoPerfiles.php | 18 |
-| ERP1090.php | Legacy | ERP1090 | CMtoAlmacenes.php, CMtoPerfiles.php | 33 |
+| ERP1080.php | Symfony controller and DBAL repositories, pending runtime validation | ERP1080 | CMtoTablas.php, CMtoPerfiles.php | 18 |
+| ERP1090.php | Symfony controller and DBAL repositories, pending runtime validation | ERP1090 | CMtoAlmacenes.php, CMtoPerfiles.php | 33 |
 | ERP1091.php | Legacy | ERP1091 | CMtoAlmacenes.php, CMtoProductos.php, CMtoPerfiles.php | 45 |
-| ERP1093.php | Legacy | ERP1093 | CMtoBancos.php, CMtoPerfiles.php | 36 |
-| ERP1094.php | Legacy | ERP1094 | CMtoBancos.php, CMtoPerfiles.php | 36 |
+| ERP1093.php | Symfony controller and DBAL repositories, pending runtime validation | ERP1093 | CMtoBancos.php, CMtoPerfiles.php | 36 |
+| ERP1094.php | Symfony controller and DBAL repositories, pending runtime validation | ERP1094 | CMtoBancos.php, CMtoPerfiles.php | 36 |
 | ERP2010.php | Legacy | ERP2010 | CMtoPedidos.php, CDocRTF.php, CMtoPerfiles.php | 87 |
 | ERP2020.php | Legacy | ERP2020 | CMtoPedidos.php, CDocRTF.php, CMtoPerfiles.php | 87 |
 | ERP3000.php | Legacy | ERP3000 | CMtoPedidos.php, CMtoPerfiles.php | 80 |
