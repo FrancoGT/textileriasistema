@@ -185,6 +185,26 @@ test('shared mobile workspace contains controls and wide supplier tables', { tim
                     };
                 });
                 console.log(width, module, JSON.stringify(metrics));
+                if (module === 'ERP1060') {
+                    const filtering = await execute(async () => {
+                        const page = document.getElementById('erp-workspace').contentDocument;
+                        const search = page.querySelector('.workspace-records-search input');
+                        const table = page.querySelector('.workspace-records-table');
+                        const row = [...table.rows].find(row => row.querySelector('td'));
+                        const radio = row.querySelector('input[type=radio]');
+                        radio.checked = true;
+                        search.value = 'no-such-supplier';
+                        search.dispatchEvent(new Event('input'));
+                        const busy = table.getAttribute('aria-busy') === 'true';
+                        await new Promise(resolve => setTimeout(resolve, 400));
+                        const empty = row.hidden && !radio.checked && page.querySelector('.workspace-records-footer [role=status]').textContent.startsWith('0 registros');
+                        search.value = 'proveedor';
+                        search.dispatchEvent(new Event('input'));
+                        await new Promise(resolve => setTimeout(resolve, 400));
+                        return { busy, empty, restored: !row.hidden, actions: !!page.querySelector('.workspace-records-toolbar .workspace-actions'), settled: !table.hasAttribute('aria-busy') };
+                    });
+                    assert.deepEqual(filtering, { busy: true, empty: true, restored: true, actions: true, settled: true });
+                }
                 try {
                     if (width <= 760) {
                         assert.equal(metrics.page[0], metrics.page[1], 'outer page width');

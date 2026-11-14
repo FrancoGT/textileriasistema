@@ -1,4 +1,103 @@
 ﻿(() => {
+    function organizeRecords(page) {
+        const view = page.defaultView;
+        const normalize = value => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es');
+        page.querySelectorAll('.workspace-table-scroll > table').forEach((table, index) => {
+            if (!table.querySelector('th') || table.querySelector('select, textarea, input:not([type=radio]):not([type=checkbox]):not([type=hidden])')) return;
+            const rows = [...table.rows].filter(row => row.querySelector('td') && !row.querySelector('th'));
+            const records = rows.map(row => ({ row, text: normalize(row.textContent) }));
+            const scroll = table.parentElement;
+            const section = page.createElement('section');
+            section.className = 'workspace-records';
+            section.setAttribute('aria-label', 'Listado de registros');
+            scroll.before(section);
+            section.append(scroll);
+            scroll.classList.add('workspace-records-scroll');
+            table.classList.add('workspace-records-table');
+            const toolbar = page.createElement('div');
+            toolbar.className = 'workspace-records-toolbar';
+            if (section.nextElementSibling?.matches('.workspace-actions')) toolbar.append(section.nextElementSibling);
+            const label = page.createElement('label');
+            label.className = 'workspace-records-search';
+            label.textContent = 'Buscar registros';
+            const search = page.createElement('input');
+            search.type = 'text';
+            search.placeholder = 'Escriba para buscar…';
+            search.autocomplete = 'off';
+            search.setAttribute('aria-controls', table.id || (table.id = `workspace-records-${index}`));
+            search.addEventListener('keydown', event => { if (event.key === 'Enter') event.preventDefault(); });
+            label.append(search);
+            toolbar.append(label);
+            section.prepend(toolbar);
+            const footer = page.createElement('div');
+            footer.className = 'workspace-records-footer';
+            const status = page.createElement('span');
+            status.setAttribute('role', 'status');
+            const sizeLabel = page.createElement('label');
+            sizeLabel.textContent = 'Registros por página ';
+            const size = page.createElement('select');
+            [10, 25, 50, 100].forEach(value => size.add(new view.Option(String(value), String(value))));
+            sizeLabel.append(size);
+            const previous = page.createElement('button');
+            previous.type = 'button';
+            previous.textContent = 'Anterior';
+            const next = page.createElement('button');
+            next.type = 'button';
+            next.textContent = 'Siguiente';
+            const position = page.createElement('span');
+            const navigation = page.createElement('div');
+            navigation.className = 'workspace-records-pagination';
+            navigation.append(previous, position, next);
+            footer.append(status, sizeLabel, navigation);
+            section.append(footer);
+            const empty = page.createElement('p');
+            empty.textContent = 'No se encontraron registros.';
+            scroll.after(empty);
+            let matches = records, current = 0, revision = 0, timer;
+            function render() {
+                const limit = Number(size.value);
+                const pages = Math.max(1, Math.ceil(matches.length / limit));
+                current = Math.min(current, pages - 1);
+                const visible = new Set(matches.slice(current * limit, (current + 1) * limit).map(record => record.row));
+                rows.forEach(row => {
+                    row.hidden = !visible.has(row);
+                    if (row.hidden) row.querySelectorAll('input:checked').forEach(control => { control.checked = false; });
+                });
+                empty.hidden = matches.length !== 0;
+                status.textContent = matches.length ? `${current * limit + 1}–${Math.min((current + 1) * limit, matches.length)} de ${matches.length} registros` : '0 registros';
+                if (search.value.trim()) status.textContent += ` (${records.length} en total)`;
+                position.textContent = `${current + 1} / ${pages}`;
+                previous.disabled = current === 0;
+                next.disabled = current >= pages - 1;
+                table.removeAttribute('aria-busy');
+            }
+            search.addEventListener('input', () => {
+                view.clearTimeout(timer);
+                const version = ++revision;
+                table.setAttribute('aria-busy', 'true');
+                status.textContent = 'Buscando…';
+                timer = view.setTimeout(() => {
+                    const words = normalize(search.value.trim()).split(/\s+/).filter(Boolean);
+                    const result = [];
+                    let offset = 0;
+                    function batch() {
+                        if (version !== revision) return;
+                        const end = Math.min(offset + 500, records.length);
+                        for (; offset < end; offset++) {
+                            if (words.every(word => records[offset].text.includes(word))) result.push(records[offset]);
+                        }
+                        if (offset < records.length) view.setTimeout(batch, 0);
+                        else { matches = result; current = 0; render(); }
+                    }
+                    batch();
+                }, 250);
+            });
+            size.addEventListener('change', () => { current = 0; render(); });
+            previous.addEventListener('click', () => { current--; render(); });
+            next.addEventListener('click', () => { current++; render(); });
+            render();
+        });
+    }
     const frame = document.getElementById('erp-workspace');
     if (!frame) return;
     const toggle = document.getElementById('menu-toggle');
@@ -71,6 +170,19 @@
                 #navigation { float: none; width: 100%; text-align: left; }
                 #content { margin-left: 0; min-height: 0; padding: 5px; }
                 input, select, textarea { max-width: 100%; box-sizing: border-box; }
+                .workspace-records { width: 100%; min-width: 0; box-sizing: border-box; padding: 16px; }
+                .workspace-records-toolbar, .workspace-records-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+                .workspace-records-toolbar { margin-bottom: 16px; }
+                .workspace-records-search { display: flex; flex-direction: column; gap: 6px; margin-left: auto; width: min(100%, 320px); }
+                .workspace-records-search input { width: 100%; min-height: 36px; padding: 8px; }
+                .workspace-records-scroll { width: 100% !important; height: auto !important; max-height: 60vh; overflow: auto; }
+                .workspace-records-table { width: 100%; }
+                .workspace-records-table th, .workspace-records-table td { padding: 10px 12px; vertical-align: middle; }
+                .workspace-records-table [hidden] { display: none !important; }
+                .workspace-records-footer { margin-top: 16px; }
+                .workspace-records-pagination { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+                .workspace-records button, .workspace-records select { min-height: 36px; }
+                .workspace-records .workspace-actions { margin: 0; }
                 @media (max-width: 760px) {
                     .wrapper, #navigation, #navcontainer, #content { min-width: 0; max-width: 100%; box-sizing: border-box; }
                     .workspace-actions, .workspace-actions > tbody { display: block; width: 100%; }
@@ -109,6 +221,7 @@
                 }
             });
         }
+        organizeRecords(page);
         status.textContent = '';
     });
 })();
