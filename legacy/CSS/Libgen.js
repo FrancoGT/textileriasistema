@@ -1,12 +1,4 @@
 
-(() => {
-   if (window.ErpFeedback || document.querySelector('script[src="/js/ui-feedback.js"]')) return;
-   const script = document.createElement('script');
-   script.src = '/js/ui-feedback.js';
-   script.defer = true;
-   document.head.appendChild(script);
-})();
-
 function justNumbers(e) {
    var keynum = window.event ? window.event.keyCode : e.which;
    
@@ -70,11 +62,11 @@ jQuery(function($){
       $.datepicker.setDefaults($.datepicker.regional['es']);
 }); 
 
-	  jQuery(document).ready(function() {
-        jQuery('.input_num').keypress(function(tecla) {
-           if(tecla.charCode < 48 || tecla.charCode > 57) return false;
-              });
-        });
+document.addEventListener('keypress', function (e) {
+   if (e.target.classList && e.target.classList.contains('input_num') && (e.charCode < 48 || e.charCode > 57)) {
+      e.preventDefault();
+   }
+});
 
 function f_ValidarEmail(obj) {
    // creamos nuestra regla con expresiones regulares.

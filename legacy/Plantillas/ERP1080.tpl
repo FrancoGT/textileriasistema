@@ -3,7 +3,7 @@
 <head>
    <title>TEXTILERIA</title>
    <link href="CSS/Sixavi.css" media="screen" rel="stylesheet" type="text/css" />
-   <script src="CSS/jquery.min.js"></script>
+   <script src="CSS/jquery-1.10.2.min.js"></script>
    <script type="text/javascript">
       function setCookie(cname, cvalue, exdays)   {
          var d = new Date();

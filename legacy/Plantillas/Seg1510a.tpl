@@ -22,8 +22,8 @@
 <!--MALOGRA LA VENTANA MODAL-->
 <!--<script type="text/javascript" src="CSS/jquery-1.10.2.min.js"></script>-->
 
-<link rel="stylesheet" href="CSS/jquery-ui-1.11.0/jquery-ui.css">
-<script type="text/javascript" src="CSS/jquery-ui-1.11.0/jquery-ui.js"></script>
+<link rel="stylesheet" href="CSS/jquery-ui-1.11.0/jquery-ui.min.css">
+<script type="text/javascript" src="CSS/jquery-ui-1.11.0/jquery-ui.min.js"></script>
 <script type="text/javascript" src="CSS/jquery.validate.js"></script>
 
 <script type="text/javascript">

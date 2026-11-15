@@ -34,8 +34,9 @@ function fHour(e) {
    var key = window.Event ? e.which : e.keyCode;
    return ((key >= 48 && key <= 57) || (key == 8) || (key == 58)) 
 }
-	    jQuery(document).ready(function() {
-        jQuery('.fmNumero').keypress(function(tecla) {
-           if(tecla.charCode < 48 || tecla.charCode > 57) return false;
-              });
-        });
+// Most pages that load this file do not load jQuery.
+document.addEventListener('keypress', function (e) {
+   if (e.target.classList && e.target.classList.contains('fmNumero') && (e.charCode < 48 || e.charCode > 57)) {
+      e.preventDefault();
+   }
+});

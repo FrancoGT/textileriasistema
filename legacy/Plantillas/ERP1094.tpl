@@ -4,10 +4,9 @@
 <head>
       <link href="CSS/Sixavi.css" media="screen" rel="stylesheet" type="text/css" />
    <link href="CSS/Sixavi.css" media="screen" rel="stylesheet" type="text/css" />
-   <link rel="stylesheet" href="CSS/jquery-ui-1.11.0/jquery-ui.css">
+   <link rel="stylesheet" href="CSS/jquery-ui-1.11.0/jquery-ui.min.css">
    <script type="text/javascript" src="CSS/jquery-1.10.2.min.js"></script> 
-   <script type="text/javascript" src="CSS/jquery-ui-1.11.0/jquery-ui.js"></script>
-   <script type="text/javascript" src="CSS/jquery.validate.js"></script>
+   <script type="text/javascript" src="CSS/jquery-ui-1.11.0/jquery-ui.min.js"></script>
    <script type="text/javascript" src="CSS/Libgen.js"></script>
 
    <title>TEXTILERIA</title>
