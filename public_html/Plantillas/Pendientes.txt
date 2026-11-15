@@ -1,3 +1,0 @@
-﻿Registro de Comprobantes:
-- El número del documento debe ser de longitud 8.
-- Verificar cómo hace la validación (sólo podría leer tabla CPDDDOCU)
