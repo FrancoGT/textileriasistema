@@ -66,9 +66,32 @@ páginas `*.php` de la raíz de `legacy/` y recursos estáticos con extensiones 
 | `Libs/Smarty.class.php` | Shim: Smarty 4.5 vía Composer | Smarty 3.1.8 no funciona en PHP 8.4 |
 | `class/PHPExcel.php` | Shim: `PHPExcel`, `PHPExcel_IOFactory`, `PHPExcel_Style_*` sobre PhpSpreadsheet | PHPExcel no compila en PHP 8 |
 
-Movidos a `docs/legacy-removido/` (no se publican): Smarty 3.1.8, PHPExcel 1.8,
-`_file-manager/` (elFinder sin autenticación), `default.php` (listado de directorios),
-`diego.php`, `ejemplo_ajax_proceso.php` (pruebas).
+Eliminados: Smarty 3.1.8, PHPExcel 1.8, `_file-manager/` (elFinder sin autenticación),
+`default.php` (listado de directorios), `diego.php`, `ejemplo_ajax_proceso.php` (pruebas).
+Primero se movieron a `docs/legacy-removido/`, y después se eliminaron.
+
+## Archivos eliminados porque ningún código los usa
+
+Una revisión de referencias (includes, `display()` de Smarty, `src`/`href` de las plantillas,
+rutas de Symfony y el menú de la base de datos) marcó estos archivos como no usados:
+
+* Los scripts `ERP1000…ERP1094.php` y `Mnu1000.php` de `legacy/`. Las rutas de Symfony responden
+  a GET y POST en esas URL, así que esos scripts ya no se ejecutaban. Sus plantillas siguen en
+  `legacy/Plantillas/` porque los controladores de Symfony las usan. También se eliminaron las
+  clases que solo esos scripts incluían (`CMtoEmpleados`, `CMtoUsuarios`, `CMtoClientes`, ...).
+* El subsistema `Seg*` (seguridad operativa: proyectos, cursos, incidentes, licencias...): 80
+  scripts, sus plantillas y 41 clases. El menú de la base de datos no lo enlaza, y sus tablas
+  `S02*` no existen en la base de datos.
+* `ERP7000.php` (no está en el menú y su plantilla no existía), `index.php` y
+  `Plantillas/Index.tpl` (reemplazados por `HomeController`) y copias sueltas de páginas
+  (`Clases/ERP1070.php`, `Plantillas/ERP1030.php`, `ERP1060.tpl`).
+* En `legacy/CSS/`: `contacto-modal/` (otra copia de jQuery 1.8.3 más fancybox, solo para
+  `Seg1510a`), copias de jQuery y de `Sixavi.css`, los archivos sin minificar de jQuery UI,
+  `jquery.validate.js`, `funciones.js` y `funMarcado.js`.
+* `public_html/` (respaldo del código original), `docs/legacy-removido/` y `DO_NOT_UPLOAD_HERE`.
+
+El historial de git conserva todos estos archivos. `node bin/migration-inventory.cjs`
+lista los scripts legacy que quedan.
 
 La base de datos: `db/textileria.sql` tenía los identificadores entre comillas simples (SQL
 inválido) y un `DEFINER` del hosting anterior. `docker/mysql/convert_dump.py` genera

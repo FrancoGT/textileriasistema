@@ -20,12 +20,6 @@
 /legacy/FILES/*
 !/legacy/Ficheros/.gitkeep
 !/legacy/FILES/.gitkeep
-/public_html/templates_c/*
-/public_html/cache/*
-/public_html/Ficheros/*
-/public_html/FILES/*
-/public_html/.quarantine/
-/public_html/.tmb/
 
 # Local dependencies, logs and test output.
 node_modules/

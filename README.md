@@ -48,9 +48,8 @@ docker compose -f compose.prod.yaml --env-file .env.docker.prod up -d --build
 ├── legacy/                  # aplicación original adaptada a PHP 8.4 (ejecutada vía Symfony)
 ├── docker/                  # Apache, PHP, entrypoint, script SQL inicial
 ├── db/textileria.sql        # dump original
-├── public_html/             # código ORIGINAL sin modificar (respaldo; puede eliminarse)
 └── docs/
 ```
 
-`public_html/` se conserva solo como respaldo del código original: no se usa ni se incluye en
-la imagen Docker. Puede eliminarse cuando se haya validado la migración.
+El código original sin modificar (`public_html/`) se eliminó del repositorio. Está en el
+historial de git, en los commits anteriores a su eliminación.

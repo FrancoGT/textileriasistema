@@ -228,7 +228,7 @@ cd /opt/textileria
 docker compose -f compose.prod.yaml --env-file .env.docker.prod up -d --build
 ```
 
-> Para no copiar `vendor/`, `var/` ni `public_html/`, es preferible usar `git clone` en el
+> Para no copiar `vendor/` ni `var/`, es preferible usar `git clone` en el
 > servidor, o comprimir excluyendo esas carpetas.
 
 #### Opción B — Construir en Windows y publicar en un registro (Docker Hub, GHCR, ECR…)

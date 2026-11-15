@@ -16,9 +16,9 @@ const rows = pages.map(file => {
 });
 const document = `# Business module migration inventory
 
-${pages.length} root PHP scripts are present. ${migrated.size} maintenance routes have new
-controllers, services and DBAL repositories. The remaining scripts still execute
-legacy business code. Authentication and shared menu rendering remain legacy.
+${pages.length} root PHP scripts still execute legacy business code. Shared menu rendering
+remains legacy. ${migrated.size} maintenance routes have Symfony controllers, services and DBAL
+repositories. Their legacy scripts were deleted: ${[...migrated].sort().join(', ')}.
 
 This inventory counts SQL calls in directly included classes. A class can serve
 several screens, so counts overlap and are not migration estimates. Permission

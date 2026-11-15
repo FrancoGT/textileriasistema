@@ -105,8 +105,8 @@ the legacy login:
 - A failed password change shows the error on the form. The legacy screen showed
   an alert and ended the session.
 
-The legacy user screens `Seg1390.php` and `ERP1010.php` (shadowed by Symfony)
-now store the initial password as a hash. Their other SQL is unchanged.
+The legacy user screens `Seg1390.php` and `ERP1010.php` were deleted. The
+`ERP1010.php` route of Symfony stores the initial password as a hash.
 
 ## Permissions and forms
 

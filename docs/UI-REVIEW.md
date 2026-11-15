@@ -7,6 +7,9 @@ or dependencies were copied from Aroca.
 
 ## Scope
 
+This review was made before the unused legacy files were deleted. The `Seg*`
+templates, `Index` and `diego` no longer exist. See `docs/MIGRACION.md`.
+
 The source inventory includes 130 Smarty templates and two Twig templates.
 The inventory includes these interface families:
 
