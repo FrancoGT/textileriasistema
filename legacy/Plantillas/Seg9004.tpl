@@ -1,7 +1,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <html>
 <head>
-   <script type="text/javascript" src="CSS/Sixavi.js"></script>
+   <script type="text/javascript" src="CSS/Libreria.js"></script>
    <link href="CSS/Sixavi.css" media="screen" rel="stylesheet" type="text/css" />
    <title>Búsqueda de Normas</title>
 </head>

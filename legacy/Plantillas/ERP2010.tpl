@@ -7,7 +7,6 @@
    <script type="text/javascript" src="CSS/jquery-1.10.2.min.js"></script> 
    <script type="text/javascript" src="CSS/jquery-ui-1.11.0/jquery-ui.js"></script>
    <script type="text/javascript" src="CSS/jquery.validate.js"></script>
-   <script type="text/javascript" src="CSS/jquery.numeric.js"></script>
    <script type="text/javascript" src="CSS/Libgen.js"></script>
    <script>
    $(document).ready(function() {

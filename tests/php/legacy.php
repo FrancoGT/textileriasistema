@@ -63,13 +63,14 @@ $cases['response conversion preserves status, redirects, MIME and repeated cooki
     $same('text/html; charset=UTF-8', $factory->create('', 200, [])->headers->get('Content-Type'));
 };
 
-$cases['asset responses preserve public caching and conditional requests'] = static function () use ($fixture, $same): void {
+$cases['asset responses require revalidation and support conditional requests'] = static function () use ($fixture, $same): void {
     $file = $fixture('menu.css', 'body { margin: 0; }');
     $factory = new LegacyAssetResponseFactory();
     $response = $factory->create(Request::create('/CSS/menu.css'), 'CSS/menu.css', $file);
     $same('text/css', $response->headers->get('Content-Type'));
     $same(true, $response->headers->hasCacheControlDirective('public'));
-    $same('86400', (string) $response->headers->getCacheControlDirective('max-age'));
+    $same(true, $response->headers->hasCacheControlDirective('no-cache'));
+    $same(false, $response->headers->hasCacheControlDirective('max-age'));
     $request = Request::create('/CSS/menu.css');
     $request->headers->set('If-None-Match', (string) $response->getEtag());
     $same(304, $factory->create($request, 'CSS/menu.css', $file)->getStatusCode());

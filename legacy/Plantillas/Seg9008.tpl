@@ -1,7 +1,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <html>
 <head>
-   <script type="text/javascript" src="CSS/Sixavi.js"></script>
    <script src="CSS/Libreria.js" language="JavaScript"></script>
    <link href="CSS/Sixavi.css" media="screen" rel="stylesheet" type="text/css" />
    <title>Seguridad Operativa</title>

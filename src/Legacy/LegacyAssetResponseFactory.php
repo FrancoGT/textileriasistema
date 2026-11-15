@@ -18,7 +18,8 @@ final class LegacyAssetResponseFactory
         if (preg_match('#^/?(Ficheros|FILES)/#i', $path)) {
             $response->setPrivate()->headers->addCacheControlDirective('no-store');
         } else {
-            $response->setPublic()->setMaxAge(86400);
+            // The templates link assets without a version in the URL, so the browser must revalidate (ETag) to see edits.
+            $response->setPublic()->headers->addCacheControlDirective('no-cache');
         }
         $response->isNotModified($request);
 

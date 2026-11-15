@@ -8,7 +8,6 @@
    <script type="text/javascript" src="CSS/jquery-1.10.2.min.js"></script> 
    <script type="text/javascript" src="CSS/jquery-ui-1.11.0/jquery-ui.js"></script>
    <script type="text/javascript" src="CSS/jquery.validate.js"></script>
-   <script type="text/javascript" src="CSS/jquery.numeric.js"></script>
    <script type="text/javascript" src="CSS/Libgen.js"></script>   <script language="JavaScript">
 	function f_Desactivar(){
            var seleccion = document.getElementById('jcTipPer');           
@@ -41,7 +40,7 @@
          <th bgcolor="#F29818" width="100" align="center">RUC</th>
          <th bgcolor="#F29818" align="center" width="300">Razón Social</th>
          <th bgcolor="#F29818" align="center">Estado</th>         
-         <th bgcolor="#F29818" align="center"><img src = "CSS/Check.png" width="25" height="25"></th>         
+         <th bgcolor="#F29818" align="center"><img src = "CSS/Check.jpg" width="25" height="25"></th>         
          {foreach from = $saData item = i}               
             <tr>
                 <td>{$i['1']}</td><td>{$i['2']}</td><td>{$i['3']}</td>                
