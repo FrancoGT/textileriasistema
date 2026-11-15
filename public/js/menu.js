@@ -208,7 +208,7 @@
                 .workspace-records-toolbar { margin-bottom: 16px; }
                 .workspace-records-search { display: flex; flex-direction: column; gap: 6px; margin-left: auto; width: min(100%, 320px); }
                 .workspace-records-search input { width: 100%; min-height: 36px; padding: 8px; }
-                .workspace-records-scroll { width: 100% !important; height: auto !important; max-height: 60vh; overflow: auto; }
+                .workspace-records-scroll { width: 100% !important; height: auto !important; max-height: none; overflow-x: auto; }
                 .workspace-records-table { width: 100%; }
                 .workspace-records-table th, .workspace-records-table td { padding: 10px 12px; vertical-align: middle; }
                 .workspace-records-table [hidden] { display: none !important; }

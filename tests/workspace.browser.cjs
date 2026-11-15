@@ -237,6 +237,24 @@ test('shared mobile workspace contains controls and wide supplier tables', { tim
                     }
                 }
                 if (module === 'ERP1060') {
+                    const spacing = await execute(() => {
+                        const page = document.getElementById('erp-workspace').contentDocument;
+                        const size = page.querySelector('.workspace-records-footer select');
+                        size.value = '25';
+                        size.dispatchEvent(new Event('change'));
+                        const scroll = page.querySelector('.workspace-records-scroll');
+                        const footer = page.querySelector('.workspace-records-footer');
+                        const wrapper = footer.closest('.wrapper');
+                        const result = {
+                            verticalOverflow: scroll.scrollHeight - scroll.clientHeight,
+                            bottomSpace: wrapper.getBoundingClientRect().bottom - footer.getBoundingClientRect().bottom
+                        };
+                        size.value = '10';
+                        size.dispatchEvent(new Event('change'));
+                        return result;
+                    });
+                    assert.ok(spacing.verticalOverflow <= 1, 'paginated tables expand without an inner vertical scrollbar');
+                    assert.ok(spacing.bottomSpace >= 16 && spacing.bottomSpace <= 32, 'space below pagination stays between 16 and 32 pixels');
                     const filtering = await execute(async () => {
                         const page = document.getElementById('erp-workspace').contentDocument;
                         const search = page.querySelector('.workspace-records-search input');

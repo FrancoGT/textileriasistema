@@ -2,7 +2,7 @@ button, input[type=submit], input[type=button], a[href] { transition: opacity 12
 @media screen {
     .erp-ui { color: #333333; font-size: 13px; line-height: 1.5; }
     .erp-ui body:not(.menu-page) { margin: 0; background: #E8E8E8; }
-    .erp-ui .wrapper:not(.menu-wrapper) { box-sizing: border-box; width: 100%; margin: 0; padding: 16px; border: 0; }
+    .erp-ui .wrapper:not(.menu-wrapper) { box-sizing: border-box; width: 100%; margin: 0; padding: 16px 16px 24px; border: 0; }
     .erp-ui #navigation { float: none; width: 100%; text-align: left; }
     .erp-ui #content { margin-left: 0; min-height: 0; padding: 0; }
     .erp-ui #content:empty, .erp-ui #footer:empty { display: none; }
@@ -48,8 +48,8 @@ button, input[type=submit], input[type=button], a[href] { transition: opacity 12
     .erp-ui .erp-actions { margin: 12px 0; border-spacing: 0; }
     .erp-ui .erp-actions > tbody > tr { display: flex; flex-wrap: wrap; gap: 8px; }
     .erp-ui .erp-actions > tbody > tr > td { display: block; padding: 0; }
-    .erp-ui .erp-table-scroll { box-sizing: border-box; max-width: 100%; width: 100% !important; overflow: auto; border: 1px solid #E8E8E8; border-radius: 4px; }
-    .erp-ui .erp-data-table { width: 100%; border-collapse: collapse; border: 0; border-spacing: 0; font-size: 13px !important; }
+    .erp-ui .erp-table-scroll { box-sizing: border-box; max-width: 100%; width: 100% !important; height: auto !important; max-height: none; overflow-x: auto; border: 1px solid #E8E8E8; border-radius: 4px; }
+    .erp-ui .erp-data-table { width: 100%; margin: 0; border-collapse: collapse; border: 0; border-spacing: 0; font-size: 13px !important; }
     .erp-ui .erp-data-table :is(th, td) { padding: 9px 12px; border: 0; border-bottom: 1px solid #E8E8E8; text-align: left; vertical-align: middle; line-height: 1.5; }
     .erp-ui .erp-data-table th { background: #F4F4F4; color: #333333; font-weight: bold; white-space: nowrap; }
     .erp-ui .erp-data-table tr:hover > td { background-color: #F4F4F4; }
@@ -67,7 +67,7 @@ button, input[type=submit], input[type=button], a[href] { transition: opacity 12
     .erp-ui .ui-dialog button.ui-dialog-titlebar-close { min-width: 32px; min-height: 32px; padding: 0; }
     .erp-ui .login-card #login-submit { width: 100% !important; min-height: 44px; }
     @media (max-width: 760px) {
-        .erp-ui .wrapper:not(.menu-wrapper) { padding: 12px; }
+        .erp-ui .wrapper:not(.menu-wrapper) { padding: 12px 12px 24px; }
         .erp-ui :is(#navigation, #navcontainer, #content) { min-width: 0; max-width: 100%; box-sizing: border-box; }
         .erp-ui .erp-form, .erp-ui .erp-form > tbody { display: block; width: 100%; }
         .erp-ui .erp-form tr { display: flex; flex-wrap: wrap; gap: 4px 8px; padding: 6px 0; }
