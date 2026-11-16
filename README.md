@@ -28,12 +28,11 @@ docker compose -f compose.prod.yaml --env-file .env.docker.prod up -d --build
 
 ## Documentación
 
-* [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): service responsibilities, migration boundaries and verification commands.
+* [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): layers, modules, changes from the original screens and verification commands.
 
 * [docs/DESPLIEGUE-DOCKER-WINDOWS.md](docs/DESPLIEGUE-DOCKER-WINDOWS.md) — todos los comandos
   de Docker para Windows: local, producción, despliegue remoto, respaldos y solución de problemas.
-* [docs/MIGRACION.md](docs/MIGRACION.md) — qué se migró, cambios al código legacy,
-  verificación realizada y cómo migrar cada pantalla a Symfony.
+* [docs/MIGRACION.md](docs/MIGRACION.md): what was migrated and which code was removed.
 
 ## Estructura
 
@@ -43,13 +42,12 @@ docker compose -f compose.prod.yaml --env-file .env.docker.prod up -d --build
 ├── compose.prod.yaml        # producción
 ├── config/                  # configuración Symfony
 ├── public/index.php         # front controller (único punto de entrada web)
-├── src/                     # código Symfony (controladores, puente legacy)
-├── templates/               # Twig
-├── legacy/                  # aplicación original adaptada a PHP 8.4 (ejecutada vía Symfony)
+├── src/                     # controladores, servicios y repositorios DBAL
+├── templates/               # Twig (pantallas ERP en templates/erp)
 ├── docker/                  # Apache, PHP, entrypoint, script SQL inicial
 ├── db/textileria.sql        # dump original
 └── docs/
 ```
 
-El código original sin modificar (`public_html/`) se eliminó del repositorio. Está en el
+El código original (`public_html/` y `legacy/`) se eliminó del repositorio. Está en el
 historial de git, en los commits anteriores a su eliminación.

@@ -15,13 +15,14 @@ final class MaintenanceInputResolver implements ValueResolverInterface
 {
     private const LIST_FIELD = 'paTipArs';
     // Table fields posted as paData[row][column] and paCheck[].
-    private const GRID_FIELDS = ['paData', 'paDataI', 'paCheck'];
+    private const GRID_FIELDS = ['paData', 'paDataI', 'paDataP', 'paCheck'];
     private const MAX_GRID_ROWS = 1000;
     private const MAX_GRID_CELLS = 10;
-    // Submit button names used by the legacy templates, in order of precedence.
-    private const BUTTONS = ['Boton2', 'Boton1', 'Boton0', 'Boton', 'Boton3', 'Boton4', 'Boton5', 'Aceptar', 'Aplicar', 'Grabar', 'Cancelar', 'Salir'];
+    // Submit button names used by the templates, in order of precedence.
+    private const BUTTONS = ['Boton2', 'Boton1', 'Boton0', 'Boton', 'Boton3', 'Boton4', 'Boton5', 'BotonM', 'BotonP', 'Aceptar', 'Aplicar', 'Grabar', 'Cancelar', 'Salir'];
     private const ACTIONS = ['', 'Aceptar', 'Aplicar', 'Nuevo', 'Salir', 'Grabar', 'Cancelar', 'Editar', 'Eliminar',
-        'Detalle', 'Asignar Insumos', 'Agregar', 'Actualizar'];
+        'Detalle', 'Asignar Insumos', 'Agregar', 'Actualizar', 'Asignar', 'Hecho', 'Pagar', 'Cargar', 'Nuevo Cliente',
+        'Cargar Datos', 'Calcular'];
 
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
@@ -54,9 +55,11 @@ final class MaintenanceInputResolver implements ValueResolverInterface
             }
         }
         $action = '';
+        $pressed = '';
         foreach (self::BUTTONS as $button) {
             if ('' !== ($fields[$button] ?? '')) {
                 $action = $fields[$button];
+                $pressed = $button;
                 break;
             }
         }
@@ -64,7 +67,7 @@ final class MaintenanceInputResolver implements ValueResolverInterface
             throw new BadRequestHttpException('La acción no es válida.');
         }
 
-        yield new MaintenanceInput($action, $fields, array_values(array_unique($lines)), $grids);
+        yield new MaintenanceInput($action, $fields, array_values(array_unique($lines)), $grids, $pressed);
     }
 
     /** @return array<array-key, string|array<array-key, string>> */

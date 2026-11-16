@@ -6,8 +6,8 @@ namespace App\Controller;
 
 use App\Http\MaintenanceInput;
 use App\Http\MaintenanceInputResolver;
-use App\Legacy\LegacySession;
-use App\Legacy\LegacyTemplateRenderer;
+use App\Session\ErpSession;
+use App\View\ErpView;
 use App\Maintenance\SupplierData;
 use App\Maintenance\SupplierService;
 use App\Repository\CatalogRepository;
@@ -23,8 +23,8 @@ final class SupplierController
     public function __construct(
         private readonly SupplierService $suppliers,
         private readonly CatalogRepository $catalogs,
-        private readonly LegacySession $session,
-        private readonly LegacyTemplateRenderer $views,
+        private readonly ErpSession $session,
+        private readonly ErpView $views,
     ) {
     }
 
@@ -96,6 +96,6 @@ final class SupplierController
             $status = 422;
         }
 
-        return $this->views->render('Plantillas/ERP1060.tpl', $data, $status);
+        return $this->views->render('ERP1060', $data, $status);
     }
 }

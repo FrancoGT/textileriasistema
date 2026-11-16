@@ -61,7 +61,7 @@ Run the available checks:
 node --test tests/login.test.cjs tests/menu.test.cjs tests/menu-mobile.test.cjs tests/workspace.browser.cjs
 docker compose exec -T app php bin/console lint:container
 docker compose exec -T app php bin/console lint:twig templates
-docker compose exec -T app php tests/php/legacy.php
+docker compose exec -T -e ERP_TEST_DATABASE_NAME=textileria_test app php tests/php/business.php
 docker compose exec -T app php tests/php/interface.php
 ```
 

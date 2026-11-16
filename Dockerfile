@@ -22,7 +22,7 @@ ENV APP_DIR=/var/www/html \
 WORKDIR ${APP_DIR}
 
 # Dependencias del sistema + extensiones PHP requeridas por Symfony,
-# el codigo legacy (mysqli) y PhpSpreadsheet (gd, zip, intl...)
+# Doctrine DBAL (pdo_mysql) e intl
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
@@ -31,7 +31,7 @@ RUN set -eux; \
         libxml2-dev libonig-dev; \
     docker-php-ext-configure gd --with-freetype --with-jpeg; \
     docker-php-ext-install -j"$(nproc)" \
-        intl zip gd mysqli pdo_mysql opcache bcmath; \
+        intl zip gd pdo_mysql opcache bcmath; \
     rm -rf /var/lib/apt/lists/* /tmp/pear
 
 # Composer 2
@@ -93,8 +93,8 @@ RUN set -eux; \
 COPY . .
 
 RUN set -eux; \
-    mkdir -p var/cache var/log var/sessions legacy/Ficheros legacy/FILES legacy/templates_c legacy/cache; \
+    mkdir -p var/cache var/log var/sessions; \
     composer dump-autoload --classmap-authoritative --no-dev; \
     composer dump-env prod; \
     composer run-script --no-dev post-install-cmd; \
-    chown -R www-data:www-data var legacy/Ficheros legacy/FILES legacy/templates_c legacy/cache
+    chown -R www-data:www-data var

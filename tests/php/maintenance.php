@@ -18,8 +18,8 @@ use App\Controller\SupplyController;
 use App\Controller\WarehouseController;
 use App\Http\MaintenanceInput;
 use App\Http\MaintenanceInputResolver;
-use App\Legacy\LegacySession;
-use App\Legacy\LegacyTemplateRenderer;
+use App\Session\ErpSession;
+use App\View\ErpView;
 use App\Maintenance\AccountOwner;
 use App\Maintenance\BankAccountService;
 use App\Maintenance\BankData;
@@ -184,6 +184,7 @@ try {
     $users = new UserService(new DbalUserRepository($connection, $tables, new DbalCredentialRepository($connection), $passwords), new CatalogRepository($connection), $permissions);
     $profiles = new ProfileService(new DbalProfileRepository($connection, $tables), new CatalogRepository($connection), $permissions);
     $machines = new MachineService(new DbalMachineRepository($connection, $tables), new CatalogRepository($connection), $permissions);
+    $erpView = new ErpView(new Twig\Environment(new Twig\Loader\FilesystemLoader(dirname(__DIR__, 2).'/templates'), ['strict_variables' => true]));
     $person = new PersonnelData("O'NEIL", 'Av. Central', 'oneil@example.test', '12345678', 'M', 'S', 'A');
     $supplier = new SupplierData("O'REILLY SAC", 'Av. Sur', '', '12345678901', 'B', '2024-01-02', 'Initial notes', ['01']);
     $personCode = '';
@@ -273,9 +274,9 @@ try {
         $same('Grabar', $result[0]->action);
         $same(['01'], $result[0]->productionLines);
     };
-    $cases['controllers enforce login, permissions and session-bound form tokens'] = static function () use ($people, $suppliers, $connection, $throws, $same): void {
-        $session = new LegacySession();
-        $views = new LegacyTemplateRenderer(dirname(__DIR__, 2).'/legacy');
+    $cases['controllers enforce login, permissions and session-bound form tokens'] = static function () use ($people, $suppliers, $connection, $throws, $same, $erpView): void {
+        $session = new ErpSession();
+        $views = $erpView;
         $catalogs = new CatalogRepository($connection);
         $personnel = new PersonnelController($people, $catalogs, $session, $views);
         $providers = new SupplierController($suppliers, $catalogs, $session, $views);
@@ -322,9 +323,9 @@ try {
         $throws(DomainException::class, static fn () => $machines->find('1000', "' OR 1=1 --"));
         $same(1, (int) $connection->fetchOne('SELECT COUNT(*) FROM E01MMAQ'));
     };
-    $cases['machine controller enforces tokens and saves only the opened record'] = static function () use ($machines, $throws, $same, $connection): void {
-        $session = new LegacySession();
-        $controller = new MachineController($machines, $session, new LegacyTemplateRenderer(dirname(__DIR__, 2).'/legacy'));
+    $cases['machine controller enforces tokens and saves only the opened record'] = static function () use ($machines, $throws, $same, $connection, $erpView): void {
+        $session = new ErpSession();
+        $controller = new MachineController($machines, $session, $erpView);
         $session->logout();
         $same('/index.php', $controller(Request::create('/ERP1040.php'), new MaintenanceInput('', [], []))->headers->get('Location'));
         $session->set('gcCodUsu', '2000');
@@ -382,9 +383,9 @@ try {
         }
         $same($before, (int) $connection->fetchOne('SELECT COUNT(*) FROM E01MCLI'));
     };
-    $cases['client controller follows type, list, edit and save steps'] = static function () use ($clients, $throws, $same, $connection): void {
-        $session = new LegacySession();
-        $controller = new ClientController($clients, $session, new LegacyTemplateRenderer(dirname(__DIR__, 2).'/legacy'));
+    $cases['client controller follows type, list, edit and save steps'] = static function () use ($clients, $throws, $same, $connection, $erpView): void {
+        $session = new ErpSession();
+        $controller = new ClientController($clients, $session, $erpView);
         $post = static fn (string $action, array $fields) => $controller(Request::create('/ERP1030.php', 'POST'), new MaintenanceInput($action, $fields + ['_token' => $session->token('clients')], []));
         $session->logout();
         $same('/index.php', $controller(Request::create('/ERP1030.php'), new MaintenanceInput('', [], []))->headers->get('Location'));
@@ -459,9 +460,9 @@ try {
         $same(0, (int) $connection->fetchOne('SELECT COUNT(*) FROM E01MINS WHERE cCodIns = :code', ['code' => $code]));
         $throws(DomainException::class, static fn () => $supplies->delete('1000', $code));
     };
-    $cases['supply controller edits, saves and deletes with a form token'] = static function () use ($supplies, $throws, $same, $connection): void {
-        $session = new LegacySession();
-        $controller = new SupplyController($supplies, $session, new LegacyTemplateRenderer(dirname(__DIR__, 2).'/legacy'));
+    $cases['supply controller edits, saves and deletes with a form token'] = static function () use ($supplies, $throws, $same, $connection, $erpView): void {
+        $session = new ErpSession();
+        $controller = new SupplyController($supplies, $session, $erpView);
         $post = static fn (string $action, array $fields) => $controller(Request::create('/ERP1050.php', 'POST'), new MaintenanceInput($action, $fields + ['_token' => $session->token('supplies')], []));
         $session->logout();
         $same('/index.php', $controller(Request::create('/ERP1050.php'), new MaintenanceInput('', [], []))->headers->get('Location'));
@@ -525,9 +526,9 @@ try {
         $catalogTables->save('1000', '021', ['1.1'], [new CatalogEntry('1', '1.2.3', 'Uno')]);
         $same('1.2.3', $catalogRows()[0][2]);
     };
-    $cases['catalog table controller adds and removes only new rows before saving'] = static function () use ($catalogTables, $catalogRows, $throws, $same): void {
-        $session = new LegacySession();
-        $controller = new CatalogTableController($catalogTables, $session, new LegacyTemplateRenderer(dirname(__DIR__, 2).'/legacy'));
+    $cases['catalog table controller adds and removes only new rows before saving'] = static function () use ($catalogTables, $catalogRows, $throws, $same, $erpView): void {
+        $session = new ErpSession();
+        $controller = new CatalogTableController($catalogTables, $session, $erpView);
         $post = static fn (string $action, array $fields, array $grids = []) => $controller(Request::create('/ERP1080.php', 'POST'), new MaintenanceInput($action, $fields + ['_token' => $session->token('catalog_tables')], [], $grids));
         $session->logout();
         $same('/index.php', $controller(Request::create('/ERP1080.php'), new MaintenanceInput('', [], []))->headers->get('Location'));
@@ -565,9 +566,9 @@ try {
         $throws(DomainException::class, static fn () => $warehouses->save('1000', '999999', new WarehouseData('X', 'X', 'A', 'I')));
         $same(1, (int) $connection->fetchOne('SELECT COUNT(*) FROM E01MALM'));
     };
-    $cases['warehouse controller saves only the opened record'] = static function () use ($warehouses, $throws, $same, $connection): void {
-        $session = new LegacySession();
-        $controller = new WarehouseController($warehouses, $session, new LegacyTemplateRenderer(dirname(__DIR__, 2).'/legacy'));
+    $cases['warehouse controller saves only the opened record'] = static function () use ($warehouses, $throws, $same, $connection, $erpView): void {
+        $session = new ErpSession();
+        $controller = new WarehouseController($warehouses, $session, $erpView);
         $post = static fn (string $action, array $fields) => $controller(Request::create('/ERP1090.php', 'POST'), new MaintenanceInput($action, $fields + ['_token' => $session->token('warehouses')], []));
         $session->logout();
         $same('/index.php', $controller(Request::create('/ERP1090.php'), new MaintenanceInput('', [], []))->headers->get('Location'));
@@ -614,9 +615,9 @@ try {
         $throws(DomainException::class, static fn () => $bankAccounts->add('1000', AccountOwner::Supplier, '000001x', '32345678901234'));
         $same(2, (int) $connection->fetchOne('SELECT COUNT(*) FROM E01PCTA'));
     };
-    $cases['bank and account controllers require tokens and save selected values'] = static function () use ($banks, $bankAccounts, $throws, $same, $connection): void {
-        $session = new LegacySession();
-        $views = new LegacyTemplateRenderer(dirname(__DIR__, 2).'/legacy');
+    $cases['bank and account controllers require tokens and save selected values'] = static function () use ($banks, $bankAccounts, $throws, $same, $connection, $erpView): void {
+        $session = new ErpSession();
+        $views = $erpView;
         $bankController = new BankController($banks, $session, $views);
         $accountController = new BankAccountController($bankAccounts, $session, $views);
         $session->logout();
@@ -670,9 +671,9 @@ try {
         $same('9', $stockOf('W00001', 'Z00001'));
         $same(['Z00001', 'LANA FINA', 'Bolsas', '7.25', '9'], $transfers->stock('1000', 'W00001')['stock'][0]);
     };
-    $cases['stock transfer controller keeps lines and saves with a token'] = static function () use ($transfers, $stockOf, $throws, $same): void {
-        $session = new LegacySession();
-        $controller = new StockTransferController($transfers, $session, new LegacyTemplateRenderer(dirname(__DIR__, 2).'/legacy'));
+    $cases['stock transfer controller keeps lines and saves with a token'] = static function () use ($transfers, $stockOf, $throws, $same, $erpView): void {
+        $session = new ErpSession();
+        $controller = new StockTransferController($transfers, $session, $erpView);
         $post = static fn (string $action, array $fields, array $grids = []) => $controller(Request::create('/ERP1091.php', 'POST'), new MaintenanceInput($action, $fields + ['_token' => $session->token('stock_transfer')], [], $grids));
         $session->logout();
         $same('/index.php', $controller(Request::create('/ERP1091.php'), new MaintenanceInput('', [], []))->headers->get('Location'));
@@ -703,9 +704,9 @@ try {
         $throws(DomainException::class, static fn () => $products->saveRecipe('1000', '000999', 'Chompa', ['Z00001']));
         $same(['Z00001', 'Z00002'], $products->find('1000', $code)['recipe']);
     };
-    $cases['product controller edits the recipe kept in the form state'] = static function () use ($products, $same, $connection): void {
-        $session = new LegacySession();
-        $controller = new ProductController($products, $session, new LegacyTemplateRenderer(dirname(__DIR__, 2).'/legacy'));
+    $cases['product controller edits the recipe kept in the form state'] = static function () use ($products, $same, $connection, $erpView): void {
+        $session = new ErpSession();
+        $controller = new ProductController($products, $session, $erpView);
         $post = static fn (string $action, array $fields, array $grids = []) => $controller(Request::create('/ERP1070.php', 'POST'), new MaintenanceInput($action, $fields + ['_token' => $session->token('products')], [], $grids));
         $session->set('gcCodUsu', '1000');
         $same(200, $controller(Request::create('/ERP1070.php'), new MaintenanceInput('', [], []))->getStatusCode());
@@ -742,9 +743,9 @@ try {
         $throws(DomainException::class, static fn () => $users->update('1000', '9999', 'A', 'A', '2027-01-31'));
         $same([['0777', 'ANA', 'Administrador']], array_values(array_filter($users->all('1000'), static fn (array $row): bool => '0777' === $row[0])));
     };
-    $cases['user controller creates and updates through the opened form'] = static function () use ($users, $same, $connection): void {
-        $session = new LegacySession();
-        $controller = new UserController($users, $session, new LegacyTemplateRenderer(dirname(__DIR__, 2).'/legacy'));
+    $cases['user controller creates and updates through the opened form'] = static function () use ($users, $same, $connection, $erpView): void {
+        $session = new ErpSession();
+        $controller = new UserController($users, $session, $erpView);
         $post = static fn (string $action, array $fields) => $controller(Request::create('/ERP1010.php', 'POST'), new MaintenanceInput($action, $fields + ['_token' => $session->token('users')], []));
         $session->set('gcCodUsu', '1000');
         $same(200, $controller(Request::create('/ERP1010.php'), new MaintenanceInput('', [], []))->getStatusCode());
@@ -777,9 +778,9 @@ try {
         $same([], $profiles->open('1000', 'B')['granted']);
         $throws(DomainException::class, static fn () => $profiles->revoke('1000', 'B', 'ERP1030'));
     };
-    $cases['profile controller keeps the selected profile between steps'] = static function () use ($profiles, $same, $connection): void {
-        $session = new LegacySession();
-        $controller = new ProfileController($profiles, $session, new LegacyTemplateRenderer(dirname(__DIR__, 2).'/legacy'));
+    $cases['profile controller keeps the selected profile between steps'] = static function () use ($profiles, $same, $connection, $erpView): void {
+        $session = new ErpSession();
+        $controller = new ProfileController($profiles, $session, $erpView);
         $post = static fn (string $action, array $fields) => $controller(Request::create('/ERP1020.php', 'POST'), new MaintenanceInput($action, $fields + ['_token' => $session->token('profiles')], []));
         $session->set('gcCodUsu', '1000');
         $same(422, $post('Nuevo', [])->getStatusCode());
@@ -826,8 +827,8 @@ try {
         $throws(DomainException::class, static fn () => $login->authenticate('4000', 'Clave.Antigua'));
         $same(false, $login->authenticate('4000', 'NuevaClave1')['must_change']);
     };
-    $cases['login and password change controllers keep the legacy session contract'] = static function () use ($login, $connection, $throws, $same): void {
-        $session = new LegacySession();
+    $cases['login and password change controllers keep the legacy session contract'] = static function () use ($login, $connection, $throws, $same, $erpView): void {
+        $session = new ErpSession();
         $session->logout();
         $controller = new LoginController($login, $session);
         $post = static fn (array $fields) => $controller(Request::create('/Mnu0000.php', 'POST', $fields, server: ['HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest']));
@@ -843,7 +844,7 @@ try {
         $response = $controller(Request::create('/Mnu0000.php', 'POST', ['pcCodigo' => '4000', 'pcClave' => 'NuevaClave1']));
         $same([303, '/Mnu1000.php'], [$response->getStatusCode(), $response->headers->get('Location')]);
 
-        $change = new PasswordChangeController($login, $session, new LegacyTemplateRenderer(dirname(__DIR__, 2).'/legacy'));
+        $change = new PasswordChangeController($login, $session, $erpView);
         $input = static fn (string $action, array $fields) => new MaintenanceInput($action, $fields, []);
         $same(200, $change(Request::create('/Mnu1000.php'), $input('', []))->getStatusCode());
         $throws(AccessDeniedHttpException::class, static fn () => $change(Request::create('/Mnu1000.php', 'POST'), $input('Grabar', ['pcClave' => 'NuevaClave1', 'pcClave1' => 'OtraClave22', 'pcClave2' => 'OtraClave22'])));

@@ -9,14 +9,12 @@
         "php": ">=8.4.1",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "ext-mysqli": "*",
         "ext-pdo_mysql": "*",
         "doctrine/dbal": "^4.5.1",
         "doctrine/doctrine-bundle": "^3.4.1",
         "doctrine/doctrine-migrations-bundle": "^4.0",
         "doctrine/orm": "^3.7",
-        "phpoffice/phpspreadsheet": "^5.11",
-        "smarty/smarty": "^4.5.8",
+        "setasign/fpdf": "^1.8",
         "symfony/console": "8.2.*",
         "symfony/dotenv": "8.2.*",
         "symfony/flex": "^2.12",
@@ -51,10 +49,7 @@
     "autoload": {
         "psr-4": {
             "App\\": "src/"
-        },
-        "files": [
-            "legacy/compat/php8.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {

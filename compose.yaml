@@ -36,6 +36,10 @@ services:
       - .:/var/www/html
       # var/ en volumen nativo de Docker: mucho mas rapido que un bind mount en Windows
       - app_var:/var/www/html/var
+      # vendor/ en volumen nativo: con el bind mount (9p) cada peticion tardaba ~7 s en cargar
+      # las clases. El entrypoint ejecuta composer install si el volumen esta vacio.
+      # Tras cambiar composer.json: docker compose exec app composer install
+      - app_vendor:/var/www/html/vendor
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
@@ -86,3 +90,4 @@ services:
 volumes:
   db_data:
   app_var:
+  app_vendor:

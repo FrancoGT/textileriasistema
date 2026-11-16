@@ -1,87 +1,82 @@
-# Symfony migration boundaries
+# Architecture
 
-The shared legacy bridge now separates URL dispatch, script execution, variable
-collection, response conversion, asset delivery and session compatibility. The
-maintenance screens ERP1000 to ERP1094 now have Symfony controllers, services and DBAL repositories. Their existing views remain in use through a rendering
-adapter. Other business modules still run in `legacy/`. The new PHP code and
-database behavior are pending runtime validation.
+Every screen of the ERP is a Symfony route. The URLs of the original application
+(`/ERP2010.php`, `/Mnu0000.php`...) are kept, so the menu stored in the database
+still works. The `legacy/` directory, the catch-all `LegacyController`, Smarty,
+PhpSpreadsheet and the `mysqli` extension were removed on 2026-11-15. Git history
+keeps the old code.
 
-See [maintenance migration](MAINTENANCE-MIGRATION.md) for the required InnoDB
-conversion and integration tests, and [the module inventory](MODULE-MIGRATION.md)
-for the remaining scripts.
+## Layers
 
-## Current services
+| Layer | Location | Responsibility |
+| --- | --- | --- |
+| Controller | `src/Controller` | Map the request to an action, check the form token, redirect after a save (303), render the view. |
+| Input | `src/Http` | `MaintenanceInputResolver` turns the Spanish field and button names into a `MaintenanceInput` (action, button, fields, grids). |
+| Session | `src/Session` | `ErpSession` reads the user from the native PHP session. `MaintenanceFormState` keeps the token, the opened record, the draft and the flash message of one screen. |
+| Use case | `src/Maintenance`, `src/Sales`, `src/Production`, `src/Finance`, `src/Dispatch`, `src/Inventory`, `src/Security` | Check the module permission (`ModulePermission::assertGranted`), validate business fields, throw `\DomainException` with the message for the user. |
+| Persistence | `src/Repository` | One interface per use case and one `Dbal*` implementation. SQL uses bound parameters. Writes run in a transaction and lock the rows they read (`FOR UPDATE`). `TransactionalTables::requireInnoDb` refuses to write to a MyISAM table. |
+| Documents | `src/Report` | `OrderReportPdf` (FPDF) and `OrderDocumentRtf` (template `templates/documents/order.rtf`). |
+| View | `src/View`, `templates/erp` | `ErpView` renders `templates/erp/<screen>.html.twig`. Screens that differ only in their filter share one template. |
 
-| Service | Responsibility |
-| --- | --- |
-| `LegacyController` | Dispatch a resolved page or asset. |
-| `LegacyPathResolver` | Resolve allowed files within the legacy directory. |
-| `LegacyPageExecutor` | Define the execution contract used by the controller. |
-| `LegacyScriptRunner` | Adapt native PHP execution and restore process state. |
-| `LegacyVariableCollector` | Identify variables required by legacy global functions. |
-| `LegacyResponseFactory` | Convert captured content, status and headers to a Symfony response. |
-| `LegacyAssetResponseFactory` | Set file MIME types, cache policy and conditional responses. |
-| `LegacySession` | Clear identity keys used by the native session bridge. |
-| `LegacyTemplateRenderer` | Render existing Smarty views without executing legacy entry scripts. |
-| `*Service` in `src/Maintenance` | Validate maintenance operations and enforce module permissions. |
-| `Dbal*Repository` in `src/Repository` | Persist maintenance data with bound SQL and transactions. |
-| `ClientType`, `AccountOwner`, `CatalogCodeFormat` | Hold the rules that change with the person type, the account owner or the catalog table. |
-| `MaintenanceFormState` | Keep the form token, opened record and status message of one screen in the shared session. |
-| `DatabaseModulePermission` | Check existing active profile grants through a repository. |
+A controller catches `\DomainException` and shows its message with status 422.
+Repositories do not know about HTTP, and services do not know about templates.
 
-Services use constructor injection and the existing service discovery configuration.
-Symfony resolves the executor interface from its single implementation. Native
-session access stays in the compatibility adapter because legacy identity keys
-are outside Symfony's isolated attribute bag.
+## Modules
 
-The migration uses the Strangler Fig pattern: a Symfony route replaces one legacy
-screen while the catch-all controller continues to serve the remaining screens.
-The bridge is an Adapter. Response creation uses factories. These boundaries
-allow controller tests to replace execution without loading a legacy module.
+| Screens | Controller | Service |
+| --- | --- | --- |
+| ERP1000 to ERP1094 | one controller per maintenance screen | `src/Maintenance`, `src/Security`, `src/Inventory` |
+| ERP2010 | `SalesOrderController` | `SalesOrderService` |
+| ERP2020, `/{screen}/{order}.rtf` | `OrderDocumentController` | `OrderDocumentService` |
+| ERP3000, ERP3010, ERP3020 | `PlanningController` | `PlanningService` |
+| ERP4000, ERP4060, ERP4070 and ERP4010 to ERP4050 | `ProductionController` | `ProductionService` |
+| ERP5010 | `PurchaseController` | `PurchaseService` |
+| ERP6010, ERP6020, ERP6030 | `ReceivableController` | `ReceivableService` |
+| ERP7010, ERP7020 | `PayableController` | `PayableService` |
+| ERP8000 | `WorkController` | `WorkService` |
+| ERP9010, `/ERP9010/{order}.pdf` | `DispatchController` | `DispatchService` |
 
-## Migrating a business module
+`Boards`, `ReceivableBoard` and `PayableBoard` describe the screens that list the
+same records with another filter, permission or title.
 
-1. Record current behavior: permissions, request fields, redirects, validation,
-   session keys, database writes and report output. Add characterization tests.
-2. Introduce a repository for the module's actual queries. Use the installed
-   Doctrine DBAL connection and bound parameters. Keep the existing schema until
-   a separate schema migration is tested.
-3. Put the use case and transaction boundary in an application service. Introduce
-   a repository interface when the application needs a replaceable persistence
-   boundary. Keep HTTP requests and template rendering outside the use case.
-4. Map input to a DTO and validate it. Check installed Serializer and Validator
-   components before using `MapRequestPayload`; neither is currently required
-   by this application's `composer.json`. Use Symfony Form for browser forms
-   when the module needs form binding and CSRF protection.
-5. Add a thin controller with route attributes and Twig templates. Preserve the
-   existing URL and the shared header, navigation and mobile behavior.
-6. Test access denial and data persistence as well as successful rendering.
-   Replace the route only after these checks pass. Remove the replaced legacy
-   implementation only after all callers have migrated.
+## Changes from the original screens
 
-Authentication and permissions must share identity with remaining legacy screens
-until their callers migrate. Do not replace a permission check with a generic
-"logged in" check. Do not introduce a generic CRUD layer for modules with
-different business rules. Add Messenger, Workflow or caching only for a measured
-or documented requirement.
+These changes fix defects of the original code. They change what users see.
+
+- ERP2010 lists companies by RUC. The original list showed the DNI column.
+- The order document prints the DNI for a natural person and the RUC for a company.
+  The original document always printed the RUC.
+- ERP4050 lists the lines in the Finishing stage (`CPROCESO = 'E'`) and checks the
+  ERP4050 permission. Profiles A and D have both ERP4030 and ERP4050.
+- ERP8000 shows the machine of the job. The original screen showed the first machine of `E01MMAQ`.
+- ERP5010 saves the invoice (`E01CCOM`, `E02DCOM`). The original screen saved nothing.
+- ERP6010 to ERP6030 take the order total from the database and save the due date.
+  The original screens took the total from the form and ignored the date. An order
+  with installments cannot get a second plan.
+- ERP7010 and ERP7020 add up the lines of each invoice. The original amount added up every purchase.
+- ERP9010 checks the ERP9010 permission. Migration `Version20261115000001` creates
+  the option and grants it to profile A. The original check was commented out.
 
 ## Verification
 
-Run the bridge checks with PHP 8.4 and the project's installed extensions:
-
 ```console
-symfony php tests/php/legacy.php
-symfony console lint:container
-symfony console lint:twig templates/
-node --test tests/*.test.cjs
+docker compose exec -T app php bin/console lint:container
+docker compose exec -T app php bin/console lint:twig templates
+docker compose exec -T app php tests/php/interface.php
+docker compose exec -T -e ERP_TEST_DATABASE_NAME=textileria_test app php tests/php/maintenance.php
+docker compose exec -T -e ERP_TEST_DATABASE_NAME=textileria_test app php tests/php/business.php
+node --test tests/
 node --test tests/workspace.browser.cjs
 ```
 
-If the application runs exclusively in Docker, run the PHP commands inside the
-existing app service, for example `docker compose exec -T app php tests/php/legacy.php`.
-The bridge checks do not connect to the database. The browser checks use actual
-templates with fixture data. They do not test legacy business operations.
+The database suites need an empty database whose name ends in `_test`. Create it again before each suite:
 
-On 2026-11-14 the bridge checks (6), the maintenance database checks (48) and
-`lint:container` passed in the Docker `app` service with PHP 8.4 and MariaDB 10.11.
-Performance has not been measured.
+```console
+docker compose exec -T db mariadb -uroot -proot -e "DROP DATABASE IF EXISTS textileria_test; CREATE DATABASE textileria_test CHARACTER SET utf8mb4;"
+```
+
+`tests/php/fixtures/order-document.rtf` was produced by the original RTF code.
+`business.php` checks that `OrderDocumentRtf` produces the same output.
+
+On 2026-11-15 these checks passed in the Docker `app` service with PHP 8.4 and
+MariaDB 10.11: interface 9, maintenance 48, business 14, Node 10. Performance has not been measured.

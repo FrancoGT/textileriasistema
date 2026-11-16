@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> 
+<html>
+<head>
+   <link href="/erp/Sixavi.css" media="screen" rel="stylesheet" type="text/css" />
+   <title>TEXTILERIA</title>
+   <script src="/erp/Libreria.js" language="JavaScript"></script>
+</head>
+<body>
+<form action="ERP1091.php#no-back" method="post">
+   {% if maintenanceToken is defined and maintenanceToken is not null %}<input type="hidden" name="_token" value="{{ maintenanceToken|default('') }}" />{% endif %}
+   <div class="wrapper">
+   <div id="MH">
+           <ul>
+                <li style="margin-left: 50px;"><h1>Asignacion de Almacenes</h1></li>
+				<li style="float:right;margin-right: 100px;"><a onclick="self.location = 'index.php'"> Cerrar Sesión</a></li>
+           </ul>
+   </div>
+   <div id="topnavbar"></div>
+   <div id="navigation">
+   <div id="navcontainer">
+   {% if maintenanceMessage is defined and maintenanceMessage is not null and maintenanceMessage|default('') != '' %}<p role="status">{{ maintenanceMessage|default('') }}</p>{% endif %}
+   {% if scBehavior|default('') == "0" %}
+      <div style="overflow:scroll; height:500px; width:800px; overflow:auto; border:1px">
+      <table border=2 style="font-size:11px">
+         <th bgcolor="#F29818" width="25" align="center">Nro</th>
+         <th bgcolor="#F29818" width="100" align="center">Codigo de Almacen</th>
+		 <th bgcolor="#F29818" width="220" align="center">Nombre de Almacen</th>
+		 <th bgcolor="#F29818" width="220" align="center">Direccion de Almacen</th>
+         <th width='25' align="center"><img src="/erp/Edit.png" style="width: 100%; height: 10%;"/></th>
+         {% for i in saDataA|default([]) %}
+            <tr>
+            <td width="25" align="center"><font style="font-size:10px">{{ loop.index }}</font></td>
+            <td width="100" align="center">{{ i[0] }}</td>
+            <td width="220"align="center">{{ i[1] }}</td>
+            <td width="220"align="center">{{ i[2] }}</td>
+			<td width="20" align="center"><input type="radio" name="pcCodAlm" value="{{ i[0] }}"/></td>
+            </tr>
+         {% endfor %}
+      </table>
+      </div>
+      <table>
+         <tr>
+         <td><input type="submit" name="Boton0" value="Detalle" /></td>
+		 <td><input type="submit" name="Boton0" value="Asignar Insumos" /></td>
+         <td><input type="submit" name="Boton0" value="Salir" /></td>
+         </tr>
+      </table>
+   
+   {% elseif scBehavior|default('') == "1" %}
+   
+      <table style="font-size:11px">
+    	 <tr>
+         <td>Origen:</td>
+         <td>
+            <select name="pcOrigen">
+            {% for i in saCodAlm|default([]) %}
+               <option value="{{ i[0] }}" {% if i[0] == scOrigen|default('') %} selected {% endif %}>{{ i[1] }}</option>
+            {% endfor %}
+            </select>
+         </td>
+         </tr><tr>
+         <td>Destino:</td>
+         <td>
+            <select name="pcDestino">
+            {% for i in saCodAlm|default([]) %}
+               <option value="{{ i[0] }}" {% if i[0] == scDestino|default('') %} selected {% endif %}>{{ i[1] }}</option>
+            {% endfor %}
+            </select>
+         </td>
+         </tr>
+		 		 <tr>
+         <td>Insumos:</td>
+         <td>
+            <select name="pcCodIns">
+            {% for i in saCodIns|default([]) %}
+               <option value="{{ i[0] }}" {% if i[0] == scCodIns|default('') %} selected {% endif %}>{{ i[1] }}</option>
+            {% endfor %}
+            </select>
+			<input type="submit" name="Boton1" value="Agregar" />
+         </td>
+         </tr>
+      </table>
+	  
+	  <fieldset style="width:500px">
+      <legend align="left"><font face="calibri" size=3 color=blue>Detalle de Insumos</font></legend>
+      <div id="content-table" style="overflow:scroll; height:400px; width:800px; overflow:auto; border: 1px;">
+      <table border=1 style="font-size:11px">
+         <tr>
+         <th width='20' align="center">Id</th>
+         <th width='30' align="center">Codigo Insumo</th>
+         <th width='80' align="center">Descripcion</th>
+         <th width='100' align="center">Unidad de Medida</th>
+		 <th width='100' align="center">Precio</th>
+		 <th width='100' align="center">Unidades T.</th>
+         <th width='20' align="center"><img src="/erp/anular.bmp" style="width: 100%; height: 100%;"/></th>
+         <th style="visibility: hidden"></th>
+         </tr>
+         {% for i in saDataI|default([]) %}
+            <tr>
+            <td width="25" align="center"><font style="font-size:10px">{{ loop.index }}</font></td>
+            <td width="50" align="center">{{ i[0] }}<input type="hidden" name="paDataI[{{ i[0] }}][0]" value="{{ i[0] }}" /></td>
+            <td width="100"align="center">{{ i[1] }}<input type="hidden" name="paDataI[{{ i[0] }}][1]" value="{{ i[1] }}" /></td>
+            <td width="100"align="center">{{ i[2] }}<input type="hidden" name="paDataI[{{ i[0] }}][2]" value="{{ i[2] }}" /></td>
+			<td width="100"align="center">{{ i[3] }}<input type="hidden" name="paDataI[{{ i[0] }}][3]" value="{{ i[3] }}" /></td>
+			<td width="100"align="center"><input type="text" name="paDataI[{{ i[0] }}][4]" value="{{ i[4] }}"/></td>
+			<td align="center"><input type="radio" name="paCheck[]" value="{{ i[0] }}"/></td>
+            </tr>
+         {% endfor %}
+      </table>
+      </div>
+      </fieldset>
+      <table>
+         <tr>
+         <td></td>
+         <td><input type="submit" name="Boton1" value="Grabar" /></td>
+         <td><input type="submit" name="Boton1" value="Eliminar" /></td>
+         <td><input type="submit" name="Boton1" value="Cancelar" /></td>
+         </tr>
+      </table>
+	{% elseif scBehavior|default('') == "2" %}
+     <table style="font-size:11px">
+	 <tr>
+         <td>Codigo:</td>
+         <td><input type="text" maxlength="90" name="pcCodAlm" value="{{ scCodAlm|default('') }}" size="60" disabled/></td>
+     </tr>
+	 <tr>
+         <td>Nombre:</td>
+         <td><input type="text" maxlength="90" name="pcNomAlm" value="{{ scNomAlm|default('') }}" size="60" disabled/></td>
+     </tr>
+</table>
+	<fieldset style="width:500px">
+      <legend align="left"><font face="calibri" size=3 color=blue>Detalle de Insumos</font></legend>
+      <div id="content-table" style="overflow:scroll; height:400px; width:800px; overflow:auto; border: 1px;">
+      <table border=1 style="font-size:11px">
+         <tr>
+         <th width='20' align="center">Id</th>
+         <th width='30' align="center">Codigo Insumo</th>
+         <th width='80' align="center">Descripcion</th>
+         <th width='100' align="center">Unidad de Medida</th>
+		 <th width='100' align="center">Precio c/u</th>
+		 <th width='100' align="center">Unidades</th>         
+         <th style="visibility: hidden"></th>
+         </tr>
+         {% for i in saDataID|default([]) %}
+            <tr>
+            <td width="25" align="center"><font style="font-size:10px">{{ loop.index }}</font></td>
+            <td width="50" align="center">{{ i[0] }}</td>
+            <td width="100"align="center">{{ i[1] }}</td>
+            <td width="100"align="center">{{ i[2] }}</td>
+			<td width="100"align="center">{{ i[3] }}</td>
+			<td width="100"align="center">{{ i[4] }}</td>
+            </tr>
+         {% endfor %}
+      </table>
+      </div>
+      </fieldset>
+
+      <table>
+         <tr>
+         <td></td>
+         <td><input type="submit" name="Boton1" value="Cancelar" /></td>
+         </tr>
+      </table>
+
+   {% endif %}
+   </div>
+   </div>
+   <div id="content"></div>
+   <div id="footer"></div>
+   </div>
+</form>
+</body>
+</html>

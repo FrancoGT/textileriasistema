@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Legacy;
+namespace App\Session;
 
-final class LegacySession
+final class ErpSession
 {
     public function user(): string
     {
@@ -58,7 +58,7 @@ final class LegacySession
 
     public function logout(): void
     {
-        // Legacy identity is stored outside Symfony's isolated session attributes.
+        // The user identity is stored in the native session, outside the Symfony session attributes.
         if (\PHP_SESSION_ACTIVE !== session_status()) {
             session_start();
         }

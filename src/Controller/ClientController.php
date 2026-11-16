@@ -6,9 +6,9 @@ namespace App\Controller;
 
 use App\Http\MaintenanceInput;
 use App\Http\MaintenanceInputResolver;
-use App\Legacy\LegacySession;
-use App\Legacy\LegacyTemplateRenderer;
-use App\Legacy\MaintenanceFormState;
+use App\Session\ErpSession;
+use App\View\ErpView;
+use App\Session\MaintenanceFormState;
 use App\Maintenance\ClientData;
 use App\Maintenance\ClientService;
 use App\Maintenance\ClientType;
@@ -25,8 +25,8 @@ final class ClientController
 
     public function __construct(
         private readonly ClientService $clients,
-        private readonly LegacySession $session,
-        private readonly LegacyTemplateRenderer $views,
+        private readonly ErpSession $session,
+        private readonly ErpView $views,
     ) {
     }
 
@@ -102,7 +102,7 @@ final class ClientController
             $status = 422;
         }
 
-        return $this->views->render('Plantillas/ERP1030.tpl', $data, $status);
+        return $this->views->render('ERP1030', $data, $status);
     }
 
     private function listing(array $data, string $user, ClientType $type): array

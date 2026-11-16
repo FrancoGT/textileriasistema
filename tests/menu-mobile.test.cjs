@@ -4,7 +4,7 @@ const { readFileSync } = require('node:fs');
 const vm = require('node:vm');
 
 test('menu button has an accessible icon and follows every existing close action', () => {
-    const html = readFileSync('legacy/Plantillas/Mnu0000.tpl', 'utf8');
+    const html = readFileSync('templates/erp/Mnu0000.html.twig', 'utf8');
     assert.match(html, /id="menu-toggle"[^>]*aria-label="Abrir menú"/);
     assert.match(html, /<svg[^>]*width="24"[^>]*height="24"[^>]*aria-hidden="true"/);
     const handlers = {};

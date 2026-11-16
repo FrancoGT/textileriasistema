@@ -6,9 +6,9 @@ namespace App\Controller;
 
 use App\Http\MaintenanceInput;
 use App\Http\MaintenanceInputResolver;
-use App\Legacy\LegacySession;
-use App\Legacy\LegacyTemplateRenderer;
-use App\Legacy\MaintenanceFormState;
+use App\Session\ErpSession;
+use App\View\ErpView;
+use App\Session\MaintenanceFormState;
 use App\Maintenance\ProductService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,8 +23,8 @@ final class ProductController
 
     public function __construct(
         private readonly ProductService $products,
-        private readonly LegacySession $session,
-        private readonly LegacyTemplateRenderer $views,
+        private readonly ErpSession $session,
+        private readonly ErpView $views,
     ) {
     }
 
@@ -104,7 +104,7 @@ final class ProductController
             $status = 422;
         }
 
-        return $this->views->render('Plantillas/ERP1070.tpl', $data, $status);
+        return $this->views->render('ERP1070', $data, $status);
     }
 
     /** @param list<string> $recipe */

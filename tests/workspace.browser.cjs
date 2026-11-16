@@ -12,17 +12,20 @@ function cachedBinary(name, executable) {
 }
 
 function moduleFixture(name) {
-    const html = fs.readFileSync(`legacy/Plantillas/${name}.tpl`, 'utf8')
-        .replace(/\{if isset\(\$maintenance(?:Token|Message)\)[\s\S]*?\{\/if\}/g, '');
-    const start = html.indexOf('{if $scBehavior');
-    const branch = html.slice(html.indexOf('}', start) + 1, html.indexOf('{elseif', start));
-    return (html.slice(0, start) + branch + html.slice(html.lastIndexOf('{/if}') + 5))
+    // Keeps the first scBehavior branch of the Twig template and fills its values with long sample text.
+    const html = fs.readFileSync(`templates/erp/${name}.html.twig`, 'utf8')
+        .replace(/\{% if maintenance(?:Token|Message)[\s\S]*?\{% endif %\}/g, '');
+    const start = html.indexOf('{% if scBehavior');
+    const branch = html.slice(html.indexOf('%}', start) + 2, html.indexOf('{% elseif', start));
+    const end = html.lastIndexOf('{% endif %}') + '{% endif %}'.length;
+    return (html.slice(0, start) + branch + html.slice(end))
         .replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, '')
         .replace(/onload=f_Desactivar\(\)/, '')
-        .replace(/\{foreach[^}]*\}([\s\S]*?)\{\/foreach\}/g, (_, row) => name === 'ERP1060' ? row.repeat(25) : row)
-        .replace(/\{\$i\['([0-5])'\]\}/g, (value, column) => name === 'ERP1050'
+        .replace(/\{% for [^%]*%\}([\s\S]*?)\{% endfor %\}/g, (_, row) => name === 'ERP1060' ? row.repeat(25) : row)
+        .replace(/\{\{ i\[([0-5])\] \}\}/g, (value, column) => name === 'ERP1050'
             ? ['01001', 'Hilo de algodon', 'Materia prima', 'Kilogramo', '20', '12.50'][column] : value)
-        .replace(/\{\$[^}]+\}/g, name === 'ERP1060'
+        .replace(/\{%[^%]*%\}/g, '')
+        .replace(/\{\{[^}]+\}\}/g, name === 'ERP1060'
             ? 'PROVEEDOR_CON_RAZON_SOCIAL_EXTENSA_PARA_COMPROBAR_EL_DESPLAZAMIENTO_LOCAL'
             : 'Personal con un nombre muy largo para comprobar el ancho del selector');
 }
@@ -33,15 +36,15 @@ test('shared mobile workspace contains controls and wide supplier tables', { tim
     const server = http.createServer((req, res) => {
         let content, type = 'text/html; charset=utf-8';
         if (/^\/ERP(1000|1050|1060)\.php/.test(req.url)) content = moduleFixture(req.url.slice(1, 8));
-        else if (req.url === '/Mnu0000.php') content = fs.readFileSync('legacy/Plantillas/Mnu0000.tpl');
-        else if (req.url === '/CSS/Sixavi.css') { content = fs.readFileSync('legacy/CSS/Sixavi.css'); type = 'text/css'; }
+        else if (req.url === '/Mnu0000.php') content = fs.readFileSync('templates/erp/Mnu0000.html.twig');
+        else if (req.url === '/erp/Sixavi.css') { content = fs.readFileSync('public/erp/Sixavi.css'); type = 'text/css'; }
         else if (req.url === '/css/menu.css') { content = fs.readFileSync('public/css/menu.css'); type = 'text/css'; }
         else if (req.url === '/js/menu.js') { content = fs.readFileSync('public/js/menu.js'); type = 'text/javascript'; }
         else if (req.url === '/js/ui-feedback.js') { content = fs.readFileSync('public/js/ui-feedback.js'); type = 'text/javascript'; }
         else if (req.url === '/css/ui-feedback.css') { content = fs.readFileSync('public/css/ui-feedback.css'); type = 'text/css'; }
         else if (req.url === '/js/login.js') { content = fs.readFileSync('public/js/login.js'); type = 'text/javascript'; }
-        else if (/^\/CSS\/(?:jquery-ui-1\.11\.0\/images\/)?[\w.-]+\.(png|gif|jpg)$/i.test(req.url) && fs.existsSync(`legacy${req.url}`)) {
-            content = fs.readFileSync(`legacy${req.url}`);
+        else if (/^\/erp\/(?:jquery-ui-1\.11\.0\/images\/)?[\w.-]+\.(png|gif|jpg)$/i.test(req.url) && fs.existsSync(`public${req.url}`)) {
+            content = fs.readFileSync(`public${req.url}`);
             type = req.url.endsWith('.png') ? 'image/png' : req.url.endsWith('.gif') ? 'image/gif' : 'image/jpeg';
         }
         else if (req.url === '/feedback-save') {

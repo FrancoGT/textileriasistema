@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> 
+<html>
+<head>
+   <link href="/erp/Sixavi.css" media="screen" rel="stylesheet" type="text/css" />
+   <title>Textileria</title>
+   <script src="/erp/Libreria.js" language="JavaScript"></script>
+</head>
+<script language="javascript">
+    function fAgrega()
+    {
+        var div = document.getElementById("jnTotal").value/document.getElementById("jnPago").value;
+        if(div==Infinity)
+            document.getElementById("jnLetra").value=0;
+        else
+            document.getElementById("jnLetra").value=div;
+    }
+</script>
+<body>
+<form action="ERP9010.php#no-back" method="post">
+   {% if maintenanceToken is defined and maintenanceToken is not null %}<input type="hidden" name="_token" value="{{ maintenanceToken|default('') }}" />{% endif %}
+   <div class="wrapper">
+   <div id="MH">
+           <ul>
+                <li style="margin-left: 50px;"><h1>Reporte de Pedidos en Produccion</h1></li>
+				<li style="float:right;margin-right: 100px;"><a onclick="self.location = 'index.php'"> Cerrar Sesión</a></li>
+           </ul>
+   </div>
+   <div id="topnavbar"></div>
+   <div id="navigation">
+   <div id="navcontainer">
+   {% if maintenanceMessage is defined and maintenanceMessage is not null and maintenanceMessage|default('') != '' %}<p role="status">{{ maintenanceMessage|default('') }}</p>{% endif %}
+   {% if scBehavior|default('') == "0" %}
+      <table border=2 style="font-size:11px">
+         <th bgcolor="#F29818" width="25" align="center">Nro</th>
+         <th bgcolor="#F29818" width="50" align="center">Codigo de Pedido</th>
+	 <th bgcolor="#F29818" width="50" align="center">Codigo Cliente</th>
+	 <th bgcolor="#F29818" width="150" align="center">Nombre / Razon Social</th>
+         <th bgcolor="#F29818" width="70" align="center">Fecha Listo</th>
+	 <th bgcolor="#F29818" width="100" align="center">Estado</th><!--ESTADO PENDIENTE EJECUTADO-->	 
+         <th width='25' align="center"><img src="/erp/Edit.png" style="width: 100%; height: 10%;"/></th>
+      </table>
+      
+      <div style="overflow:scroll; height:500px; width:1000px; overflow:auto; border:1px">
+      <table border=2 style="font-size:11px">
+         {% for i in saDataPed|default([]) %}
+            <tr>
+            <td width="25" align="center"><font style="font-size:10px">{{ loop.index }}</font></td>
+            <td width="50" align="center">{{ i[0] }}</td>
+            <td width="50"align="center">{{ i[1] }}</td>
+            <td width="150"align="center">{{ i[2] }}</td>
+            <td width="70" align="center">{{ i[3] }}</td>
+            <td width="100" align="center">{{ i[4] }}</td>       
+            <td width="25" align="center"><input type="radio" name="pcCodPed" value="{{ i[0] }}"/></td>			
+            </tr>
+         {% endfor %}
+      </table>
+      </div>
+      {% if scFilRet|default('') %}
+      <fieldset style="width:1000px" align="center">
+      <legend><font face="calibri" size=4 color=blue>Archivos Anexos</font></legend>
+      <table border = 0 cellspacing="0" cellpadding="0" style="font-size:11px">
+         <a href="{{ scFilRet|default('') }}" target="_blank">Archivo de Salida</a>
+      </table>
+      </fieldset>
+      <table>
+         <tr>
+         <td><input type = "submit" name = "Boton2" value = "Cancelar" /></td>
+         </tr>
+      </table>
+      {% endif %}
+      <table>
+         <tr>
+         <td><input type="submit" name="Boton0" value="Aplicar" /></td>
+         <td><input type="submit" name="Boton0" value="Salir" /></td>
+         </tr>
+      </table>   
+	{% elseif scBehavior|default('') == "1" %}
+         <table>
+         <tr>
+         <td>Código de Pedido:</td>
+         <td>{{ scCodPed|default('') }}<input type="hidden" maxlength="90" name="pcCodPed" value="{{ scCodPed|default('') }}" size="60"/></td>
+         </tr><tr>
+         <td>Total a Pagar:</td>
+         <td>{{ snTotal|default('') }}<input type="hidden" maxlength="90" name="pnTotal" value="{{ snTotal|default('') }}" size="60" id="jnTotal"/></td>
+         </tr><tr>
+         <td>Número de Pagos:</td>
+         <td><input type="text" maxlength="30" name="pnPago" value="{{ snPago|default('') }}" size="20" id="jnPago" onkeyup="fAgrega();"/></td>
+         </tr><tr>
+         <td>Letra:</td>
+         <td><input type="text" maxlength="20" value="0" size="20" disabled="true" id="jnLetra"/></td>
+         <input type="hidden" maxlength="20" name="pnLetra" value="" size="20" id="jnLetra"/>
+         </tr><tr>
+         <td>Fecha Límite:</td>
+         <td><input type="text" name="pcFecLim" value="{{ sdFecLim|default('') }}"  maxlength="11" placeholder="aaaa-mm-dd" size="11"/></td>
+         </tr>
+         </table>
+      <table>
+         <tr>
+         <td><input type="submit" name="Boton1" value="Grabar" /></td>
+         <td><input type="submit" name="Boton1" value="Cancelar" /></td>
+         </tr>
+      </table>   
+	 {% elseif scBehavior|default('') == "2" %}
+	     <table style="font-size:11px">
+		 <tr>
+         <td>Código de Pedido:</td>
+         <td><input type="text" maxlength="90" name="pcCodPed" value="{{ scCodPed|default('') }}" size="60" disabled/></td>
+         </tr>
+         <tr>
+         <td>Código de Producto:</td>
+         <td><input type="text" maxlength="90" name="pcCodProd" value="{{ scCodProd|default('') }}" size="60" disabled/></td>
+         </tr>
+		 <tr>
+         <td>Nombre de Producto:</td>
+         <td><input type="text" maxlength="90" name="pcDescri" value="{{ scDescri|default('') }}" size="60" disabled/></td>
+         </tr><tr>
+		 <td>Cantidad:</td>
+         <td><input type="text" maxlength="90" name="pnCant" value="{{ snCant|default('') }}" size="60" disabled/></td>
+         </tr>
+         <tr>
+		 <td>PROCESO TERMINADO:</td>
+         <td><input type="text" maxlength="90" name="pcProc" value="{{ scProc|default('') }}" size="60" disabled/></td>
+         </tr>
+         {% if scProc|default('') == "ACABADO" %}{% endif %}
+<!--suba la foto de acabado-->		 
+      </table>
+	  <tr>
+         <td>Maquinas:</td>
+         <td>
+            <select name="pcCodMaq">
+            {% for i in saCodMaq|default([]) %}
+               <option value="{{ i[0] }}" {% if i[0] == scCodMaq|default('') %} selected {% endif %}>{{ i[1] }}</option>
+            {% endfor %}
+            </select>			
+         </td>
+         </tr>
+	  <tr>
+         <td>Personal:</td>
+         <td>
+            <select name="pcCodPer">
+            {% for i in saCodPer|default([]) %}
+               <option value="{{ i[0] }}" {% if i[0] == scCodPer|default('') %} selected {% endif %}>{{ i[1] }}</option>
+            {% endfor %}
+            </select>
+         </td>
+         </tr>
+      <table>
+         <tr>
+         <td><input type="submit" name="Boton2" value="Grabar" /></td>
+		 <td><input type="submit" name="Boton2" value="Cancelar" /></td>
+         </tr>
+      </table>   
+
+	   {% endif %}
+   </div>
+   </div>
+   <div id="content"></div>
+   <div id="footer"></div>
+   </div>
+</form>
+</body>
+</html>

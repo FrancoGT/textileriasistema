@@ -9,13 +9,13 @@
 .menu-user { margin: 0; padding: 12px; color: blue; font-size: 11px; overflow-wrap: anywhere; }
 .menu-modules { padding: 0 6px 6px; }
 .menu-group { margin: 0 0 6px; border: 1px solid #E8E8E8; border-radius: 4px; overflow: hidden; }
-.menu-group summary { position: relative; padding: 10px 8px 10px 48px; background: #E8E8E8 url('/CSS/folder-horizontal.png') 25px center no-repeat; color: black; font-weight: bold; line-height: 1.4; cursor: pointer; list-style: none; }
+.menu-group summary { position: relative; padding: 10px 8px 10px 48px; background: #E8E8E8 url('/erp/folder-horizontal.png') 25px center no-repeat; color: black; font-weight: bold; line-height: 1.4; cursor: pointer; list-style: none; }
 .menu-group summary::-webkit-details-marker { display: none; }
-.menu-group summary::before { content: ''; position: absolute; left: 6px; top: 0; bottom: 0; width: 16px; background: url('/CSS/toggle-small-expand.png') center no-repeat; }
-.menu-group[open] summary::before { background-image: url('/CSS/toggle-small.png'); }
+.menu-group summary::before { content: ''; position: absolute; left: 6px; top: 0; bottom: 0; width: 16px; background: url('/erp/toggle-small-expand.png') center no-repeat; }
+.menu-group[open] summary::before { background-image: url('/erp/toggle-small.png'); }
 .menu-group ul { margin: 0; padding: 4px 6px; }
 .menu-group li { position: static; margin: 0; }
-.menu-group a { display: flex; align-items: center; box-sizing: border-box; min-height: 40px; padding: 6px 6px 6px 25px; background: url('/CSS/document.gif') 3px center no-repeat; color: black; line-height: 1.5; overflow-wrap: anywhere; }
+.menu-group a { display: flex; align-items: center; box-sizing: border-box; min-height: 40px; padding: 6px 6px 6px 25px; background: url('/erp/document.gif') 3px center no-repeat; color: black; line-height: 1.5; overflow-wrap: anywhere; }
 .menu-group a:hover, .menu-group a[aria-current=page] { background-color: #E8E8E8; }
 .menu-group a[aria-current=page] { box-shadow: inset 3px 0 #EE6600; }
 .menu-group a:focus-visible, .menu-group summary:focus-visible, .menu-header a:focus-visible, #menu-toggle:focus-visible { outline: 2px solid #EE6600; outline-offset: -2px; }

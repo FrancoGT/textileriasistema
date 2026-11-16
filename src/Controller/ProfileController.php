@@ -6,9 +6,9 @@ namespace App\Controller;
 
 use App\Http\MaintenanceInput;
 use App\Http\MaintenanceInputResolver;
-use App\Legacy\LegacySession;
-use App\Legacy\LegacyTemplateRenderer;
-use App\Legacy\MaintenanceFormState;
+use App\Session\ErpSession;
+use App\View\ErpView;
+use App\Session\MaintenanceFormState;
 use App\Security\ProfileService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,8 +23,8 @@ final class ProfileController
 
     public function __construct(
         private readonly ProfileService $profiles,
-        private readonly LegacySession $session,
-        private readonly LegacyTemplateRenderer $views,
+        private readonly ErpSession $session,
+        private readonly ErpView $views,
     ) {
     }
 
@@ -79,7 +79,7 @@ final class ProfileController
             $status = 422;
         }
 
-        return $this->views->render('Plantillas/ERP1020.tpl', $data, $status);
+        return $this->views->render('ERP1020', $data, $status);
     }
 
     private function granted(array $data, string $user, string $profile): array

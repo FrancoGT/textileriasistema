@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<html>
+<head>
+   <link href="/erp/Sixavi.css" media="screen" rel="stylesheet" type="text/css" />
+   <link rel="stylesheet" href="/erp/jquery-ui-1.11.0/jquery-ui.min.css">
+   <script type="text/javascript" src="/erp/jquery-1.10.2.min.js"></script> 
+   <script type="text/javascript" src="/erp/jquery-ui-1.11.0/jquery-ui.min.js"></script>
+   <script type="text/javascript" src="/erp/Libgen.js"></script>
+   <script>
+   $(document).ready(function() {
+   $("#pdEmisio").datepicker();
+});
+   </script>
+   <title>TEXTILERIA</title>
+</head>
+<body>
+<form action="ERP1030.php#no-back" method="post">
+   {% if maintenanceToken is defined and maintenanceToken is not null %}<input type="hidden" name="_token" value="{{ maintenanceToken|default('') }}" />{% endif %}
+   <div class="wrapper">
+   <div id="MH">
+           <ul>
+                <li style="margin-left: 50px;"><h1>Mantenimiento de Clientes</h1></li>
+				<li style="float:right;margin-right: 100px;"><a onclick="self.location = 'index.php'"> Cerrar Sesión</a></li>
+           </ul>
+   </div>
+   <div id="topnavbar"></div>
+   <div id="navigation">
+   <div id="navcontainer">
+   {% if maintenanceMessage is defined and maintenanceMessage is not null and maintenanceMessage|default('') != '' %}<p role="status">{{ maintenanceMessage|default('') }}</p>{% endif %}
+   {% if scBehavior|default('') == "0" %}      
+       <table>         
+           <tr>
+         <td>Tipo de Persona:</td>
+         <td>
+            <select name="pcTipCli">
+            {% for i in saTipCli|default([]) %}
+               <option value="{{ i[0] }}" {% if i[0] == scTipCli|default('') %} selected {% endif %}>{{ i[1] }}</option>
+            {% endfor %}
+            </select>
+         </td>
+         </tr>
+         </table>
+      <table>
+         <td><input type="submit" name="Aceptar" value="Aceptar"/></td>
+		 <td><input type="submit" name="Salir" value="Salir"/></td>
+      </table>
+   {% elseif scBehavior|default('') == "1" %}
+       <table>
+         <tr>
+         <td>Nombre/Razón Social:</td>
+         <td><input type="text" maxlength="70" name="pcNombre" size="70" value="{{ scNombre|default('') }}" style="text-transform:uppercase;"/></td>
+         </tr>
+		 
+		 {% if scTipo|default('') == 'A' %}
+		 <tr>		 
+         <td>DNI:</td>
+         <td><input type="text" class="input_num" name="pcNroDNI" size="8" maxlength="8" value="{{ scNroDNI|default('') }}" /></td>
+         </tr>
+		 {% else %}
+		 <tr>
+         <td>RUC:</td>
+         <td><input type="text" class="input_num" name="pcNroRUC" size="11" maxlength="11" value="{{ scNroRUC|default('') }}" /></td>
+         </tr>
+		 {% endif %}
+		 <tr>
+         <td>Estado:</td>
+         <td>
+            <select name="pcEstado">
+            {% for i in saEstado|default([]) %}
+               <option value="{{ i[0] }}" {% if i[0] == scEstado|default('') %} selected {% endif %}>{{ i[1] }}</option>
+            {% endfor %}
+            </select>
+         </td>
+         </tr><tr>
+         <td>Dirección:</td>
+         <td><input type="text" maxlength="70" name="pcDirec" size="51" value="{{ scDirec|default('') }}" style="text-transform:uppercase;"/></td>
+         </tr>
+		 
+		 <tr>
+         <td>Telefono:</td>
+         <td><input type="text" class="input_num" maxlength="15" name="pcTelef" size="15" value="{{ scTelef|default('') }}" /></td>
+         </tr>
+
+		 {% if scTipo|default('') == 'A' %}
+		 {% else %}
+		 <tr>		 
+         <td>CIUU:</td>
+         <td><select name="pcCIIU">
+            {% for i in saCIIU|default([]) %}
+               <option value="{{ i[0] }}" {% if i[0] == scCIIU|default('') %} selected {% endif %}>{{ i[1] }}</option>
+            {% endfor %}
+            </select>
+         </td>
+         </tr>
+		 {% endif %}
+
+		 {% if scTipo|default('') == 'A' %}
+		 {% else %}
+		 <tr>
+         <td>SIGLAS:</td>
+         <td><input type="text" maxlength="4" name="pcSiglas" size="11" value="{{ scSiglas|default('') }}" style="text-transform:uppercase;"/></td>
+         </tr>
+		 {% endif %}
+		 <tr>
+         <td>PRIORIDAD: </td>
+         <td>
+            <select name="pcPriori">
+            {% for i in saPriori|default([]) %}
+               <option value="{{ i[0] }}" {% if i[0] == scPriori|default('') %} selected {% endif %}>{{ i[1] }}</option>
+            {% endfor %}
+            </select>
+         </td>
+         </tr>
+      </table>
+      <table>
+         <tr>
+         <td></td>
+         <td><input type="submit" name="Grabar" value="Grabar"/></td>
+         <td><input type="submit" name="Cancelar" value="Cancelar"/></td>
+         </tr>
+      </table>
+   {% elseif scBehavior|default('') == "2" %}
+      <table>
+         <tr>
+         <td>Código:</td>
+         <td><input type="text" maxlength="6" name="pcCodEmp" value="" style="text-transform:uppercase;"/></td>
+         </tr><tr>
+         <td>Descripción:</td>
+         <td><input type="text" maxlength="70" name="pcDescri" size="70" value="" style="text-transform:uppercase;"/></td>
+         </tr><tr>
+         <td>Estado:</td>
+         <td>
+            <select name="pcEstado">
+            {% for i in saEstado|default([]) %}
+               <option value="{{ i[0] }}" {% if i[0] == scEstado|default('') %} selected {% endif %}>{{ i[1] }}</option>
+            {% endfor %}
+            </select>
+         </td>
+         </tr><tr>
+         <td>Datos varios:</td>
+         <td><textarea name="pmDatos" rows="10" cols="50" ></textarea></td>
+      </table>
+      <table>
+         <tr>
+         <td></td>
+         <td><input type="submit" name="Grabar" value="Grabar"/></td>
+         <td><input type="submit" name="Cancelar" value="Cancelar"/></td>
+         </tr>
+      </table>
+    {% elseif scBehavior|default('') == "3" %}
+      <table>
+         <tr>
+         <td>Persona Natural:</td>
+         <td>
+            <select name="pcCodCli">
+            {% for i in saCodA|default([]) %}
+               <option value="{{ i[0] }}">{{ i[1] }}</option>
+            {% endfor %}
+            </select>
+         </td>
+         </tr>
+      </table>
+      <table>
+         <td><input type="submit" name="Aplicar" value="Aplicar" /></td>
+         <td><input type="submit" name="Boton" value="Nuevo" /></td>
+         <td><input type="submit" name="Boton3" value="Salir" /></td>
+      </table>
+    {% elseif scBehavior|default('') == "4" %}
+      <table>
+         <tr>
+         <td>Persona Natural Juridica sin Fines de Lucro:</td>
+         <td>
+            <select name="pcCodCli">
+            {% for i in saCodB|default([]) %}
+               <option value="{{ i[0] }}">{{ i[1] }}</option>
+            {% endfor %}
+            </select>
+         </td>
+         </tr>
+      </table>
+      <table>
+         <td><input type="submit" name="Aplicar" value="Aplicar" /></td>
+         <td><input type="submit" name="Boton" value="Nuevo" /></td>
+         <td><input type="submit" name="Boton4" value="Salir" /></td>
+      </table>
+
+	  {% elseif scBehavior|default('') == "5" %}
+      <table>
+         <tr>
+         <td>Persona Natural Juridica con Fines de Lucro:</td>
+         <td>
+            <select name="pcCodCli">
+            {% for i in saCodC|default([]) %}
+               <option value="{{ i[0] }}">{{ i[1] }}</option>
+            {% endfor %}
+            </select>
+         </td>
+         </tr>
+      </table>
+      <table>
+         <td><input type="submit" name="Aplicar" value="Aplicar" /></td>
+         <td><input type="submit" name="Boton" value="Nuevo" /></td>
+         <td><input type="submit" name="Boton5" value="Salir" /></td>
+      </table>
+   {% elseif scBehavior|default('') == "6" %}
+       <table>
+	     <tr>
+         <td>Código:</td>
+            <td><font color=blue>{{ scCodCli|default('') }}</font><input type="hidden" maxlength="6" name="pcCodCli" value="{{ scCodCli|default('') }}"/></td>
+         </tr>
+         <tr>
+         <td>Nombre/Razón Social:</td>
+         <td><input type="text" maxlength="70" size="70" value="{{ scNombre|default('') }}" disabled/></td>
+		 <td><input type="hidden" maxlength="70" name="pcNombre" size="70" value="{{ scNombre|default('') }}"/></td>
+         </tr>
+		 
+		 {% if scTipo|default('') == 'A' %}
+		 <tr>		 
+         <td>DNI:</td>
+         <td><input type="text" maxlength="70"  size="8" lenght="2" value="{{ scNroDNI|default('') }}" disabled/></td>
+		 <td><input type="hidden" maxlength="70" name="pcNroDNI" size="8" value="{{ scNroDNI|default('') }}"/></td>
+         </tr>
+		 {% else %}
+		 <tr>
+         <td>RUC:</td>
+         <td><input type="text" maxlength="11" size="11" value="{{ scNroRUC|default('') }}" disabled/></td>
+		 <td><input type="hidden" maxlength="11" name="pcNroRUC" size="11" value="{{ scNroRUC|default('') }}"/></td>
+         </tr>
+		 {% endif %}
+		 <tr>
+         <td>Estado:</td>
+         <td>
+            <select name="pcEstado">
+            {% for i in saEstado|default([]) %}
+               <option value="{{ i[0] }}" {% if i[0] == scEstado|default('') %} selected {% endif %}>{{ i[1] }}</option>
+            {% endfor %}
+            </select>
+         </td>
+         </tr>
+		 
+		 <tr>
+         <td>Dirección:</td>
+         <td><input type="text" maxlength="70" name="pcDirec" size="51" value="{{ scDirec|default('') }}" style="text-transform:uppercase;"/></td>
+         </tr>
+		 
+		 <tr>
+         <td>Telefono:</td>
+         <td><input type="text" class="input_num" maxlength="15" name="pcTelef" size="15" value="{{ scTelef|default('') }}" /></td>
+         </tr>
+
+	 {% if scTipo|default('') == 'A' %}
+	 {% else %}
+         <tr>		 
+         <td>CIUU:</td>
+         <td><select name="pcCIIU">
+            {% for i in saCIIU|default([]) %}
+               <option value="{{ i[0] }}" {% if i[0] == scCIIU|default('') %} selected {% endif %}>{{ i[1] }}</option>
+            {% endfor %}
+            </select>
+         </td>
+         </tr>
+	 {% endif %}
+
+	 {% if scTipo|default('') == 'A' %}
+	 {% else %}
+	 <tr>
+         <td>SIGLAS:</td>
+         <td><input type="text" maxlength="4" name="pcSiglas" size="11" value="{{ scSiglas|default('') }}" style="text-transform:uppercase;"/></td>
+         </tr>
+	 {% endif %}
+	 <tr>
+         <td>PRIORIDAD: </td>
+         <td>
+            <select name="pcPriori">
+            {% for i in saPriori|default([]) %}
+               <option value="{{ i[0] }}" {% if i[0] == scPriori|default('') %} selected {% endif %}>{{ i[1] }}</option>
+            {% endfor %}
+            </select>
+         </td>
+      </tr>
+
+      </table>
+      <table>
+         <tr>
+         <td></td>
+         <td><input type="submit" name="Grabar" value="Grabar"/></td>
+         <td><input type="submit" name="Cancelar" value="Cancelar"/></td>
+         </tr>
+      </table>
+
+   {% endif %}
+   </div>
+   </div>
+   <div id="content"></div>
+   <div id="footer"></div>
+   </div>
+</form>
+</body>
+</html>

@@ -6,9 +6,9 @@ namespace App\Controller;
 
 use App\Http\MaintenanceInput;
 use App\Http\MaintenanceInputResolver;
-use App\Legacy\LegacySession;
-use App\Legacy\LegacyTemplateRenderer;
-use App\Legacy\MaintenanceFormState;
+use App\Session\ErpSession;
+use App\View\ErpView;
+use App\Session\MaintenanceFormState;
 use App\Maintenance\MachineData;
 use App\Maintenance\MachineService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -24,8 +24,8 @@ final class MachineController
 
     public function __construct(
         private readonly MachineService $machines,
-        private readonly LegacySession $session,
-        private readonly LegacyTemplateRenderer $views,
+        private readonly ErpSession $session,
+        private readonly ErpView $views,
     ) {
     }
 
@@ -76,6 +76,6 @@ final class MachineController
             $status = 422;
         }
 
-        return $this->views->render('Plantillas/ERP1040.tpl', $data, $status);
+        return $this->views->render('ERP1040', $data, $status);
     }
 }

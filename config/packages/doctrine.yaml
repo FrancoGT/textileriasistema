@@ -1,8 +1,7 @@
 # yaml-language-server: $schema=../schema.json
 doctrine:
     dbal:
-        # Conexion por componentes (las mismas variables DATABASE_* que usa el
-        # codigo legacy). Asi las variables reales del contenedor siempre ganan,
+        # Conexion por componentes (variables DATABASE_*). Asi las variables reales del contenedor siempre ganan,
         # incluso despues de "composer dump-env prod".
         driver: pdo_mysql
         host: '%env(DATABASE_HOST)%'
@@ -14,7 +13,7 @@ doctrine:
         server_version: '%env(DATABASE_SERVER_VERSION)%'
 
         profiling_collect_backtrace: '%kernel.debug%'
-        # No entity maps the legacy tables (E01*, E02*) or their views (V_E0*).
+        # No entity maps the ERP tables (E01*, E02*) or their views (V_E0*).
         # Without this filter, doctrine:migrations:diff and doctrine:schema:update
         # would generate DROP TABLE statements for them.
         schema_filter: '~^(?!v?_?e0\d)~i'

@@ -6,9 +6,9 @@ namespace App\Controller;
 
 use App\Http\MaintenanceInput;
 use App\Http\MaintenanceInputResolver;
-use App\Legacy\LegacySession;
-use App\Legacy\LegacyTemplateRenderer;
-use App\Legacy\MaintenanceFormState;
+use App\Session\ErpSession;
+use App\View\ErpView;
+use App\Session\MaintenanceFormState;
 use App\Maintenance\WarehouseData;
 use App\Maintenance\WarehouseService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -24,8 +24,8 @@ final class WarehouseController
 
     public function __construct(
         private readonly WarehouseService $warehouses,
-        private readonly LegacySession $session,
-        private readonly LegacyTemplateRenderer $views,
+        private readonly ErpSession $session,
+        private readonly ErpView $views,
     ) {
     }
 
@@ -77,6 +77,6 @@ final class WarehouseController
             $status = 422;
         }
 
-        return $this->views->render('Plantillas/ERP1090.tpl', $data, $status);
+        return $this->views->render('ERP1090', $data, $status);
     }
 }

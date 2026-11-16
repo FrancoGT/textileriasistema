@@ -3,13 +3,8 @@
 `/ERP1000.php` and `/ERP1060.php` now resolve to Symfony controllers. The controllers
 use `PersonnelService` and `SupplierService`; the services enforce module access
 and business validation before calling DBAL repositories. SQL uses bound
-parameters. The existing Smarty views remain in use through a rendering adapter.
-The legacy implementations remain because other screens still share their classes.
-
-The project-wide migration is incomplete. See [the script inventory](MODULE-MIGRATION.md)
-for the remaining entry points. PHP, container and database checks have not run in
-the current execution environment. These routes are implemented but not validated
-for deployment. There is no measured performance improvement.
+parameters. The views are Twig templates in `templates/erp`. [ARCHITECTURE.md](ARCHITECTURE.md)
+lists the other modules and the test results.
 
 ## Persistence
 
@@ -84,7 +79,7 @@ actual 50-character column. Existing supplier dates are not rewritten.
 ## Login and password change
 
 `LoginController` receives the login form (POST `/Mnu0000.php`). A GET of
-`/Mnu0000.php` still shows the legacy menu. `PasswordChangeController` replaces
+`/Mnu0000.php` shows the menu (`MenuController`). `PasswordChangeController` replaces
 `Mnu1000.php`. `Clases/CLogin.php` and `Mnu1000.php` were removed. Changes from
 the legacy login:
 
@@ -122,7 +117,7 @@ payload shape; application services validate business fields. This avoids a
 dependency on Serializer and Validator, which are not installed in this project.
 Readonly DTO classes are excluded from service discovery.
 
-The native session adapter owns the compatibility form tokens and edit state.
+`MaintenanceFormState` (`src/Session`) owns the compatibility form tokens and edit state.
 The installed packages do not include Security CSRF. Tokens use `random_bytes`
 and `hash_equals`, are scoped to the module and are cleared on logout. Move token
 management to Symfony Security CSRF when authentication is migrated and the
@@ -138,9 +133,9 @@ database. It creates only test tables and removes the objects it created.
 Use the same MariaDB version as the application.
 
 ```powershell
-symfony php tests/php/legacy.php
 $env:ERP_TEST_DATABASE_NAME = 'textileria_migration_test'
 symfony php tests/php/maintenance.php
+symfony php tests/php/business.php
 symfony console lint:container
 symfony console lint:twig templates/
 symfony console debug:router
@@ -152,7 +147,6 @@ For a Docker-only setup with a separately provisioned empty test database:
 
 ```console
 docker compose exec -T -e ERP_TEST_DATABASE_NAME=textileria_migration_test app php tests/php/maintenance.php
-docker compose exec -T app php tests/php/legacy.php
 docker compose exec -T app php bin/console lint:container
 ```
 

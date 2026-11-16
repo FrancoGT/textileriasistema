@@ -6,9 +6,9 @@ namespace App\Controller;
 
 use App\Http\MaintenanceInput;
 use App\Http\MaintenanceInputResolver;
-use App\Legacy\LegacySession;
-use App\Legacy\LegacyTemplateRenderer;
-use App\Legacy\MaintenanceFormState;
+use App\Session\ErpSession;
+use App\View\ErpView;
+use App\Session\MaintenanceFormState;
 use App\Maintenance\AccountOwner;
 use App\Maintenance\BankAccountService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -24,8 +24,8 @@ final class BankAccountController
 
     public function __construct(
         private readonly BankAccountService $accounts,
-        private readonly LegacySession $session,
-        private readonly LegacyTemplateRenderer $views,
+        private readonly ErpSession $session,
+        private readonly ErpView $views,
     ) {
     }
 
@@ -70,7 +70,7 @@ final class BankAccountController
             $status = 422;
         }
 
-        return $this->views->render('Plantillas/ERP1094.tpl', $data, $status);
+        return $this->views->render('ERP1094', $data, $status);
     }
 
     private function form(array $data, string $user, AccountOwner $owner): array

@@ -6,8 +6,8 @@ namespace App\Controller;
 
 use App\Http\MaintenanceInput;
 use App\Http\MaintenanceInputResolver;
-use App\Legacy\LegacySession;
-use App\Legacy\LegacyTemplateRenderer;
+use App\Session\ErpSession;
+use App\View\ErpView;
 use App\Maintenance\PersonnelData;
 use App\Maintenance\PersonnelService;
 use App\Repository\CatalogRepository;
@@ -23,8 +23,8 @@ final class PersonnelController
     public function __construct(
         private readonly PersonnelService $people,
         private readonly CatalogRepository $catalogs,
-        private readonly LegacySession $session,
-        private readonly LegacyTemplateRenderer $views,
+        private readonly ErpSession $session,
+        private readonly ErpView $views,
     ) {
     }
 
@@ -92,6 +92,6 @@ final class PersonnelController
             $status = 422;
         }
 
-        return $this->views->render('Plantillas/ERP1000.tpl', $data, $status);
+        return $this->views->render('ERP1000', $data, $status);
     }
 }

@@ -14,7 +14,7 @@ final readonly class MaintenanceInput
      * @param list<string>                                                     $productionLines
      * @param array<string, array<array-key, string|array<array-key, string>>> $grids
      */
-    public function __construct(public string $action, public array $fields, public array $productionLines, public array $grids = [])
+    public function __construct(public string $action, public array $fields, public array $productionLines, public array $grids = [], public string $button = '')
     {
     }
 

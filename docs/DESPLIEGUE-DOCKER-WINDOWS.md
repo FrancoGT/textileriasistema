@@ -38,8 +38,8 @@ docker info --format '{{.ServerVersion}}'
 │   public/index.php ── Symfony 8.2 kernel           │
 │      ├─ /            HomeController (Twig)         │
 │      ├─ /health      HealthController (Doctrine)   │
-│      └─ /*.php, CSS/ LegacyController ──► legacy/  │
-│                         (Smarty 4, mysqli)         │
+│      └─ /*.php      controladores ERP              │
+│                         (Twig, Doctrine DBAL)      │
 └─────────────────────────┬──────────────────────────┘
                           │ red interna Docker
 ┌─────────────────────────▼──────────────────────────┐
@@ -268,8 +268,8 @@ docker compose -f compose.prod.yaml --env-file .env.docker.prod pull app
 docker compose -f compose.prod.yaml --env-file .env.docker.prod up -d --no-build app
 ```
 
-Los volúmenes `db_data`, `app_ficheros`, `app_files`, `app_sessions` y `app_log` se conservan
-entre versiones (documentos generados, archivos subidos, sesiones y logs).
+Los volúmenes `db_data`, `app_sessions` y `app_log` se conservan
+entre versiones (base de datos, sesiones y logs).
 
 ### 4.5 Operación en producción
 
@@ -302,7 +302,7 @@ El contenedor escucha HTTP en el puerto 80. Para HTTPS, ponga delante un proxy i
 | `dependency failed to start: container ... db ... is unhealthy` | Error al importar el SQL. Ver `docker compose logs db`. Corregir y ejecutar `docker compose down -v; docker compose up -d`. |
 | `Bind for 0.0.0.0:8080 failed: port is already allocated` | Puerto ocupado: `$env:APP_PORT="8000"; docker compose up -d`. |
 | `/health` responde `503` / `"database":"error"` | La BD no está lista o las credenciales `DATABASE_*` no coinciden con `DB_*`. |
-| Página en blanco o error 500 en una pantalla legacy | `docker compose exec app tail -n 50 var/log/dev.log` (en prod: `var/log/prod.log`). |
+| Página en blanco o error 500 en una pantalla | `docker compose exec app tail -n 50 var/log/dev.log` (en prod: `var/log/prod.log`). |
 | Lentitud en Windows | Normal con *bind mounts*. `var/` ya va en un volumen nativo. Mover el proyecto dentro de WSL (`\\wsl$\...`) acelera mucho. |
 | `docker-entrypoint: not found` / `\r` | Archivos con fin de línea CRLF: el Dockerfile ya los normaliza; si persiste, `git config core.autocrlf input`. |
 | Cambios en `.ini`, `vhost.conf` o `Dockerfile` no se aplican | Reconstruir: `docker compose up -d --build`. |

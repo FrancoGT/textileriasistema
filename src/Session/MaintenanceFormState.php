@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Legacy;
+namespace App\Session;
 
 use Symfony\Component\DependencyInjection\Attribute\Exclude;
 
@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\Attribute\Exclude;
 #[Exclude]
 final class MaintenanceFormState
 {
-    public function __construct(private readonly LegacySession $session, private readonly string $scope)
+    public function __construct(private readonly ErpSession $session, private readonly string $scope)
     {
     }
 
@@ -64,6 +64,20 @@ final class MaintenanceFormState
         $value = $this->session->get($this->key($name));
 
         return \is_string($value) ? $value : null;
+    }
+
+    /** @param array<array-key, mixed> $value */
+    public function keep(string $name, array $value): void
+    {
+        $this->session->set($this->key($name), $value);
+    }
+
+    /** @return array<array-key, mixed> */
+    public function kept(string $name): array
+    {
+        $value = $this->session->get($this->key($name));
+
+        return \is_array($value) ? $value : [];
     }
 
     public function flash(string $message): void

@@ -13,7 +13,5 @@ compose*.yaml
 .logs
 db
 docs
-legacy/templates_c/*
-legacy/cache/*
 **/*.css~
 **/*~

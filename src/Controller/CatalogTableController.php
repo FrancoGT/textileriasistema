@@ -6,9 +6,9 @@ namespace App\Controller;
 
 use App\Http\MaintenanceInput;
 use App\Http\MaintenanceInputResolver;
-use App\Legacy\LegacySession;
-use App\Legacy\LegacyTemplateRenderer;
-use App\Legacy\MaintenanceFormState;
+use App\Session\ErpSession;
+use App\View\ErpView;
+use App\Session\MaintenanceFormState;
 use App\Maintenance\CatalogEntry;
 use App\Maintenance\CatalogTableService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -24,8 +24,8 @@ final class CatalogTableController
 
     public function __construct(
         private readonly CatalogTableService $tables,
-        private readonly LegacySession $session,
-        private readonly LegacyTemplateRenderer $views,
+        private readonly ErpSession $session,
+        private readonly ErpView $views,
     ) {
     }
 
@@ -98,7 +98,7 @@ final class CatalogTableController
             $status = 422;
         }
 
-        return $this->views->render('Plantillas/ERP1080.tpl', $data, $status);
+        return $this->views->render('ERP1080', $data, $status);
     }
 
     /** @return array{0: string, 1: list<string>} */

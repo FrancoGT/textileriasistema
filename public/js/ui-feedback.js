@@ -44,7 +44,7 @@
                     if (heading.tagName === 'TH' && !heading.hasAttribute('scope')) heading.setAttribute('scope', 'col');
                     const selectionImage = heading.querySelector('img[src$="Check.png"], img[src$="Check.jpg"]');
                     if (selectionImage) {
-                        selectionImage.src = '/CSS/Check.jpg';
+                        selectionImage.src = '/erp/Check.jpg';
                         selectionImage.alt = 'Seleccionar registro';
                     }
                     if (/^(cantidad|importe|precio|total|saldo|monto|costo|stock|granulado|debe|haber)(\s|$)/.test(normalize(heading.textContent))) {

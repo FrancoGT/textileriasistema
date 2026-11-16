@@ -7,9 +7,9 @@ namespace App\Controller;
 use App\Http\MaintenanceInput;
 use App\Http\MaintenanceInputResolver;
 use App\Inventory\StockTransferService;
-use App\Legacy\LegacySession;
-use App\Legacy\LegacyTemplateRenderer;
-use App\Legacy\MaintenanceFormState;
+use App\Session\ErpSession;
+use App\View\ErpView;
+use App\Session\MaintenanceFormState;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,8 +23,8 @@ final class StockTransferController
 
     public function __construct(
         private readonly StockTransferService $transfers,
-        private readonly LegacySession $session,
-        private readonly LegacyTemplateRenderer $views,
+        private readonly ErpSession $session,
+        private readonly ErpView $views,
     ) {
     }
 
@@ -91,7 +91,7 @@ final class StockTransferController
             $status = 422;
         }
 
-        return $this->views->render('Plantillas/ERP1091.tpl', $data, $status);
+        return $this->views->render('ERP1091', $data, $status);
     }
 
     /** @return array<string, string> supply code => typed quantity */

@@ -6,9 +6,9 @@ namespace App\Controller;
 
 use App\Http\MaintenanceInput;
 use App\Http\MaintenanceInputResolver;
-use App\Legacy\LegacySession;
-use App\Legacy\LegacyTemplateRenderer;
-use App\Legacy\MaintenanceFormState;
+use App\Session\ErpSession;
+use App\View\ErpView;
+use App\Session\MaintenanceFormState;
 use App\Security\LoginService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,8 +23,8 @@ final class PasswordChangeController
 
     public function __construct(
         private readonly LoginService $login,
-        private readonly LegacySession $session,
-        private readonly LegacyTemplateRenderer $views,
+        private readonly ErpSession $session,
+        private readonly ErpView $views,
     ) {
     }
 
@@ -51,7 +51,7 @@ final class PasswordChangeController
                 $status = 422;
             }
         }
-        $response = $this->views->render('Plantillas/Mnu1000.tpl', [
+        $response = $this->views->render('Mnu1000', [
             'scNombre' => (string) $this->session->get('gcNombre'),
             'maintenanceToken' => $form->token(),
             'maintenanceMessage' => $message,

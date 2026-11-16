@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Legacy\LegacySession;
+use App\Session\ErpSession;
 use App\Security\LoginService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,15 +14,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 /**
- * Receives the login form. A GET of /Mnu0000.php still reaches the legacy menu
- * through LegacyController.
+ * Receives the login form. MenuController shows the menu on a GET of /Mnu0000.php.
  */
 final class LoginController extends AbstractController
 {
     private const MENU = 'Mnu0000.php?Id=0000';
     private const PASSWORD_CHANGE = 'Mnu1000.php';
 
-    public function __construct(private readonly LoginService $login, private readonly LegacySession $session)
+    public function __construct(private readonly LoginService $login, private readonly ErpSession $session)
     {
     }
 

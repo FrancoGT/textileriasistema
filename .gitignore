@@ -11,15 +11,6 @@
 
 ###> textileria ###
 /.env.docker.prod
-/legacy/templates_c/*
-/legacy/cache/*
-!/legacy/templates_c/.gitkeep
-!/legacy/cache/.gitkeep
-# Generated reports and uploaded files. Keep Xls/ report templates in Git.
-/legacy/Ficheros/*
-/legacy/FILES/*
-!/legacy/Ficheros/.gitkeep
-!/legacy/FILES/.gitkeep
 
 # Local dependencies, logs and test output.
 node_modules/

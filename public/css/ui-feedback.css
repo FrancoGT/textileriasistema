@@ -28,7 +28,7 @@ button, input[type=submit], input[type=button], a[href] { transition: opacity 12
     .erp-ui input.erp-primary, .erp-ui button.erp-primary { border-color: #EE6600; background-color: #EE6600; color: #000000; }
     .erp-ui .erp-action-with-icon { position: relative; display: inline-flex; max-width: 100%; vertical-align: middle; }
     .erp-ui .erp-action-with-icon :is(input, button) { padding-left: 34px; }
-    .erp-ui .erp-action-icon { position: absolute; z-index: 1; left: 10px; top: 50%; margin-top: -8px; width: 16px; height: 16px; pointer-events: none; background-image: url('/CSS/jquery-ui-1.11.0/images/ui-icons_222222_256x240.png'); }
+    .erp-ui .erp-action-icon { position: absolute; z-index: 1; left: 10px; top: 50%; margin-top: -8px; width: 16px; height: 16px; pointer-events: none; background-image: url('/erp/jquery-ui-1.11.0/images/ui-icons_222222_256x240.png'); }
     .erp-ui input.erp-danger, .erp-ui button.erp-danger { border-color: #CC0000; background-color: #FFFFFF; color: #CC0000; }
     .erp-ui :is(button, input[type=submit], input[type=button], input[type=reset]):hover:not(:disabled) { filter: brightness(.94); }
     .erp-ui :is(button, input, select, textarea, a, summary):focus-visible { outline: 2px solid #EE6600; outline-offset: 2px; }

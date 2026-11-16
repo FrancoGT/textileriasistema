@@ -1,0 +1,53 @@
+<meta HTTP-EQUIV="Content-Type" content="text/html; charset=utf-8" />
+<html>
+<head>
+   <title>TEXTILERIA</title>
+   <link href="/erp/Sixavi.css" media="screen" rel="stylesheet" type="text/css" />
+</head>
+</head>
+<body>
+<form action="Mnu1000.php#no-back" method="post">
+   {% if maintenanceToken is defined and maintenanceToken is not null %}<input type="hidden" name="_token" value="{{ maintenanceToken|default('') }}" />{% endif %}
+   <div class="wrapper">
+   <div id="MH">
+      <ul>
+      <li style="margin-left: 50px;"><h1>Cambio de Clave</h1></li>
+      <li style="float:right;margin-right: 100px;"><a onclick="self.location = 'index.php'"> Cerrar Sesión</a></li>
+      </ul>
+   </div>
+   <div id="topnavbar"></div>
+   <div id="navigation">
+   <div id="navcontainer">
+   {% if maintenanceMessage is defined and maintenanceMessage is not null and maintenanceMessage|default('') != '' %}<p role="status">{{ maintenanceMessage|default('') }}</p>{% endif %}
+   <table>
+      <tr>
+      <td>Código:</td>
+      <td>{{ scNombre|default('') }}</td>
+      </tr><tr>
+      <td>Clave Antigua:</td>
+      <td><input type="password" maxlength="64" name="pcClave" autofocus/></td>
+      </tr><tr>
+      <td>Clave Nueva:</td>
+      <td><input type="password" maxlength="64" minlength="8" name="pcClave1"/></td>
+      </tr><tr>
+      <td>Clave (Reingrese):</td>
+      <td><input type="password" maxlength="64" minlength="8" name="pcClave2"/></td>
+      </tr>
+   </table>
+   <table>
+      <tr>
+      <td></td>
+      <td><input type="submit" name="Boton1" value="Grabar"/></td>
+      <td><input type="button" value="Salir" onclick="self.location='index.php'" /></td>
+      </tr>
+   </table>
+   </div>
+   </div>
+   <div id="content">
+   </div>
+   <div id="footer">
+   </div>
+   </div>
+</form>
+</body>
+</html>
