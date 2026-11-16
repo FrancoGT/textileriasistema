@@ -184,7 +184,11 @@ try {
     $users = new UserService(new DbalUserRepository($connection, $tables, new DbalCredentialRepository($connection), $passwords), new CatalogRepository($connection), $permissions);
     $profiles = new ProfileService(new DbalProfileRepository($connection, $tables), new CatalogRepository($connection), $permissions);
     $machines = new MachineService(new DbalMachineRepository($connection, $tables), new CatalogRepository($connection), $permissions);
-    $erpView = new ErpView(new Twig\Environment(new Twig\Loader\FilesystemLoader(dirname(__DIR__, 2).'/templates'), ['strict_variables' => true]));
+    $twig = new Twig\Environment(new Twig\Loader\FilesystemLoader(dirname(__DIR__, 2).'/templates'), ['strict_variables' => true]);
+    $twig->addExtension(new Symfony\Bridge\Twig\Extension\AssetExtension(new Symfony\Component\Asset\Packages(
+        new Symfony\Component\Asset\PathPackage('/', new Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy()),
+    )));
+    $erpView = new ErpView($twig);
     $person = new PersonnelData("O'NEIL", 'Av. Central', 'oneil@example.test', '12345678', 'M', 'S', 'A');
     $supplier = new SupplierData("O'REILLY SAC", 'Av. Sur', '', '12345678901', 'B', '2024-01-02', 'Initial notes', ['01']);
     $personCode = '';

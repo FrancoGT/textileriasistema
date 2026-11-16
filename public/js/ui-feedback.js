@@ -34,12 +34,24 @@
             }));
         });
         buttonsObserver.observe(page.body, { childList: true, subtree: true });
+        page.querySelectorAll('#navigation table, #content table').forEach(table => {
+            if (!table.querySelector('th') || table.querySelector('td')) return;
+            const scroll = table.nextElementSibling;
+            const bodyTable = scroll?.matches('div') ? scroll.querySelector(':scope > table') : null;
+            if (!bodyTable) return;
+            // Legacy lists render the headings outside the scrolling data table.
+            table.append(...bodyTable.tBodies);
+            bodyTable.replaceWith(table);
+        });
         page.querySelectorAll('#navigation table, #content table, .ui-dialog table').forEach(table => {
             if (table.parentElement.closest('table')) return;
             const controls = [...table.querySelectorAll('input:not([type=hidden]), button, select, textarea')];
             if (table.querySelector('th')) {
                 table.classList.add('erp-data-table');
-                const headings = [...table.querySelectorAll('tr:first-child th, tr:first-child td')];
+                table.querySelectorAll('th, td').forEach(cell => {
+                    if (cell.style.visibility === 'hidden') cell.classList.add('erp-hidden-column');
+                });
+                const headings = [...(table.rows[0]?.cells || [])];
                 headings.forEach((heading, column) => {
                     if (heading.tagName === 'TH' && !heading.hasAttribute('scope')) heading.setAttribute('scope', 'col');
                     const selectionImage = heading.querySelector('img[src$="Check.png"], img[src$="Check.jpg"]');
@@ -47,7 +59,10 @@
                         selectionImage.src = '/erp/Check.jpg';
                         selectionImage.alt = 'Seleccionar registro';
                     }
-                    if (/^(cantidad|importe|precio|total|saldo|monto|costo|stock|granulado|debe|haber)(\s|$)/.test(normalize(heading.textContent))) {
+                    if (/^(descripcion|nombre)(\s|$)/.test(normalize(heading.textContent))) {
+                        [...table.rows].forEach(row => row.cells[column]?.classList.add('erp-description'));
+                    }
+                    if (/^(cantidad|unidades|importe|precio|total|saldo|monto|costo|stock|granulado|debe|haber)(\s|$)/.test(normalize(heading.textContent))) {
                         [...table.rows].forEach(row => row.cells[column]?.classList.add('erp-number'));
                     }
                 });

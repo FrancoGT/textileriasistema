@@ -105,7 +105,11 @@ $permissions = new class implements ModulePermission {
 $resolver = new MaintenanceInputResolver();
 $argument = new ArgumentMetadata('input', MaintenanceInput::class, false, false, null);
 $post = static fn (array $fields): MaintenanceInput => iterator_to_array($resolver->resolve(Request::create('/', 'POST', $fields), $argument))[0];
-$views = new ErpView(new Twig\Environment(new Twig\Loader\FilesystemLoader(dirname(__DIR__, 2).'/templates'), ['strict_variables' => true]));
+$twig = new Twig\Environment(new Twig\Loader\FilesystemLoader(dirname(__DIR__, 2).'/templates'), ['strict_variables' => true]);
+$twig->addExtension(new Symfony\Bridge\Twig\Extension\AssetExtension(new Symfony\Component\Asset\Packages(
+    new Symfony\Component\Asset\PathPackage('/', new Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy()),
+)));
+$views = new ErpView($twig);
 $session = new ErpSession();
 
 $tables = ['E01TTAB', 'E01MCLI', 'E01MPROD', 'E01MMAQ', 'E01MPER', 'E01CPED', 'E01DPED', 'E01MAQ', 'E01PER', 'E01TRABAJO', 'E01DCRE',

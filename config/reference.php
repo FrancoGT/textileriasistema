@@ -170,6 +170,25 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         marshaller?: scalar|Param|null, // The marshaller service to use for this pool.
  *     }>,
  * }
+ * @psalm-type AssetConfig = bool|array{
+ *     enabled?: bool|Param, // Resolved at compile time // Default: true
+ *     strict_mode?: bool|Param, // Throw an exception if an entry is missing from the manifest.json. // Default: false
+ *     version_strategy?: scalar|Param|null, // Default: null
+ *     version?: scalar|Param|null, // Default: null
+ *     version_format?: scalar|Param|null, // Default: "%%s?%%s"
+ *     json_manifest_path?: scalar|Param|null, // Default: null
+ *     base_path?: scalar|Param|null, // Default: ""
+ *     base_urls?: Param|string|list<scalar|Param|null>,
+ *     packages?: array<string, array{ // Default: []
+ *         strict_mode?: bool|Param, // Throw an exception if an entry is missing from the manifest.json. // Default: false
+ *         version_strategy?: scalar|Param|null, // Default: null
+ *         version?: scalar|Param|null,
+ *         version_format?: scalar|Param|null, // Default: null
+ *         json_manifest_path?: scalar|Param|null, // Default: null
+ *         base_path?: scalar|Param|null, // Default: ""
+ *         base_urls?: Param|string|list<scalar|Param|null>,
+ *     }>,
+ * }
  * @psalm-type FrameworkConfig = array{
  *     secret?: scalar|Param|null, // A secret that must not change. The options that sign data default to it and take a list of secrets to rotate theirs.
  *     http_method_override?: bool|Param, // Set true to enable support for the '_method' request parameter to determine the intended HTTP method on POST requests. // Default: false
@@ -244,7 +263,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     },
  *     workflows?: mixed,
  *     router?: RouterConfig,
- *     assets?: mixed,
+ *     assets?: AssetConfig,
  *     asset_mapper?: mixed,
  *     translator?: mixed,
  *     validation?: mixed,
@@ -957,6 +976,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     services?: ServicesConfig,
  *     router?: RouterConfig,
  *     cache?: CacheConfig,
+ *     asset?: AssetConfig,
  *     framework?: FrameworkConfig,
  *     doctrine?: DoctrineConfig,
  *     monolog?: MonologConfig,
@@ -969,6 +989,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         services?: ServicesConfig,
  *         router?: RouterConfig,
  *         cache?: CacheConfig,
+ *         asset?: AssetConfig,
  *         framework?: FrameworkConfig,
  *         doctrine?: DoctrineConfig,
  *         debug?: DebugConfig,
@@ -984,6 +1005,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         services?: ServicesConfig,
  *         router?: RouterConfig,
  *         cache?: CacheConfig,
+ *         asset?: AssetConfig,
  *         framework?: FrameworkConfig,
  *         doctrine?: DoctrineConfig,
  *         monolog?: MonologConfig,
@@ -997,6 +1019,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         services?: ServicesConfig,
  *         router?: RouterConfig,
  *         cache?: CacheConfig,
+ *         asset?: AssetConfig,
  *         framework?: FrameworkConfig,
  *         doctrine?: DoctrineConfig,
  *         monolog?: MonologConfig,

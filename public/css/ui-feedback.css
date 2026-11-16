@@ -7,6 +7,8 @@ button, input[type=submit], input[type=button], a[href] { transition: opacity 12
     .erp-ui #content { margin-left: 0; min-height: 0; padding: 0; }
     .erp-ui #content:empty, .erp-ui #footer:empty { display: none; }
     .erp-ui fieldset { box-sizing: border-box; min-width: 0; max-width: 100%; margin: 0 0 16px; padding: 12px 16px; border: 1px solid #E8E8E8; border-radius: 4px; }
+    .erp-ui fieldset:has(.erp-data-table) { width: 100% !important; }
+    .erp-ui :is(#navigation, #navcontainer, #content, .workspace-records) { box-sizing: border-box; min-width: 0; max-width: 100%; }
     .erp-ui #header { box-sizing: border-box; width: 100%; height: auto; min-height: 60px; }
     .erp-ui #navcontainer a { box-sizing: border-box; max-width: 100%; min-height: 36px; padding: 7px 14px; border: 1px solid #999999; border-radius: 4px; box-shadow: none; line-height: 1.5; }
     .erp-ui legend { padding: 0 8px; font-weight: bold; }
@@ -48,15 +50,21 @@ button, input[type=submit], input[type=button], a[href] { transition: opacity 12
     .erp-ui .erp-actions { margin: 12px 0; border-spacing: 0; }
     .erp-ui .erp-actions > tbody > tr { display: flex; flex-wrap: wrap; gap: 8px; }
     .erp-ui .erp-actions > tbody > tr > td { display: block; padding: 0; }
-    .erp-ui .erp-table-scroll { box-sizing: border-box; max-width: 100%; width: 100% !important; height: auto !important; max-height: none; overflow-x: auto; border: 1px solid #E8E8E8; border-radius: 4px; }
+    .erp-ui .erp-table-scroll { box-sizing: border-box; min-width: 0; max-width: 100%; width: 100% !important; height: auto !important; max-height: none; overflow-x: auto; border: 1px solid #E8E8E8; border-radius: 4px; }
     .erp-ui .erp-data-table { width: 100%; margin: 0; border-collapse: collapse; border: 0; border-spacing: 0; font-size: 13px !important; }
     .erp-ui .erp-data-table :is(th, td) { padding: 9px 12px; border: 0; border-bottom: 1px solid #E8E8E8; text-align: left; vertical-align: middle; line-height: 1.5; }
-    .erp-ui .erp-data-table th { background: #F4F4F4; color: #333333; font-weight: bold; white-space: nowrap; }
+    .erp-ui .erp-data-table th { background: #F4F4F4; color: #333333; font-weight: bold; }
+    .erp-ui .erp-data-table th img { width: 24px !important; height: 24px !important; object-fit: contain; }
+    .erp-ui .erp-data-table .erp-description { min-width: 14rem; overflow-wrap: anywhere; }
+    .erp-ui .erp-data-table .erp-hidden-column { display: none; }
+    .erp-ui .erp-data-table .erp-number input:not([type=hidden]) { width: 8rem; min-width: 5rem; max-width: 100%; }
     .erp-ui .erp-data-table tr:hover > td { background-color: #F4F4F4; }
     .erp-ui .erp-data-table tr:has(input:checked) > td { background-color: #E8E8E8; }
     .erp-ui .erp-data-table .erp-number, .erp-ui .erp-data-table [align=right] { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
     .erp-ui .workspace-records { padding: 0; }
     .erp-ui .workspace-records-toolbar, .erp-ui .workspace-records-footer { gap: 12px; }
+    .erp-ui :is(.workspace-records-toolbar, .workspace-records-footer, .workspace-records-pagination) > * { min-width: 0; max-width: 100%; }
+    .erp-ui .workspace-records-footer > [role=status] { overflow-wrap: anywhere; }
     .erp-ui .workspace-records-search { font-size: 12px; color: #333333; }
     .erp-ui .workspace-records-footer { font-size: 12px; }
     .erp-ui .workspace-records-footer label { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }

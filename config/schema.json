@@ -143,6 +143,179 @@
             }
         },
         "nodes": {
+            "asset": {
+                "anyOf": [
+                    {
+                        "$ref": "#/$defs/types/object_null",
+                        "properties": {
+                            "enabled": {
+                                "$ref": "#/$defs/types/boolean",
+                                "default": true
+                            },
+                            "strict_mode": {
+                                "$ref": "#/$defs/types/boolean",
+                                "default": false,
+                                "description": "Throw an exception if an entry is missing from the manifest.json."
+                            },
+                            "version_strategy": {
+                                "$ref": "#/$defs/types/scalar",
+                                "default": null
+                            },
+                            "version": {
+                                "$ref": "#/$defs/types/scalar",
+                                "default": null
+                            },
+                            "version_format": {
+                                "$ref": "#/$defs/types/scalar",
+                                "default": "%%s?%%s"
+                            },
+                            "json_manifest_path": {
+                                "$ref": "#/$defs/types/scalar",
+                                "default": null
+                            },
+                            "base_path": {
+                                "$ref": "#/$defs/types/scalar",
+                                "default": ""
+                            },
+                            "base_urls": {
+                                "anyOf": [
+                                    {
+                                        "$ref": "#/$defs/types/array_null",
+                                        "items": {
+                                            "$ref": "#/$defs/types/scalar"
+                                        },
+                                        "minItems": 1
+                                    },
+                                    {
+                                        "type": [
+                                            "string"
+                                        ]
+                                    }
+                                ]
+                            },
+                            "packages": {
+                                "$ref": "#/$defs/types/object_null",
+                                "additionalProperties": {
+                                    "$ref": "#/$defs/types/object_null",
+                                    "properties": {
+                                        "strict_mode": {
+                                            "$ref": "#/$defs/types/boolean",
+                                            "default": false,
+                                            "description": "Throw an exception if an entry is missing from the manifest.json."
+                                        },
+                                        "version_strategy": {
+                                            "$ref": "#/$defs/types/scalar",
+                                            "default": null
+                                        },
+                                        "version": {
+                                            "$ref": "#/$defs/types/scalar"
+                                        },
+                                        "version_format": {
+                                            "$ref": "#/$defs/types/scalar",
+                                            "default": null
+                                        },
+                                        "json_manifest_path": {
+                                            "$ref": "#/$defs/types/scalar",
+                                            "default": null
+                                        },
+                                        "base_path": {
+                                            "$ref": "#/$defs/types/scalar",
+                                            "default": ""
+                                        },
+                                        "base_urls": {
+                                            "anyOf": [
+                                                {
+                                                    "$ref": "#/$defs/types/array_null",
+                                                    "items": {
+                                                        "$ref": "#/$defs/types/scalar"
+                                                    },
+                                                    "minItems": 1
+                                                },
+                                                {
+                                                    "type": [
+                                                        "string"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "patternProperties": {
+                                        "^base_url$": {
+                                            "anyOf": [
+                                                {
+                                                    "$ref": "#/$defs/types/scalar"
+                                                },
+                                                {
+                                                    "anyOf": [
+                                                        {
+                                                            "$ref": "#/$defs/types/array_null",
+                                                            "items": {
+                                                                "$ref": "#/$defs/types/scalar"
+                                                            },
+                                                            "minItems": 1
+                                                        },
+                                                        {
+                                                            "type": [
+                                                                "string"
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "additionalProperties": false
+                                }
+                            }
+                        },
+                        "patternProperties": {
+                            "^base_url$": {
+                                "anyOf": [
+                                    {
+                                        "$ref": "#/$defs/types/scalar"
+                                    },
+                                    {
+                                        "anyOf": [
+                                            {
+                                                "$ref": "#/$defs/types/array_null",
+                                                "items": {
+                                                    "$ref": "#/$defs/types/scalar"
+                                                },
+                                                "minItems": 1
+                                            },
+                                            {
+                                                "type": [
+                                                    "string"
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            "^package$": {
+                                "$ref": "#/$defs/types/variable"
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    {
+                        "type": [
+                            "boolean"
+                        ]
+                    }
+                ],
+                "default": {
+                    "enabled": true,
+                    "strict_mode": false,
+                    "version_strategy": null,
+                    "version": null,
+                    "version_format": "%%s?%%s",
+                    "json_manifest_path": null,
+                    "base_path": "",
+                    "base_urls": [],
+                    "packages": []
+                }
+            },
             "cache": {
                 "$ref": "#/$defs/types/object_null",
                 "properties": {
@@ -2444,7 +2617,7 @@
                         "$ref": "#/$defs/nodes/router"
                     },
                     "assets": {
-                        "$ref": "#/$defs/types/variable"
+                        "$ref": "#/$defs/nodes/asset"
                     },
                     "asset_mapper": {
                         "$ref": "#/$defs/types/variable"
@@ -4172,6 +4345,9 @@
     },
     "type": "object",
     "properties": {
+        "asset": {
+            "$ref": "#/$defs/nodes/asset"
+        },
         "cache": {
             "$ref": "#/$defs/nodes/cache"
         },
@@ -4199,6 +4375,9 @@
         "when@dev": {
             "$ref": "#/$defs/types/object_null",
             "properties": {
+                "asset": {
+                    "$ref": "#/$defs/nodes/asset"
+                },
                 "cache": {
                     "$ref": "#/$defs/nodes/cache"
                 },
@@ -4238,6 +4417,9 @@
         "when@test": {
             "$ref": "#/$defs/types/object_null",
             "properties": {
+                "asset": {
+                    "$ref": "#/$defs/nodes/asset"
+                },
                 "cache": {
                     "$ref": "#/$defs/nodes/cache"
                 },
@@ -4276,6 +4458,9 @@
         "^when@[a-zA-Z0-9]+$": {
             "$ref": "#/$defs/types/object_null",
             "properties": {
+                "asset": {
+                    "$ref": "#/$defs/nodes/asset"
+                },
                 "cache": {
                     "$ref": "#/$defs/nodes/cache"
                 },

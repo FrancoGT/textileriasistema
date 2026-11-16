@@ -1,0 +1,7 @@
+.erp-select-search { position: relative; display: inline-block; vertical-align: middle; max-width: 100%; }
+.erp-select-search::after { content: '\25be'; position: absolute; right: 9px; top: 6px; pointer-events: none; color: #555; }
+.erp-select-search input { box-sizing: border-box; width: 100%; min-width: 180px; padding-right: 26px; }
+.erp-select-search [role=listbox] { position: absolute; top: 100%; left: 0; min-width: 100%; box-sizing: border-box; z-index: 1000; max-height: 220px; overflow-y: auto; background: white; color: #222; border: 1px solid #aaa; box-shadow: 0 3px 8px #0002; }
+.erp-select-search [role=option] { padding: 6px 10px; cursor: pointer; }
+.erp-select-search [role=option]:hover, .erp-select-search [aria-selected=true] { background: #dcecff; color: #111; }
+.erp-select-search [role=status] { font-size: 12px; white-space: normal; }
